@@ -5,6 +5,9 @@ name = "pypi"
 
 [packages]
 wxpython = "*"
+setuptools = "*"
+wheel = "*"
+pycryptodome = "*"
 
 [dev-packages]
 
