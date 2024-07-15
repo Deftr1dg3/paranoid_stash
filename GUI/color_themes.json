@@ -1,0 +1,44 @@
+{
+  "light": {
+    "dark": "#C6C6C6",
+    "medium": "#EEEEEE",
+    "input_background": "#C6C6C6",
+    "selection": "#8a8db2",
+    "text": "#323442"
+  },
+  "green": {
+    "dark": "#182924",
+    "medium": "#2d3f39",
+    "input_background": "#182924",
+    "selection": "#4f7169",
+    "text": "#90d5c0"
+  },
+  "light_green": {
+    "dark": "#003942",
+    "medium": "#004952",
+    "input_background": "#00333b",
+    "selection": "#42848d",
+    "text": "#a7f2fb"
+  },
+  "blue": {
+    "dark": "#19202f",
+    "medium": "#353c4c",
+    "input_background": "#1f2635",
+    "selection": "#5c6e96",
+    "text": "#b0c6fa"
+  },
+  "burgundy": {
+    "dark": "#2f212e",
+    "medium": "#463644",
+    "input_background": "#2f212e",
+    "selection": "#7d617c",
+    "text": "#ecb3e7"
+  },
+  "purple": {
+    "dark": "#221c2e",
+    "medium": "#3e384b",
+    "input_background": "#221c2e",
+    "selection": "#6b5e85",
+    "text": "#d0bcfa"
+  }
+}

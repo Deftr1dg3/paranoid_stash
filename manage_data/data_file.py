@@ -3,11 +3,10 @@ import atexit
 import json 
 import copy
 from base64 import b64encode, b64decode
-from exceptions import UnableToDecodeTheFile
 from typing import NamedTuple
 
-from aes_encryption import AES_Encripton
-from entry import Entry
+from .aes_encryption import AES_Encripton
+from .manage_password import GeneratePassword, PasswordStrength
 
 
 class Data(dict):
@@ -37,8 +36,8 @@ class IODataFile:
 
 
 class DataFile:
-    def __init__(self, file_path: str) -> None:
-        self._io = IODataFile(file_path)
+    def __init__(self, settings: dict) -> None:
+        self._io = IODataFile(settings['data']['data_file'])
         self._aes_encryption = AES_Encripton()
         
         self._password: str
@@ -50,6 +49,22 @@ class DataFile:
     
     # def backup(self):
     #     ...
+    
+    @property
+    def data(self) -> Data:
+        return self._data
+    
+    @data.setter
+    def data(self, new_data: Data) -> None:
+        self._data = new_data 
+
+    @property
+    def password(self):
+        return self._password
+    
+    @password.setter
+    def password(self, pswd: str):
+        self._password = pswd 
     
     def create_new_data_file(self) -> None:
         self._data = Data()
@@ -72,22 +87,6 @@ class DataFile:
         encrypted_bytes_data = self._aes_encryption.encrypt(self._password, bytes_data)
         b64_encrypted_data = b64encode(encrypted_bytes_data).decode('utf-8')
         self._io.save_data(b64_encrypted_data)
-        
-    @property
-    def data(self) -> Data:
-        return self._data
-    
-    @data.setter
-    def data(self, new_data: Data) -> None:
-        self._data = new_data 
-
-    @property
-    def password(self):
-        return self._password
-    
-    @password.setter
-    def password(self, pswd: str):
-        self._password = pswd 
      
 
 class State(NamedTuple):
@@ -123,20 +122,20 @@ class DataState:
         return self._data_state[self._current_index]
     
 
-
 class ManageData:
 
     _default_entity = ["New Record", "Username", 'password11', "URL", "N/A"]
     
     def __init__(self, df: DataFile) -> None:
         self._df = df 
-        self._data = df.load_data()
+        self._data = df.data
         self._state = DataState()
+        self._pass_gen = GeneratePassword()
         
         self.selected_category: str | None = None
         self.selected_entity: int | None = None
         
-        self._state.add(self)
+        self.save_state()
     
     @property
     def data(self):
@@ -151,14 +150,18 @@ class ManageData:
             i += 1
         raise ValueError('The category is not defined.')
 
-    def _get_entity_index(self, category: str, entity: list) -> int:
-        entities = self._data.get(category, None)
-        if entities is None:
-            raise ValueError(f'The category "{category}" is not defined.')
-        for i in range(len(entities)):
-            if entities[i] == entity:
-                return i 
-        raise ValueError('Provided entity is not under the category')
+    def _get_entity_index(self, entity_id: int) -> tuple[str, int]:
+        for category in self._data.keys():
+            for i in range(len(self._data[category])):
+                if id(self._data[category][i]) == entity_id:
+                    return category, i
+        return ('', -1)
+
+    def update(self) -> None:
+        self._df.save_data()
+        
+    def save_state(self):
+        self._state.add(self)
     
     # Categories ------------------------------------------------------------------------
     
@@ -166,10 +169,10 @@ class ManageData:
         if category in self._data:
             raise KeyError(f'Category with such name => {category} already in data.')
         self._data[category] = list()
-        self._df.save_data() 
-        self._state.add(self)
+        self.update() 
+        self.save_state()
     
-    def get_categories(self) -> list:
+    def all_categories(self) -> list:
         return list(self._data.keys())
     
     def get_category_data(self, category: str) -> list:
@@ -188,67 +191,84 @@ class ManageData:
         
         self._data = new_data
         self._df.data = self._data
-        self._df.save_data()
-        self._state.add(self)
+        self.update()
+        self.save_state()
             
-    def move_category(self, category: str, direction: int = 1) -> None:
-        if category not in self._data:
-            raise KeyError(f'Category "{category}" is not in the data file.')
-        
-        step = 1
-        step *= direction
+    def move_category(self, category: str, direction: int = -1) -> None:
+
         items = [list(row) for row in self._data.items()]
         category_index = self._get_category_index(category)
         
-        try:
-            items[category_index], items[category_index - step] = items[category_index - step], items[category_index]
-        except IndexError:
-            raise IndexError('Unable to continue moving in this direction.')
-        else:
+        step = 1 * direction 
+        swap = category_index + step 
+        if 0 <= swap < len(items):
+            items[category_index], items[swap] = items[swap], items[category_index]
             new_data = Data(items)
+            
             self._data = new_data 
             self._df.data = self._data 
-            self._df.save_data()
-            self._state.add(self)
+            self.update()
+            self.save_state()
             
     def clear_category(self, category: str) -> None:
         if category not in self._data:
             raise KeyError(f'Category "{category}" is not in the data file.')
         self._data[category].clear()
-        self._df.save_data()
-        self._state.add(self)
+        self.update()
+        self.save_state()
           
     def delete_category(self, category: str) -> None:
         if category not in self._data:
             raise KeyError(f'Category "{category}" is not in the data file.')
         del self._data[category]
-        self._df.save_data()
-        self._state.add(self)
+        self.update()
+        self.save_state()
         
     # Entities ------------------------------------------------------------------------
         
-    def add_entity(self, category: str) -> None:
-        if category not in self._data:
-            raise KeyError(f'Category "{category}" is not in the data file.')
-        
-        new_entity = copy.deepcopy(self._default_entity)
-        self.selected_entity = id(new_entity)
-        
-        self._data[category].append(new_entity)
-        self._df.save_data()
-        self._state.add(self)
+    def add_entity(self) -> None:
+        if self.selected_category:
+            new_entity = copy.deepcopy(self._default_entity)
+            password_strength = PasswordStrength()
+            new_entity[2] = self._pass_gen.generate_password(password_strength.STRONG)
+            self.selected_entity = id(new_entity)
+            
+            self._data[self.selected_category].append(new_entity)
+            self.update()
+            self.save_state()
     
-    def move_entity(self, category: str, entity_ind: int, up: bool = True) -> None:
-        if category not in self._data:
-            raise KeyError(f'Category "{category}" is not in the data file.')
+    def move_entity(self, entity_id: int, direction: int = -1) -> None:
+        category, e_ind = self._get_entity_index(entity_id)
+        if not e_ind == -1:
+            step = 1 * direction 
+            swap = e_ind + step
+            if 0 <= swap < len(self._data[category]) and self.selected_category == category:
+                self._data[category][e_ind], self._data[category][swap] = self._data[category][swap], self._data[category][e_ind]
+                self.update()
+                self.save_state()
     
-    def delete_entity(self, category: str, entity_ind: int) -> None:
-        if category not in self._data:
-            raise KeyError(f'Category "{category}" is not in the data file.')
+    def get_entity_by_id(self, entity_id: int) -> list | None:
+        category, e_ind = self._get_entity_index(entity_id)
+        if not e_ind == -1:
+            return self._data[category][e_ind]
+      
+    def delete_entity(self, entity_id: int) -> None:
+        category, e_ind = self._get_entity_index(entity_id)
+        if not e_ind == -1:
+            del self._data[category][e_ind]
+            self.update()
+            self.save_state()
     
-    def adjust_entity(self, category: str, entity_ind: int) -> None:
-        if category not in self._data:
-            raise KeyError(f'Category "{category}" is not in the data file.')
+    # Search ------------------------------------------------------------------------
+
+    def search(self, pattern: str) -> list[list]:
+        results = []
+        for category in self._data.keys():
+            for entity in self._data[category]:
+                if pattern.lower() in entity[0].lower():
+                    results.append(entity)
+        return results
+
         
     # Manage instance states ------------------------------------------------------------------------
     
@@ -260,7 +280,7 @@ class ManageData:
         self.selected_entity = next_state.selcted_entity
         
         self._df.data = self._data
-        self._df.save_data()
+        self.update()
     
     def backward(self):
         prev_state = self._state.backward()
@@ -270,46 +290,53 @@ class ManageData:
         self.selected_entity = prev_state.selcted_entity
         
         self._df.data = self._data
-        self._df.save_data()
+        self.update()
          
     def __str__(self):
         return f'{self._data}'
 
 
 
+# Tests ------------------------------------------------------------------------
 
+
+# SETTINGS_PATH = './settings.json'
+# with open(SETTINGS_PATH, 'r') as f:
+#     settings = json.load(f)
                 
-d = DataFile('./testfile')
-d.password = 'hello'
+# d = DataFile(settings)
+# d.password = 'hello'
 
-# d.create_new_data_file()
+# # d.create_new_data_file()
 
-md = ManageData(d)
+# md = ManageData(d)
 
-print(md)
+# print(md)
+# print()
 
-md.selected_category = 'Emails'
 
+# md.selected_category = 'Apps'
 
-md.clear_category(md.selected_category)
-
-md.add_entity(md.selected_category)
-print(md)
-print()
-
-md.add_entity(md.selected_category)
-print(md)
-print()
 
 # md.clear_category(md.selected_category)
+
 # print(md)
 # print()
 
-# md.backward()
+# md.delete_category('New Name Fro Crypto')
+
 # print(md)
 # print()
 
-# md.backward()
+# md.add_entity()
+# print(md)
+# print()
+
+# md.add_entity()
+# print(md)
+# print()
+
+# md.clear_category(md.selected_category)
 # print(md)
 # print()
 
@@ -321,7 +348,21 @@ print()
 # print(md)
 # print()
 
+# ent_id = id(md._data[md.selected_category][0])
 
+# print(f"{ent_id = } {md.get_entity_by_id(ent_id) = }\nDeleting ... \n")
+
+# md.delete_entity(ent_id)
+# print(md)
+# print()
+
+# md.backward()
+# print(md)
+# print()
+
+# md.forward()
+# print(md)
+# print()
 
 # md.move_category(md.selected_category)
 # print(md)
