@@ -1,0 +1,23 @@
+{
+  "mainframe_size": {
+    "size": "(1100, 600)",
+    "min_size": "(800, 400)",
+    "title": "Paranoid Stash 0000 0110 0001 0011"
+  },
+  "left_panel": {
+    "size": "(200, -1)",
+    "scroll_settings": "(20, 20, 50, 50)",
+    "category_row_size": "(200, 30)",
+    "category_panel_size": "(170, 30)",
+    "category_max_len": "16",
+    "extra_xharaxters_replacement": "...",
+    "icon_internet": "internet,connection,connections,online,www,world wide web,account,accounts",
+    "icon_email": "mail,mails,email,emails",
+    "icon_crypto": "crypto,btc,bitcoin,bitcoins",
+    "icon_devops": "development,c,c++,python,java,javascript,rust,ruby,php,git-hub,github,git_hub,dev,devops,gamedev",
+    "icon_database": "database,databases,data,mysql,psql,postgres,postgresql,sql,storage",
+    "icon_funds": "funds,fund,bank,banks,paypal,pay-pal,pay_pal,credit card,creadit cards,exchange,exchanges",
+    "icon_payments": "payments,payment,store,stores,shop,shops,ebay,amazon,purchase,purchases",
+    "icon_folder": "folder"
+  }
+}

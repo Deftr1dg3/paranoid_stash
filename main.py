@@ -1,27 +1,31 @@
 #!/usr/bin/env python3
+import os 
+import sys
+import wx 
+import json
+
+from GUI import MainFrame
+from manage_data import ManageData, DataFile
+
+SETTINGS_PATH = './settings.json'
+
+with open(SETTINGS_PATH, 'r') as f:
+    settings = json.load(f)
+
+df = DataFile(settings)
+df.password = 'hello'
+try:
+    df.load_data()
+except ValueError:
+    print('Unable to decrypt file')
+    os._exit(0)
+
+md = ManageData(df)
+
+print(md)
 
 
-import wx
-
-app = wx.App(False)  # Create a new application
-
-frame = wx.Frame(None, wx.ID_ANY, "Image Viewer", size=(400, 300))  # Create a frame (window)
-panel = wx.Panel(frame)  # Create a panel in the frame
-
-file_path = 'cat_with_guitar.jpg'
-# Load the image
-image = wx.Image(file_path, wx.BITMAP_TYPE_JPEG)
-
-# Convert the image to a bitmap
-bitmap = wx.StaticBitmap(panel, -1, wx.Bitmap(image))
-
-# Set up the layout with a box sizer
-sizer = wx.BoxSizer(wx.VERTICAL)
-sizer.Add(bitmap, 0, wx.ALL | wx.CENTER, 5)
-
-panel.SetSizer(sizer)
-
-frame.Show(True)  # Show the frame
-frame.Raise()  # Bring the frame to the front
-
-app.MainLoop()  # Start the event loop
+app = wx.App()
+f = MainFrame(md, settings['color_theme'])
+f.Show()
+app.MainLoop()
