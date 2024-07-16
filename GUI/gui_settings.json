@@ -19,5 +19,29 @@
     "icon_funds": "funds,fund,bank,banks,paypal,pay-pal,pay_pal,credit card,creadit cards,exchange,exchanges",
     "icon_payments": "payments,payment,store,stores,shop,shops,ebay,amazon,purchase,purchases",
     "icon_folder": "folder"
+  },
+  "top_panel": {
+    "top_left_panel": {
+      "size": "(200, 30)",
+      "new_category_button_size": "(180, -1)",
+      "new_category_label": "Category +"
+    },
+    "top_mid_panel": {
+      "new_entry_label": "Entry +",
+      "search_field_size": "(200, -1)",
+      "search_placeholder": "Search record ..."
+    },
+    "top_right_panel": {
+      "size": "(250, 30)",
+      "top_right_panel_title": "Edit Entry:",
+      "theme_button_label": "Color Theme"
+    }
+  },
+  "select_color": {
+    "size": "(300, 190)",
+    "title": "Select Color Theme",
+    "background_color": "#202020",
+    "circle_panel_pen_color": "GREY",
+    "circle_panel_pen_size": "2"
   }
 }

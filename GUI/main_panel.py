@@ -1,14 +1,14 @@
-import sys 
 import os 
+import sys 
 sys.path.append(os.getcwd())
 
 import wx
 
-from manage_data import ManageData, DataFile
-from manage_data import GeneratePassword, ValidatePassword, PasswordStrength
+from manage_data import ManageData
 
 from GUI.base_panel import BasePanel
 from GUI.body_panel import BodyPanel
+from GUI.top_panel import TopPanel
 
 
 class MainPanel(BasePanel):
@@ -28,12 +28,13 @@ class MainPanel(BasePanel):
         top_bar_box = wx.BoxSizer(wx.HORIZONTAL)
         body_box = wx.BoxSizer(wx.HORIZONTAL)
         
-        
+        self._top_panel = TopPanel(self, self._manage_data, self._settings, self.color_themes, self.theme_name)
         self._body_panel = BodyPanel(self, self._manage_data, self._settings, self.color_themes, self.theme_name)
         
-        
+        top_bar_box.Add(self._top_panel, 1, wx.EXPAND)
         body_box.Add(self._body_panel, 1, wx.EXPAND)
         
+        main_box.Add(top_bar_box, 0, wx.EXPAND)
         main_box.Add(body_box, 1, wx.EXPAND | wx.TOP, 0)
         
         self.SetSizer(main_box)
@@ -43,5 +44,4 @@ class MainPanel(BasePanel):
         self.theme_name = theme_name
         self.SetBackgroundColour(wx.Colour(self.color_themes[theme_name]['dark']))
         self.Refresh()
-        
-        
+           
