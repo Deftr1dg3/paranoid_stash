@@ -1,13 +1,7 @@
-import sys 
-import os 
-sys.path.append(os.getcwd())
-
 import wx
-import random
 from itertools import cycle
 
-from manage_data import ManageData, DataFile
-from manage_data import GeneratePassword, ValidatePassword, PasswordStrength
+from manage_data import ManageData
 
 from GUI.base_panel import BasePanel
 from GUI.left_panel.left_panel import LeftPanel
