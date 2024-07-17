@@ -1,4 +1,7 @@
 {
+  "global": {
+    "settings_path": "./settings.json"
+  },
   "mainframe_size": {
     "size": "(1100, 600)",
     "min_size": "(800, 400)",
@@ -38,10 +41,10 @@
     }
   },
   "select_color": {
-    "size": "(300, 190)",
+    "size": "(70, 190)",
     "title": "Select Color Theme",
-    "background_color": "#202020",
+    "circle_background_color": "#00000000",
     "circle_panel_pen_color": "GREY",
-    "circle_panel_pen_size": "2"
+    "circle_panel_pen_size": "8"
   }
 }
