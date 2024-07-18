@@ -1,10 +1,10 @@
 {
   "light": {
-    "dark": "#C6C6C6",
-    "medium": "#EEEEEE",
+    "dark": "#97a1bf",
+    "medium": "#adb9db",
     "input_background": "#C6C6C6",
-    "selection": "#8a8db2",
-    "text": "#323442"
+    "selection": "#5a6994",
+    "text": "#31343b"
   },
   "green": {
     "dark": "#182924",

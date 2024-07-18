@@ -4,5 +4,5 @@
     "backups": "./data/backups",
     "control_hash": "./data/control_hash"
   },
-  "color_theme": "burgundy"
+  "color_theme": "purple"
 }

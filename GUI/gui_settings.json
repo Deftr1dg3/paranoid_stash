@@ -13,7 +13,7 @@
     "category_row_size": "(200, 30)",
     "category_panel_size": "(170, 30)",
     "category_max_len": "16",
-    "extra_xharaxters_replacement": "...",
+    "replacement_characters": "...",
     "icon_internet": "internet,connection,connections,online,www,world wide web,account,accounts",
     "icon_email": "mail,mails,email,emails",
     "icon_crypto": "crypto,btc,bitcoin,bitcoins",
@@ -21,7 +21,26 @@
     "icon_database": "database,databases,data,mysql,psql,postgres,postgresql,sql,storage",
     "icon_funds": "funds,fund,bank,banks,paypal,pay-pal,pay_pal,credit card,creadit cards,exchange,exchanges",
     "icon_payments": "payments,payment,store,stores,shop,shops,ebay,amazon,purchase,purchases",
-    "icon_folder": "folder"
+    "icon_folder": "folder",
+    "selection_speed": "3",
+    "icon_panel_size": "(30, 30)"
+  },
+  "right_panel": {
+    "size": "(250, -1)",
+    "scroll_settings": "(20, 20, 50, 50)",
+    "notes_title": "Notes:",
+    "notes_field_size": "(-1, 150)",
+    "show_password_button_label": "Show Passowrd",
+    "hide_password_button_label": "Hide Password",
+    "generate_password_button_label": "Generate New Password",
+    "remove_entry_button_label": "Remove Entry",
+    "password_strength_options": "VERY STRONG,STRONG,MEDIUM,WEAK,VERY WEAK",
+    "entry_placeholder": "No Entry Selected",
+    "defalut_password_strength": "STRONG",
+    "record_name_title": "Entry Name:",
+    "username_title": "Username:",
+    "password_title": "Password:",
+    "url_title": "URL://"
   },
   "top_panel": {
     "top_left_panel": {

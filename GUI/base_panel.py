@@ -1,8 +1,8 @@
 import wx
 
-
 class BasePanel(wx.Panel):
     _instances = []
+    _body_panel = None
     def __new__(cls, *args, **kwargs):
         i = super().__new__(cls, *args, **kwargs)
         cls._instances.append(i)

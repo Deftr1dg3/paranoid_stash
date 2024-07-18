@@ -22,7 +22,7 @@ except ValueError:
 
 md = ManageData(df)
 
-print(md)
+# print(md)
 
 
 app = wx.App()
