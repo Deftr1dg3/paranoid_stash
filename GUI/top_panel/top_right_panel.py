@@ -55,8 +55,8 @@ class TopRightPanel(BasePanel):
     
     def _on_color_theme(self, event):
         app = wx.App()
-        f = SelectColorThemeFrame(self, self._settings, self.color_themes, self.current_theme)
-        f.Show()
+        frame = SelectColorThemeFrame(self, self._settings, self.color_themes, self.current_theme)
+        frame.Show()
         app.MainLoop()
         
     def applay_color_theme(self, theme_name: str):
