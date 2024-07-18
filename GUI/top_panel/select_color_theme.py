@@ -2,8 +2,6 @@ import wx
 import ast
 import json
 
-from manage_data import ManageData
-
 from GUI.base_panel import BasePanel
 
 class CirclePanel(BasePanel):
