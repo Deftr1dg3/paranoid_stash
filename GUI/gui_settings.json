@@ -1,6 +1,6 @@
 {
   "global": {
-    "settings_path": "./settings.json"
+    "settings_path": "settings.json"
   },
   "mainframe_size": {
     "size": "(1100, 600)",

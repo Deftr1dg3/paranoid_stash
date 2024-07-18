@@ -55,7 +55,6 @@ class SelectColorThemePanel(BasePanel):
         self._radio_buttons = {}
         
         self._init_ui()
-        self._bind_events()
         
         self.applay_color_theme(self._current_theme)
         
@@ -93,18 +92,12 @@ class SelectColorThemePanel(BasePanel):
         
         self.SetSizer(main_box)
         self.Layout()
-        
-        
-        
-    def _bind_events(self):
-        ...
-        
     
     def _save_updated_color_theme(self):
-        with open(self._settings_path, 'r') as f:
+        with open(self._settings_path, 'r', encoding='utf-8') as f:
             settings = json.load(f)
         settings.update({'color_theme': self._current_theme})
-        with open(self._settings_path, 'w') as f:
+        with open(self._settings_path, 'w', encoding='utf-8') as f:
             json.dump(settings, f, indent=2)
             
     def _on_radio_button(self, event):
@@ -132,7 +125,7 @@ class SelectColorThemeFrame(wx.Frame):
         x = len(self.color_themes) * 70 
         y = self._size[1]
         
-        super().__init__(None, title=self._title, size=(x, y))
+        super().__init__(self._parent, title=self._title, size=(x, y))
         
         self._init_ui()
         
