@@ -1,9 +1,5 @@
 #!/usr/bin/env python3
 
-import sys 
-import os 
-sys.path.append(os.getcwd())
-
 import wx
 import random
 import ast
@@ -48,8 +44,7 @@ class TopMidPanel(BasePanel):
 
         self._search = wx.TextCtrl(self, size=self._search_field_size)
         self._search.SetHint(self._search_placeholder)
-        # self._search.SetForegroundColour(self._text_colour)
-        # self._search.SetBackgroundColour(self._input_background_colour)
+
         
         # Add created objects to the sizers
         button_box.Add(self._new_entry, 0, wx.EXPAND | wx.LEFT, 10)
@@ -67,18 +62,26 @@ class TopMidPanel(BasePanel):
         # Refresh layout
         self.Layout()
         
-        
-        
     def _bind_events(self) -> None:
         self._new_entry.Bind(wx.EVT_BUTTON, self._add_entry)
         self._search.Bind(wx.EVT_TEXT, self._on_search)
     
     def _add_entry(self, event) -> None:
-        ...
+        if self._manage_data.add_entry():
+            # time.sleep(1)
+            self.body.mid_panel.refresh() # type: ignore
+            self.body.right_panel.refresh() # type: ignore
         
     def _on_search(self, event) -> None:
         query = self._search.GetValue()
-        print(f'QUERY: {query}')
+        self._manage_data.search(query)
+        self._manage_data.selected_category = None 
+        self._manage_data.selected_entry = None 
+        
+        self.body.left_panel.refresh() # type: ignore
+        self.body.mid_panel.refresh() # type: ignore
+        self.body.right_panel.refresh() # type: ignore
+        
     
         
     def applay_color_theme(self, theme_name: str):

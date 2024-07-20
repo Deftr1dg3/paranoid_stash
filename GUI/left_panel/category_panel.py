@@ -25,8 +25,6 @@ class CategoryNamePanel(BasePanel):
         
         self._text_colour = self._color_themes[self._current_theme]['text']
         
-        # self.SetBackgroundColour("red")
-        
         # Initializing visible objects
         self._init_ui()
         
@@ -38,7 +36,7 @@ class CategoryNamePanel(BasePanel):
         
         # Create gui object
         self._category_name = wx.StaticText(self, label=self._name)
-        self._category_name.SetForegroundColour(self._text_colour)
+        # self._category_name.SetForegroundColour(self._text_colour)
         
         # Add gui object to the main sizer
         main_box.Add(self._category_name, 0, wx.TOP | wx.LEFT, 6)
@@ -62,5 +60,4 @@ class CategoryNamePanel(BasePanel):
         self._current_theme = theme_name
         self._text_colour = self._color_themes[self._current_theme]['text']
         self.SetBackgroundColour(self._color_themes[self._current_theme]['medium'])
-        self._category_name.SetForegroundColour(self._text_colour)
         self.Refresh() 

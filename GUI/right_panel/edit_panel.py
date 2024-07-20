@@ -100,6 +100,34 @@ class EditPanel(BasePanel):
         self._scroll_sizer.Add(self._url_title, 0, wx.EXPAND | wx.ALL, 5)
         self._scroll_sizer.Add(self._url, 0, wx.EXPAND | wx.ALL, 5)
         self._scroll_sizer.Add(self._remove_entry, 0, wx.EXPAND | wx.ALL, 5)
+        
+        # Alter GUI objects depending if an EntryRow was selected or not
+        self.entry = self._manage_data.get_selected_entry()
+        
+        if self.entry is None:
+            self._record_name.Disable()
+            self._username.Disable()
+            self._password.Disable()
+            self._reveal_password.Disable()
+            self._password_strength.Disable()
+            self._generate_password_button.Disable()
+            self._url.Disable()
+            self._record_name.SetValue(self._placeholder)
+            self._username.SetValue(self._placeholder)
+            self._password.SetValue(self._placeholder)
+            self._url.SetValue(self._placeholder)
+            self._remove_entry.Disable()
+        else:
+            entry_name = self.entry[0]
+            username = self.entry[1]
+            password = self.entry[2]
+            url = self.entry[3]
+            self._record_name.SetValue(entry_name)
+            self._username.SetValue(username)
+            self._password.SetValue(password)
+            self._validate_password_strength(None)
+            self._url.SetValue(url)
+            
 
         # Set sizer to the ScrolledWindow
         self._scroll.SetSizer(self._scroll_sizer)

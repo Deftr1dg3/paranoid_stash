@@ -8,6 +8,7 @@ wxpython = "*"
 setuptools = "*"
 wheel = "*"
 pycryptodome = "*"
+pyperclip = "*"
 
 [dev-packages]
 

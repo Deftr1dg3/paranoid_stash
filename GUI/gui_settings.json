@@ -25,6 +25,14 @@
     "selection_speed": "3",
     "icon_panel_size": "(30, 30)"
   },
+  "mid_panel": {
+    "scroll_settings": "(20, 20, 50, 50)",
+    "entry_row_size": "(-1, 30)",
+    "display_string_len": "18",
+    "display_pssword_placeholder_len": "8",
+    "replacement_characters": "...",
+    "selection_speed": "3"
+  },
   "right_panel": {
     "size": "(250, -1)",
     "scroll_settings": "(20, 20, 50, 50)",
