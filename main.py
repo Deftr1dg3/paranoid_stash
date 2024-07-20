@@ -12,8 +12,12 @@ SETTINGS_PATH = './settings.json'
 with open(SETTINGS_PATH, 'r') as f:
     settings = json.load(f)
 
-df = DataFile(settings)
+df = DataFile(settings['data'])
 df.password = 'hello'
+
+# df.create_new_data_file()
+
+
 try:
     df.load_data()
 except ValueError:
@@ -22,10 +26,19 @@ except ValueError:
 
 md = ManageData(df)
 
+
+# md.selected_category = 'Internet'
+# md.add_entry()
+
 # print(md)
 
+try:
+    app = wx.App()
+    f = MainFrame(md, settings['color_theme'])
+    f.Show()
+    app.MainLoop()
+except Exception as ex:
+    print(f'EXCEPTION ==> {ex}')
+except BaseException as ex:
+    print(f'BASE ==> {ex}')
 
-app = wx.App()
-f = MainFrame(md, settings['color_theme'])
-f.Show()
-app.MainLoop()

@@ -34,6 +34,7 @@ class CirclePanel(BasePanel):
     def applay_color_theme(self, theme_name: str):
         self._current_theme = theme_name
         self.SetBackgroundColour(wx.Colour(self._color_themes[self._current_theme]['dark']))
+        self.Refresh()
 
 
 class SelectColorThemePanel(BasePanel):
@@ -102,25 +103,40 @@ class SelectColorThemePanel(BasePanel):
         radio_button = event.GetEventObject()
         self._current_theme = self._radio_buttons[radio_button.GetId()]
         for instance in self._instances:
-            instance.applay_color_theme(self._current_theme)
+            try:
+                instance.applay_color_theme(self._current_theme)
+            except Exception as ex:
+                pass
         self._save_updated_color_theme()
+        # self.applay_color_theme(self._current_theme)
     
     def applay_color_theme(self, theme_name: str):
-        self.theme_name = theme_name
-        self.SetBackgroundColour(wx.Colour(self._color_themes[self.theme_name]['dark']))
+        self._current_theme = theme_name
+        self.SetBackgroundColour(wx.Colour(self._color_themes[self._current_theme]['dark']))
+        self.Refresh()
         
         
 class SelectColorThemeFrame(wx.Frame):
+    
+    _instance = None
+    
+    def __new__(cls, *args, **kwargs):
+        if cls._instance is not None:
+            cls._instance.Destroy()
+        inst = super().__new__(cls, *args, **kwargs)
+        cls._instance = inst 
+        return cls._instance
+    
     def __init__(self, parent: wx.Panel, settings: dict, color_themes: dict, current_theme: str):
         self._parent = parent 
         self._settings = settings
-        self.color_themes = color_themes
-        self.current_theme = current_theme
+        self._color_themes = color_themes
+        self._current_theme = current_theme
         
         self._size = ast.literal_eval(self._settings['select_color']['size'])
         self._title = self._settings['select_color']['title']
         
-        x = len(self.color_themes) * 70 
+        x = len(self._color_themes) * 70 
         y = self._size[1]
         
         super().__init__(self._parent, title=self._title, size=(x, y))
@@ -128,4 +144,18 @@ class SelectColorThemeFrame(wx.Frame):
         self._init_ui()
         
     def _init_ui(self):
-        panel = SelectColorThemePanel(self, self._settings, self.color_themes, self.current_theme) 
+        panel = SelectColorThemePanel(self, self._settings, self._color_themes, self._current_theme) 
+
+
+class SelectColor(wx.App):
+    
+    def __init__(self, parent: wx.Panel, settings: dict, color_themes: dict, current_theme: str):
+        super().__init__()
+        self._frame = SelectColorThemeFrame(parent, settings, color_themes, current_theme)
+        self._frame.Show()
+        
+
+def launch_select_color(parent: wx.Panel, settings: dict, color_themes: dict, current_theme: str):
+    app = SelectColor(parent, settings, color_themes, current_theme)
+    app.MainLoop()
+    # app.Destroy()

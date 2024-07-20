@@ -4,28 +4,29 @@ import ast
 from manage_data import ManageData
 
 from GUI.base_panel import BasePanel
-from GUI.top_panel.select_color_theme import SelectColorThemeFrame
+from GUI.top_panel.select_color_theme import SelectColorThemeFrame, launch_select_color
 
 class TopRightPanel(BasePanel):
     def __init__(self, parent: wx.Panel, manage_date: ManageData, settings: dict, color_themes: dict, current_theme: str) -> None:
         self._parent = parent 
         self._manage_data = manage_date
         self._settings = settings
-        self.color_themes = color_themes
-        self.current_theme = current_theme
+        self._color_themes = color_themes
+        self._current_theme = current_theme
         
         self._size = ast.literal_eval(self._settings['top_panel']['top_right_panel']['size'])
         self._panel_title = self._settings['top_panel']['top_right_panel']['top_right_panel_title']
         self._theme_button_label = self._settings['top_panel']['top_right_panel']['theme_button_label']
         
-        self._foreground_color = wx.Colour(self.color_themes[self.current_theme]['text'])
+        self._foreground_color = wx.Colour(self._color_themes[self._current_theme]['text'])
         
         super().__init__(parent, size=self._size)
         
         self._init_ui()
+        self.applay_color_theme(self._current_theme)
+        
         self._bind_events()
         
-        self.applay_color_theme(self.current_theme)
     
     def _init_ui(self):
         main_box = wx.BoxSizer(wx.HORIZONTAL)
@@ -54,18 +55,15 @@ class TopRightPanel(BasePanel):
         self._theme_button.Bind(wx.EVT_BUTTON, self._on_color_theme)
     
     def _on_color_theme(self, event):
-        app = wx.App()
-        frame = SelectColorThemeFrame(self, self._settings, self.color_themes, self.current_theme)
-        frame.Show()
-        app.MainLoop()
+        launch_select_color(self, self._settings, self._color_themes, self._current_theme)
         
     def applay_color_theme(self, theme_name: str):
-        self.theme_name = theme_name
-        self.SetBackgroundColour(wx.Colour(self.color_themes[self.theme_name]['medium']))
+        self._current_theme = theme_name
+        self.SetBackgroundColour(wx.Colour(self._color_themes[self._current_theme]['medium']))
         # self.SetBackgroundColour('red')
         # Foreground color works only woth Static Text ----------------------------------------
-        self._entry_edit_title.SetForegroundColour(wx.Colour(self.color_themes[self.theme_name]['text']))
-        self._theme_button.SetForegroundColour(wx.Colour(self.color_themes[self.theme_name]['text']))
+        self._entry_edit_title.SetForegroundColour(wx.Colour(self._color_themes[self._current_theme]['text']))
+        self._theme_button.SetForegroundColour(wx.Colour(self._color_themes[self._current_theme]['text']))
         self.Refresh()
         
         

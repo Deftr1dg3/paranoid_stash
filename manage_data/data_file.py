@@ -37,7 +37,7 @@ class IODataFile:
 
 class DataFile:
     def __init__(self, settings: dict) -> None:
-        self._io = IODataFile(settings['data']['data_file'])
+        self._io = IODataFile(settings['data_file'])
         self._aes_encryption = AES_Encripton()
         
         self._password: str
@@ -92,7 +92,7 @@ class DataFile:
 class State(NamedTuple):
     data: Data 
     selected_category: str | None
-    selcted_entity: int | None
+    selected_entry: int | None
 
   
 class DataState:
@@ -105,10 +105,10 @@ class DataState:
         state = copy.deepcopy(data_state)
         data = state.data 
         selected_category = state.selected_category
-        selected_entity = state.selected_entity
+        selected_entry = state.selected_entry
         
         self._current_index += 1
-        self._data_state.insert(self._current_index, State(data=data, selected_category=selected_category, selcted_entity=selected_entity))
+        self._data_state.insert(self._current_index, State(data=data, selected_category=selected_category, selected_entry=selected_entry))
         self._data_state = self._data_state[:self._current_index + 1]
 
     def forward(self) -> State:
@@ -124,7 +124,7 @@ class DataState:
 
 class ManageData:
 
-    _default_entity = ["New Record", "Username", 'password11', "URL", "N/A"]
+    _default_entry = ["New Record", "Username", 'password111', "URL", "N/A"]
     
     def __init__(self, df: DataFile) -> None:
         self._df = df 
@@ -132,8 +132,9 @@ class ManageData:
         self._state = DataState()
         self._pass_gen = GeneratePassword()
         
+        self.search_results: list | None = None
         self.selected_category: str | None = None
-        self.selected_entity: int | None = None
+        self.selected_entry: int | None = None
         
         self.save_state()
     
@@ -141,19 +142,19 @@ class ManageData:
     def data(self):
         return self._data
     
-    def _get_category_index(self, category: str) -> int:
+    def get_category_index(self, category: str) -> int:
         items = self._data.keys()
         i = 0
         for itm in items:
             if itm == category:
                 return i 
             i += 1
-        raise ValueError('The category is not defined.')
+        return -1
 
-    def _get_entity_index(self, entity_id: int) -> tuple[str, int]:
+    def get_entry_index(self, entry_id: int) -> tuple[str, int]:
         for category in self._data.keys():
             for i in range(len(self._data[category])):
-                if id(self._data[category][i]) == entity_id:
+                if id(self._data[category][i]) == entry_id:
                     return category, i
         return ('', -1)
 
@@ -169,6 +170,7 @@ class ManageData:
         if category in self._data:
             raise KeyError(f'Category with such name => {category} already in data.')
         self._data[category] = list()
+        self.selected_category = category
         self.update() 
         self.save_state()
     
@@ -177,7 +179,7 @@ class ManageData:
     
     def get_category_data(self, category: str) -> list:
         if category not in self._data:
-            raise KeyError(f'Category "{category}" is not in the data file.')
+            return []
         return self._data[category]
     
     def rename_category(self, new_category: str) -> None:
@@ -185,7 +187,7 @@ class ManageData:
             raise KeyError('No category selected.')
         
         items = [list(row) for row in self._data.items()]
-        category_index = self._get_category_index(self.selected_category)
+        category_index = self.get_category_index(self.selected_category)
         items[category_index][0] = new_category
         new_data = Data(items)
         
@@ -194,10 +196,12 @@ class ManageData:
         self.update()
         self.save_state()
             
-    def move_category(self, category: str, direction: int = -1) -> None:
+    def move_category(self, direction: int = -1) -> None:
+        if self.selected_category is None:
+            return
 
         items = [list(row) for row in self._data.items()]
-        category_index = self._get_category_index(category)
+        category_index = self.get_category_index(self.selected_category)
         
         step = 1 * direction 
         swap = category_index + step 
@@ -210,35 +214,38 @@ class ManageData:
             self.update()
             self.save_state()
             
-    def clear_category(self, category: str) -> None:
-        if category not in self._data:
-            raise KeyError(f'Category "{category}" is not in the data file.')
-        self._data[category].clear()
+    def clear_category(self) -> None:
+        if self.selected_category is None:
+            return 
+        self._data[self.selected_category].clear()
         self.update()
         self.save_state()
           
-    def delete_category(self, category: str) -> None:
-        if category not in self._data:
-            raise KeyError(f'Category "{category}" is not in the data file.')
-        del self._data[category]
+    def delete_category(self) -> None:
+        if self.selected_category is None:
+            return 
+        del self._data[self.selected_category]
         self.update()
         self.save_state()
         
     # Entities ------------------------------------------------------------------------
         
-    def add_entity(self) -> None:
-        if self.selected_category:
-            new_entity = copy.deepcopy(self._default_entity)
+    def add_entry(self) -> bool:
+        if self.selected_category is not None:
+            new_entry = copy.deepcopy(self._default_entry)
             password_strength = PasswordStrength()
-            new_entity[2] = self._pass_gen.generate_password(password_strength.STRONG)
-            self.selected_entity = id(new_entity)
-            
-            self._data[self.selected_category].append(new_entity)
+            new_entry[2] = self._pass_gen.generate_password(password_strength.STRONG)
+            self.selected_entry = id(new_entry)
+            self._data[self.selected_category].append(new_entry)
             self.update()
             self.save_state()
+            return True 
+        return False
     
-    def move_entity(self, entity_id: int, direction: int = -1) -> None:
-        category, e_ind = self._get_entity_index(entity_id)
+    def move_entry(self, direction: int = -1) -> None:
+        if self.selected_entry is None:
+            return
+        category, e_ind = self.get_entry_index(self.selected_entry)
         if not e_ind == -1:
             step = 1 * direction 
             swap = e_ind + step
@@ -247,13 +254,20 @@ class ManageData:
                 self.update()
                 self.save_state()
     
-    def get_entity_by_id(self, entity_id: int) -> list | None:
-        category, e_ind = self._get_entity_index(entity_id)
+    def get_entry_by_id(self, entry_id: int) -> list | None:
+        category, e_ind = self.get_entry_index(entry_id)
         if not e_ind == -1:
             return self._data[category][e_ind]
-      
-    def delete_entity(self, entity_id: int) -> None:
-        category, e_ind = self._get_entity_index(entity_id)
+    
+    def get_selected_entry(self) -> list | None:
+        if self.selected_entry is None:
+            return 
+        return self.get_entry_by_id(self.selected_entry)
+        
+    def delete_entry(self) -> None:
+        if self.selected_entry is None:
+            return
+        category, e_ind = self.get_entry_index(self.selected_entry)
         if not e_ind == -1:
             del self._data[category][e_ind]
             self.update()
@@ -261,12 +275,16 @@ class ManageData:
     
     # Search ------------------------------------------------------------------------
 
-    def search(self, pattern: str) -> list[list]:
+    def search(self, pattern: str) -> list[list] | None:
         results = []
+        if not pattern:
+            self.search_results = None 
+            return
         for category in self._data.keys():
-            for entity in self._data[category]:
-                if pattern.lower() in entity[0].lower():
-                    results.append(entity)
+            for entry in self._data[category]:
+                if pattern.lower() in entry[0].lower():
+                    results.append(entry)
+        self.search_results = results
         return results
 
         
@@ -277,7 +295,7 @@ class ManageData:
         
         self._data = next_state.data
         self.selected_category = next_state.selected_category
-        self.selected_entity = next_state.selcted_entity
+        self.selected_entry = next_state.selected_entry
         
         self._df.data = self._data
         self.update()
@@ -287,7 +305,7 @@ class ManageData:
         
         self._data = prev_state.data
         self.selected_category = prev_state.selected_category
-        self.selected_entity = prev_state.selcted_entity
+        self.selected_entry = prev_state.selected_entry
         
         self._df.data = self._data
         self.update()

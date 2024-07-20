@@ -1,9 +1,6 @@
-import sys 
-import os 
-sys.path.append(os.getcwd())
-
 import wx
 import ast
+import copy
 
 from manage_data import ManageData, DataFile
 from manage_data import GeneratePassword, ValidatePassword, PasswordStrength
@@ -19,21 +16,30 @@ class LeftPanel(BasePanel):
         self._color_themes = color_themes
         self._current_theme = current_theme
         
-        self._panel_size = ast.literal_eval(self._settings['left_panel']['size'])
+        self._size = ast.literal_eval(self._settings['left_panel']['size'])
         self._scroll_settings = ast.literal_eval(self._settings['left_panel']['scroll_settings'])
         
-        super().__init__(self._parent, size=self._panel_size)
+        super().__init__(self._parent, size=self._size)
         
+        self._scroll_position = (0, 0)
+        
+        # self._main_box = wx.BoxSizer(wx.VERTICAL)
         self._init_ui()
-        
         self.applay_color_theme(self._current_theme)
         
+        # self._bind_events()
+        
+        
     def _init_ui(self):
-        main_box = wx.BoxSizer(wx.VERTICAL)
+        """ Function initializing visible interface. """
+        
+        # Create main sizer
+        self._main_box = wx.BoxSizer(wx.VERTICAL)
         
         # Create ScrolledWindow
         self.scroll = wx.ScrolledWindow(self, -1)
         self.scroll.SetScrollbars(*self._scroll_settings)
+        self.scroll.SetScrollRate(30, 30)
         
         # Create secondary sizer for ScrolledWindow
         scroll_sizer = wx.BoxSizer(wx.VERTICAL)
@@ -41,30 +47,67 @@ class LeftPanel(BasePanel):
         # Create GUI objects
         for category in self._manage_data.all_categories():
             self._display_category(self.scroll, scroll_sizer, category) 
+             
+        # Relay category_row list to the Command module
+        # self._command.category_rows = self._category_rows
         
         # Rest category rows dict 
-        self._category_rows = {}
+        # self._category_rows = {}
         
         # Add sizer to ScrolledWindow
         self.scroll.SetSizer(scroll_sizer)
         
         # Add scroll window to the main sizer
-        main_box.Add(self.scroll, 1, wx.EXPAND)
+        self._main_box.Add(self.scroll, 1, wx.EXPAND)
         
         # Set main sizer to the panel
-        self.SetSizer(main_box)
+        self.SetSizer(self._main_box)
         
         # Refresh layout
         self.Layout()
+        
+        # Scroll to selected entity
+        self._scroll_to_selected()
+
+    # def _on_scroll(self, event):
+    #     x, y = self.scroll.GetViewStart()
+    #     self._scroll_position = (x, y + 1)
+    #     event.Skip()
     
-    def _display_category(self, scroll, scroll_sizer, category_name: str) -> None:
-        category_row = CategoryRow(scroll, self._manage_data, self._settings, self._color_themes, self._current_theme, category_name)
+    def _scroll_to_selected(self):
+        if self._manage_data.selected_category is not None:
+            index = self._manage_data.get_category_index(self._manage_data.selected_category)
+            self.scroll.Scroll((0, index))
+        
+    def _display_category(self, scroll, scroll_sizer, category) -> None:
+        category_row = CategoryRow(scroll, self._manage_data, self._settings, self._color_themes, self._current_theme, category)
         # self._category_rows[category.id] = category_row
         scroll_sizer.Add(category_row, 0, wx.EXPAND)
         
+    def _clear_categories(self):
+        # Get the sizer from the ScrolledWindow
+        scroll_sizer = self.scroll.GetSizer()
+        
+        # Destroy all children of the ScrolledWindow
+        for child in self.scroll.GetChildren():
+            child.Destroy()
+            
+        # Clear the sizer
+        scroll_sizer.Clear(True)
+        
+        # Layout the sizer
+        scroll_sizer.Layout()
+        self.Layout() 
+        
+    def refresh(self):
+        self._clear_categories()
+        self.category_rows.clear()
+        self._init_ui()
+        self.Refresh()
+        
     def applay_color_theme(self, theme_name: str):
-        self.theme_name = theme_name
-        self.SetBackgroundColour(wx.Colour(self._color_themes[theme_name]['medium']))
+        self._current_theme= theme_name
+        self.SetBackgroundColour(wx.Colour(self._color_themes[self._current_theme]['medium']))
         self.Refresh()
         
         

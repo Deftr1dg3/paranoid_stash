@@ -49,12 +49,13 @@ class NotesPanel(BasePanel):
         # self._notes.SetBackgroundColour(self._input_background_colour)
         
         # Enable or disable GUI objects depending on selected EntryRow
-        # if self._command.selected_entry_row is None:
-        #     self._notes.Disable()
-        # else:
-        #     self.entry = self._command.selected_entry_row.entry
-        #     notes = self.entry.notes
-        #     self._notes.SetValue(notes)
+        self.entry = self._manage_data.get_selected_entry()
+        
+        if self.entry is None:
+            self._notes.Disable()
+        else:
+            notes = self.entry[4]
+            self._notes.SetValue(notes)
         
         # Add GUI objects to secondary sizers
         title_box.Add(self._title, 1, wx.EXPAND)

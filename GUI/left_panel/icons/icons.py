@@ -117,7 +117,7 @@ class IconPanel(BasePanel):
         self._text_colour = self._color_themes[self._current_theme]['text']
         self._icon_colour = self._color_themes[self._current_theme]['selection']
         self._pen_colour = self._color_themes[self._current_theme]['medium']
-        # self.SetBackgroundColour(self._color_themes[self._current_theme]['medium'])
+        self.SetBackgroundColour(self._color_themes[self._current_theme]['medium'])
         self.Refresh() 
        
         

@@ -75,8 +75,9 @@ class GeneratePassword:
         self._special_symbols(strength.special_symbol)
         self._rest(rest_length, strength)
         self._shuffle(strength.shuffle_cycle)
-        return ''.join(self._password)
-    
+        new_password =  ''.join(self._password)
+        self._password.clear()
+        return new_password
 
 class ValidatePassword:
     def __init__(self) -> None:
