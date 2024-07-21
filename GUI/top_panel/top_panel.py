@@ -23,19 +23,21 @@ class TopPanel(BasePanel):
         self.applay_color_theme(self.theme_name)
         self._init_ui()
         
+        BasePanel.set_top_panel(self)
+        
     def _init_ui(self):
         main_box = wx.BoxSizer(wx.HORIZONTAL)
         left_box = wx.BoxSizer(wx.VERTICAL)
         mid_box = wx.BoxSizer(wx.VERTICAL)
         right_box = wx.BoxSizer(wx.VERTICAL)
         
-        top_left_panel = TopLeftPanel(self, self._manage_data, self._settings, self.color_themes, self.theme_name)
-        top_mid_panel = TopMidPanel(self, self._manage_data, self._settings, self.color_themes, self.theme_name)
-        top_right_panel = TopRightPanel(self, self._manage_data, self._settings, self.color_themes, self.theme_name)
+        self._top_left_panel = TopLeftPanel(self, self._manage_data, self._settings, self.color_themes, self.theme_name)
+        self._top_mid_panel = TopMidPanel(self, self._manage_data, self._settings, self.color_themes, self.theme_name)
+        self._top_right_panel = TopRightPanel(self, self._manage_data, self._settings, self.color_themes, self.theme_name)
         
-        left_box.Add(top_left_panel, 1, wx.EXPAND)
-        mid_box.Add(top_mid_panel, 1, wx.EXPAND)
-        right_box.Add(top_right_panel, 1, wx.EXPAND)
+        left_box.Add(self._top_left_panel, 1, wx.EXPAND)
+        mid_box.Add(self._top_mid_panel, 1, wx.EXPAND)
+        right_box.Add(self._top_right_panel, 1, wx.EXPAND)
         
         main_box.Add(left_box, 0 , wx.EXPAND)
         main_box.Add(mid_box, 1 , wx.EXPAND)
@@ -43,6 +45,18 @@ class TopPanel(BasePanel):
         
         self.SetSizer(main_box)
         self.Layout()
+    
+    @property
+    def top_left_panel(self):
+        return self._top_left_panel
+    
+    @property
+    def top_mid_panel(self):
+        return self._top_mid_panel
+    
+    @property
+    def top_right_panel(self):
+        return self._top_right_panel
         
     def applay_color_theme(self, theme_name: str):
         self.theme_name = theme_name

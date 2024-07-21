@@ -9,10 +9,12 @@ from manage_data import ManageData
 from manage_data.manage_password.manage_password import ValidatePassword, StrengthSpecification, GeneratePassword
 from GUI.base_panel import BasePanel
 from GUI.right_panel.notes_panel import NotesPanel
+from GUI.modals.copy_popup import launch_copy_poup
 
 
 
 class BaseRecordPanel(BasePanel):
+    
     def __init__(self, parent: wx.Panel, manage_data: ManageData, settings: dict, color_themes: dict, current_theme: str, record_value: str) -> None:
         self._parent = parent 
         self._manage_data = manage_data
@@ -66,7 +68,10 @@ class BaseRecordPanel(BasePanel):
         
     def copy_to_clipboard(self) -> None:
         pyperclip.copy(self._record_value)
-        # launch_copy_poup(self._command.top)
+        try:
+            launch_copy_poup(self, self._settings)
+        except:
+            pass
         
     def _change_colour(self) -> None:
         self._set_text_colour(self._selection_colour)

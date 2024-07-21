@@ -57,6 +57,8 @@ class SelectColorThemePanel(BasePanel):
         
         self.applay_color_theme(self._current_theme)
         
+        self.top_panel.top_mid_panel.deselect_search() # type: ignore
+        
     def _init_ui(self):
         main_box = wx.BoxSizer(wx.VERTICAL)
         
@@ -118,15 +120,15 @@ class SelectColorThemePanel(BasePanel):
         
 class SelectColorThemeFrame(wx.Frame):
     
-    _instance = None
+    _instance = None 
     
     def __new__(cls, *args, **kwargs):
-        if cls._instance is not None:
-            cls._instance.Destroy()
-        inst = super().__new__(cls, *args, **kwargs)
-        cls._instance = inst 
+        if cls._instance is  None:
+
+            new_inst = super().__new__(cls, *args, **kwargs)
+            cls._instance = new_inst
         return cls._instance
-    
+
     def __init__(self, parent: wx.Panel, settings: dict, color_themes: dict, current_theme: str):
         self._parent = parent 
         self._settings = settings
@@ -139,7 +141,9 @@ class SelectColorThemeFrame(wx.Frame):
         x = len(self._color_themes) * 70 
         y = self._size[1]
         
-        super().__init__(self._parent, title=self._title, size=(x, y))
+        super().__init__(self._parent, title=self._title, size=(x, y), style=wx.CLOSE_BOX)
+        self.SetMinSize((x, y))
+        self.SetMaxSize((x, y))
         
         self._init_ui()
         
@@ -151,8 +155,8 @@ class SelectColor(wx.App):
     
     def __init__(self, parent: wx.Panel, settings: dict, color_themes: dict, current_theme: str):
         super().__init__()
-        self._frame = SelectColorThemeFrame(parent, settings, color_themes, current_theme)
-        self._frame.Show()
+        self.frame = SelectColorThemeFrame(parent, settings, color_themes, current_theme)
+        self.frame.Show()
         
 
 def launch_select_color(parent: wx.Panel, settings: dict, color_themes: dict, current_theme: str):

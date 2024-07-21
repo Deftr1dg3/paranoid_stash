@@ -52,11 +52,6 @@ class MidPanel(BasePanel):
             # Create visible EntryRow object
             self._display_entry(scroll_sizer, entry)
             # print(f'{entry = }')
-
-        
-        
-        # self._e = EntryRow(self.scroll, self._manage_data, self._settings, self._color_themes, self._current_theme, entry)
-            
                 
         # Add sizer to ScrolledWindow
         self.scroll.SetSizer(scroll_sizer)

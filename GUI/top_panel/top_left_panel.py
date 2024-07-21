@@ -1,18 +1,13 @@
 #!/usr/bin/env python3
 
-import sys 
-import os 
-sys.path.append(os.getcwd())
-
 import wx
-import random
 import ast
-from itertools import cycle
 
-from manage_data import ManageData, DataFile
-from manage_data import GeneratePassword, ValidatePassword, PasswordStrength
+from manage_data import ManageData
 
 from GUI.base_panel import BasePanel
+from GUI.modals.popups import get_input, message_popup
+
 
 class TopLeftPanel(BasePanel):
     def __init__(self, parent: wx.Panel, manage_date: ManageData, settings: dict, color_themes: dict, theme_name: str) -> None:
@@ -35,9 +30,6 @@ class TopLeftPanel(BasePanel):
         
         self.applay_color_theme(self._current_theme)
         
-        self._g = self._num_gen()
-        
-        
     def _init_ui(self):
         main_box = wx.BoxSizer(wx.HORIZONTAL) 
         
@@ -56,19 +48,24 @@ class TopLeftPanel(BasePanel):
     def _bind_events(self):
         self._new_category.Bind(wx.EVT_BUTTON, self._add_category)
         
-    def _num_gen(self):
-        n = 1
-        while True:
-            yield n
-            n += 1
+    def _name_is_valid(self, new_category):
+        return not (new_category in self._manage_data.data)
         
     def _add_category(self, event):
-        self._manage_data.add_category(f"New{next(self._g)}")
-        self._manage_data.selected_entry = None
-        self._manage_data.search_results = None
-        self.body.left_panel.refresh() # type: ignore
-        self.body.mid_panel.refresh() # type: ignore
-        self.body.right_panel.refresh() # type: ignore
+        color = self._color_themes[self._current_theme]['medium']
+        new_category = get_input(color=color, hint="Enter desired category name:", title="New Category")
+        if new_category is None or new_category == "":
+            return 
+        if self._name_is_valid(new_category):
+            self._manage_data.add_category(new_category)
+            self._manage_data.selected_entry = None
+            self._manage_data.search_results = None
+            self.body.left_panel.refresh() # type: ignore
+            self.body.mid_panel.refresh() # type: ignore
+            self.body.right_panel.refresh() # type: ignore
+        else:
+            message_popup(message="Category with this name alrady exists.", title="INVALID !")
+
         
     def applay_color_theme(self, theme_name: str):
         self._current_theme = theme_name

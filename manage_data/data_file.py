@@ -183,9 +183,8 @@ class ManageData:
         return self._data[category]
     
     def rename_category(self, new_category: str) -> None:
-        if not self.selected_category:
-            raise KeyError('No category selected.')
-        
+        if self.selected_category is None:
+            return 
         items = [list(row) for row in self._data.items()]
         category_index = self.get_category_index(self.selected_category)
         items[category_index][0] = new_category
@@ -193,6 +192,7 @@ class ManageData:
         
         self._data = new_data
         self._df.data = self._data
+        self.selected_category = new_category
         self.update()
         self.save_state()
             
@@ -225,6 +225,7 @@ class ManageData:
         if self.selected_category is None:
             return 
         del self._data[self.selected_category]
+        self.selected_category = None
         self.update()
         self.save_state()
         
@@ -270,6 +271,7 @@ class ManageData:
         category, e_ind = self.get_entry_index(self.selected_entry)
         if not e_ind == -1:
             del self._data[category][e_ind]
+            self.selected_entry = None
             self.update()
             self.save_state()
     

@@ -18,6 +18,7 @@ class BasePanel(wx.Panel):
     entry_rows = []
     
     body = None
+    top_panel = None
     
     def __new__(cls, *args, **kwargs):
         i = super().__new__(cls, *args, **kwargs)
@@ -25,8 +26,12 @@ class BasePanel(wx.Panel):
         return i
 
     @classmethod
-    def _set_body_panel(cls, inst: BasePanel):
+    def set_body_panel(cls, inst: BasePanel):
         cls.body = inst
+        
+    @classmethod
+    def set_top_panel(cls, inst: BasePanel):
+        cls.top_panel = inst
 
         
     def applay_color_theme(self, theme_name: str):

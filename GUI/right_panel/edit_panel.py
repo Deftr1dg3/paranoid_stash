@@ -5,9 +5,27 @@ import wx
 import ast
 
 from manage_data import ManageData
-from manage_data.manage_password.manage_password import ValidatePassword, StrengthSpecification, GeneratePassword
+from manage_data.manage_password.manage_password import ValidatePassword, GeneratePassword, PasswordStrength
 from GUI.base_panel import BasePanel
-from GUI.right_panel.notes_panel import NotesPanel
+from GUI.modals.popups import dialog_popup
+
+from dataclasses import dataclass
+
+@dataclass
+class EntryFields:
+    RECORD_NAME = 0
+    USERNAME = 1
+    PASSWORD = 2
+    URL = 3
+    NOTES = 4
+    
+STRENGTH_TYPES = {
+    'VERY STRONG': PasswordStrength.VERY_STRONG,
+    'STRONG': PasswordStrength.STRONG,
+    'MEDIUM': PasswordStrength.MEDIUM,
+    'WEAK': PasswordStrength.WEAK,
+    'VERY WEAK': PasswordStrength.VERY_WEAK
+}
 
 
 class EditPanel(BasePanel):
@@ -118,10 +136,10 @@ class EditPanel(BasePanel):
             self._url.SetValue(self._placeholder)
             self._remove_entry.Disable()
         else:
-            entry_name = self.entry[0]
-            username = self.entry[1]
-            password = self.entry[2]
-            url = self.entry[3]
+            entry_name = self.entry[EntryFields.RECORD_NAME]
+            username = self.entry[EntryFields.USERNAME]
+            password = self.entry[EntryFields.PASSWORD]
+            url = self.entry[EntryFields.URL]
             self._record_name.SetValue(entry_name)
             self._username.SetValue(username)
             self._password.SetValue(password)
@@ -166,160 +184,114 @@ class EditPanel(BasePanel):
         self._password.Bind(wx.EVT_SET_FOCUS, self._on_set_focus)
         self._url.Bind(wx.EVT_SET_FOCUS, self._on_set_focus)
        
-    
     def _on_enter_pressed(self, event) -> None:
         obj = event.GetEventObject()
         if obj.HasFocus():
             self.dummy_panel.SetFocus()
             
-        
     def _on_set_focus(self, event) -> None:
         self._undo_available = True
 
-        
     def _on_record_name(self, event) -> None:
-        # value = self._record_name.GetValue()
-        # self.entry.record_name = value
-        # self._on_enter(None)
-        ...
-    
-    
+        if self.entry == None:
+            return
+        value = self._record_name.GetValue()
+        self.entry[EntryFields.RECORD_NAME] = value
+        self._on_enter(None)
+
     def _on_username(self, event) -> None:
-        # value = self._username.GetValue()
-        # self.entry.username = value
-        # self._on_enter(None)
-        ...
-    
+        if self.entry == None:
+            return
+        value = self._username.GetValue()
+        self.entry[EntryFields.USERNAME] = value
+        self._on_enter(None)
     
     def _on_password(self, event) -> None:
-        # value = self._password.GetValue()
-        # self.entry.password = value
-        # self._validate_password_strength(None)
-        # self._on_enter(None)
-        ...
-    
+        if self.entry == None:
+            return
+        value = self._password.GetValue()
+        self.entry[EntryFields.PASSWORD] = value
+        self._validate_password_strength(None)
+        self._on_enter(None)
     
     def _on_url(self, event) -> None:
-        # value = self._url.GetValue()
-        # self.entry.url = value
-        # self._on_enter(None)
-        ...
+        if self.entry == None:
+            return
+        value = self._url.GetValue()
+        self.entry[EntryFields.URL] = value
+        self._on_enter(None)
         
     def _on_enter(self, event) -> None:
-        # if self._entry_state is not None and not self._undo_in_progress:
-        #     self.make_snapshot()
-        # self._command.refresh_on_item_change()
-        ...
+        self._manage_data.update()
+        self._manage_data.save_state()
+        self.body.mid_panel.refresh() # type: ignore
     
     def _on_remove_entry(self, event):
-        # self._command.remove_entry(self.entry)
-        ...
+        title = self._settings['right_panel']['remove_entry']['title']
+        message = self._settings['right_panel']['remove_entry']['message']
+        confirmed = dialog_popup(message, title)
+        if confirmed:
+            self._manage_data.delete_entry()
+            # self.body.mid_panel.refresh() # type: ignore
+            self.body.right_panel.refresh() # type: ignore
+            self._on_enter
         
     def _validate_password_strength(self, event) -> None:
-        # password = self.entry.password
-        # result = self._password_validator.validate_password(password)
-        # self._current_password_strength = result 
-        # self._password_strength.SetValue(self._current_password_strength)
-        ...
+        if self.entry == None:
+            return
+        password = self.entry[2]
+        result = self._password_validator.validate_password(password)
+        self._current_password_strength = result 
+        self._password_strength.SetValue(self._current_password_strength)
         
     def _on_select_password_strength(self, event) -> None:
         self._current_password_strength = self._password_strength.GetValue()
     
-    
     def _on_generate_password(self, event) -> None:
-        # confirmation = dialog_popup(PasswordReplacemetPopup.MESSAGE, PasswordReplacemetPopup.TITLE)
-        # if confirmation:
-        #     self.make_snapshot()
-        #     self._undo_available = True
-        #     g = GeneratePassword()
-        #     password = g.generate_password(self._PASSWORD_STRENGTH[self._current_password_strength])  
-        #     self._password.SetValue(password)
-        ...
+        if self.entry is None:
+            return
+        title = self._settings['right_panel']['new_password']['title']
+        message = self._settings['right_panel']['new_password']['message']
+        confirmed = dialog_popup(message, title)
+        if confirmed:
+            g = GeneratePassword()
+            password = g.generate_password(STRENGTH_TYPES[self._current_password_strength])  
+            self._password.SetValue(password)
+            self.entry[EntryFields.PASSWORD] = password
+            self._on_enter(None)
+            
         
     def _on_show_password(self, event):
-        # if not self._show_password_ind:
-        #     self._show_password_ind = not self._show_password_ind
-        #     self._on_password(None)
-        #     self._password.Destroy()
-        #     self._password = wx.TextCtrl(self._scroll, style=wx.TE_PROCESS_ENTER)
-        #     self._password.Bind(wx.EVT_TEXT_ENTER, self._on_enter)
-        #     self._password.Bind(wx.EVT_KILL_FOCUS, self._on_enter)
-        #     self._password.Bind(wx.EVT_TEXT, self._on_password)
-        #     self._password.SetForegroundColour(self._text_colour)
-        #     self._password.SetBackgroundColour(self._input_background_colour)
-        #     self._scroll_sizer.Insert(5, self._password, 0, wx.EXPAND | wx.ALL, 5)
-        #     self._password.SetValue(self.entry.password)
-        #     self._reveal_password.SetLabel(self._hide_password_label)
-        #     self.Layout()
-        # else:
-        #     self._show_password_ind = not self._show_password_ind
-        #     self._on_password(None)
-        #     self._password.Destroy()
-        #     self._password = wx.TextCtrl(self._scroll, style=wx.TE_PROCESS_ENTER | wx.TE_PASSWORD)
-        #     self._password.Bind(wx.EVT_TEXT_ENTER, self._on_enter)
-        #     self._password.Bind(wx.EVT_KILL_FOCUS, self._on_enter)
-        #     self._password.Bind(wx.EVT_TEXT, self._on_password)
-        #     self._password.SetForegroundColour(self._text_colour)
-        #     self._password.SetBackgroundColour(self._input_background_colour)
-        #     self._scroll_sizer.Insert(5, self._password, 0, wx.EXPAND | wx.ALL, 5)
-        #     self._password.SetValue(self.entry.password)
-        #     self._reveal_password.SetLabel(self._show_password_label)
-        #     self.Layout()
-        ...
-            
-            
-    def manage_self_states(self, direction: int = 1):
-        # if not self._undo_available:
-        #     message_popup(UndoUnavailable.MESSAGE, UndoUnavailable.TITLE)
-        #     return
-        
-        # if self._entry_state is None:
-        #     return 
-        
-        # if direction:
-        #     state = self._entry_state.undo()
-        # else:
-        #     state = self._entry_state.reverse_undo()
-        
-        # self._undo_in_progress = True
-        # self._right_panel.undo_in_progress_notes(True)
-        
-        # self._set_values_to_entry(state)
-        
-        # try:
-        #     self._record_name.SetValue(state.record_name)
-        #     self._record_name.SetInsertionPointEnd()
-        #     self._username.SetValue(state.username)
-        #     self._username.SetInsertionPointEnd()
-        #     self._password.SetValue(state.password)
-        #     self._password.SetInsertionPointEnd()
-        #     self._url.SetValue(state.url)
-        #     self._url.SetInsertionPointEnd()
-        #     self._right_panel.set_notes_value(state.notes)
-        # except RuntimeError:
-        #     pass
-        
-        # self._undo_in_progress = False
-        # self._right_panel.undo_in_progress_notes(False)
-        ...
-        
-    def make_snapshot(self) -> None:
-        # if self._entry_state is not None:
-        #     snapshot = EntrySnapshot(record_name=self.entry.record_name, username=self.entry.username,
-        #         password=self.entry.password, url=self.entry.url, notes=self.entry.notes)
-        #     self._command.commit()
-        #     self._entry_state.snapshot(snapshot)
-        ...
-    
-    def _set_values_to_entry(self, snapshot) -> None:
-        # self.entry.record_name = snapshot.record_name
-        # self.entry.username = snapshot.username
-        # self.entry.password = snapshot.password
-        # self.entry.url = snapshot.url
-        # self.entry.notes = snapshot.notes
-        # self._command.commit()
-        ...
-    
+        if self.entry is None:
+            return
+        if not self._show_password_ind:
+            self._show_password_ind = not self._show_password_ind
+            self._on_password(None)
+            self._password.Destroy()
+            self._password = wx.TextCtrl(self._scroll, style=wx.TE_PROCESS_ENTER)
+            self._password.Bind(wx.EVT_TEXT_ENTER, self._on_enter)
+            self._password.Bind(wx.EVT_KILL_FOCUS, self._on_enter)
+            self._password.Bind(wx.EVT_TEXT, self._on_password)
+            self._password.SetForegroundColour(self._text_colour)
+            self._password.SetBackgroundColour(self._input_background_colour)
+            self._scroll_sizer.Insert(5, self._password, 0, wx.EXPAND | wx.ALL, 5)
+            self._password.SetValue(self.entry[EntryFields.PASSWORD])
+            self._reveal_password.SetLabel(self._hide_password_label)
+            self.Layout()
+        else:
+            self._show_password_ind = not self._show_password_ind
+            self._on_password(None)
+            self._password.Destroy()
+            self._password = wx.TextCtrl(self._scroll, style=wx.TE_PROCESS_ENTER | wx.TE_PASSWORD)
+            self._password.Bind(wx.EVT_TEXT_ENTER, self._on_enter)
+            self._password.Bind(wx.EVT_KILL_FOCUS, self._on_enter)
+            self._password.Bind(wx.EVT_TEXT, self._on_password)
+            self._password.SetForegroundColour(self._text_colour)
+            self._password.SetBackgroundColour(self._input_background_colour)
+            self._scroll_sizer.Insert(5, self._password, 0, wx.EXPAND | wx.ALL, 5)
+            self._password.SetValue(self.entry[EntryFields.PASSWORD])
+            self._reveal_password.SetLabel(self._show_password_label)
+            self.Layout()
         
     def applay_color_theme(self, theme_name: str):
         self._current_theme = theme_name

@@ -222,9 +222,8 @@ import wx
 import ast
 import copy
 
-from manage_data import ManageData, DataFile
-from manage_data import GeneratePassword, ValidatePassword, PasswordStrength
-
+from manage_data import ManageData
+from GUI.right_click_menus.category_row_menu import CategoryRightClickMenu
 from GUI.base_panel import BasePanel
 
 class CategoryRow(BasePanel):
@@ -363,13 +362,12 @@ class CategoryRow(BasePanel):
         self.body.right_panel.refresh() # type: ignore
         
     def _on_right_click(self, event) -> None:
-        # self._on_left_click(None)
-        # right_click_menu = CategoryRightClickMenu(self, self._command, self._category)
-        # position_in_widget = event.GetPosition()
-        # position_on_screen = event.GetEventObject().ClientToScreen(position_in_widget)
-        # position = self.ScreenToClient(position_on_screen)
-        # self.PopupMenu(right_click_menu, position)
-        ...
+        self._on_left_click(None)
+        right_click_menu = CategoryRightClickMenu(self, self._manage_data, self._settings, self._color_themes, self._current_theme, self.body) # type: ignore
+        position_in_widget = event.GetPosition()
+        position_on_screen = event.GetEventObject().ClientToScreen(position_in_widget)
+        position = self.ScreenToClient(position_on_screen)
+        self.PopupMenu(right_click_menu, position)
     
     def _on_mouse_over(self, event) -> None:
         if not self.is_selected:

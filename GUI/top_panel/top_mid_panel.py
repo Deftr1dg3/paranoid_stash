@@ -42,10 +42,9 @@ class TopMidPanel(BasePanel):
         self._new_entry = wx.Button(self, label=self._new_entry_label)
         # self._new_entry = wx.StaticText(self, label=self._new_entry_label)
 
-        self._search = wx.TextCtrl(self, size=self._search_field_size)
+        self._search = wx.TextCtrl(self, size=self._search_field_size, style=wx.TE_PROCESS_ENTER)
         self._search.SetHint(self._search_placeholder)
 
-        
         # Add created objects to the sizers
         button_box.Add(self._new_entry, 0, wx.EXPAND | wx.LEFT, 10)
         search_box.Add(self._search, 0, wx.EXPAND)
@@ -62,13 +61,22 @@ class TopMidPanel(BasePanel):
         # Refresh layout
         self.Layout()
         
+        self._dummy_panel = wx.Panel(self, size=(0, 0))
+        
     def _bind_events(self) -> None:
         self._new_entry.Bind(wx.EVT_BUTTON, self._add_entry)
         self._search.Bind(wx.EVT_TEXT, self._on_search)
+        self._search.Bind(wx.EVT_TEXT_ENTER, self._on_enter_pressed)
     
+    def _on_enter_pressed(self, event):
+        self.deselect_search()
+        event.Skip()
+        
+    def deselect_search(self):
+        self._dummy_panel.SetFocus()
+
     def _add_entry(self, event) -> None:
         if self._manage_data.add_entry():
-            # time.sleep(1)
             self.body.mid_panel.refresh() # type: ignore
             self.body.right_panel.refresh() # type: ignore
         

@@ -3,7 +3,7 @@
     "settings_path": "settings.json"
   },
   "mainframe_size": {
-    "size": "(1100, 600)",
+    "size": "(1100, 610)",
     "min_size": "(800, 400)",
     "title": "Paranoid Stash 0000 0110 0001 0011"
   },
@@ -48,7 +48,15 @@
     "record_name_title": "Entry Name:",
     "username_title": "Username:",
     "password_title": "Password:",
-    "url_title": "URL://"
+    "url_title": "URL://",
+    "new_password": {
+      "title": "IMPORTANT !!!: Confirmation",
+      "message": "If you generate a new password,\nthe current one will be PERMANENTLY LOST.\nAre you sure you want to proceed?"
+    },
+    "remove_entry": {
+      "title": "IMPORTANT !!!: Confirmation",
+      "message": "If you delete this entry,\nall its data will be PERMANENTLY LOST!\nAre you sure you want to proceed?"
+    }
   },
   "top_panel": {
     "top_left_panel": {
@@ -73,5 +81,52 @@
     "circle_background_color": "#00000000",
     "circle_panel_pen_color": "GREY",
     "circle_panel_pen_size": "8"
+  },
+  "file_popup": {
+    "save_file": {
+      "title": "Save file as",
+      "default_dir": "./"
+    },
+    "select_file": {
+      "title": "Select file",
+      "wildcard": "*.*",
+      "default_dir": "./"
+    },
+    "select_dir": {
+      "title": "Select directory",
+      "default_dir": "./"
+    }
+  },
+  "right_click_menu": {
+    "category": {
+      "rename": "Rename Category",
+      "move_up": "Move UP",
+      "move_up_shortcut": "Shift+Ctrl+Up",
+      "move_down": "Move DOWN",
+      "move_down_shortcut": "Shift+Ctrl+Down",
+      "remove": "Remove Category",
+      "remove_shortcut": "Shift+Ctrl+D",
+      "clear": "Clear Category",
+      "remove_dialog": {
+        "title": "IMPORTANT !!!: Confirmation",
+        "message": "If you delete this Category,\nall its data will be PERMANENTLY LOST!\nAre you sure you want to proceed?"
+      },
+      "clear_dialog": {
+        "title": "IMPORTANT !!!: Confirmation",
+        "message": "If you clear this Category,\nall its data will be PERMANENTLY LOST!\nAre you sure you want to proceed?"
+      }
+    }
+  },
+  "copy_popup": {
+    "frame_background_color": "#00000000",
+    "size": "(200, 200)",
+    "round_angle_radius": "10",
+    "message": "Copied...",
+    "font_size": "30",
+    "transformation_speed": "30",
+    "transformation_step": "5",
+    "current_transparency": "250",
+    "background_color": "#101010",
+    "text_color": "white"
   }
 }
