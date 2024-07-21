@@ -124,7 +124,7 @@
     "message": "Copied...",
     "font_size": "30",
     "transformation_speed": "30",
-    "transformation_step": "5",
+    "transformation_step": "6",
     "current_transparency": "250",
     "background_color": "#101010",
     "text_color": "white"
