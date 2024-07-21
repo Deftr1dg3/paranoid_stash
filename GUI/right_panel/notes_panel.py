@@ -6,6 +6,7 @@ import ast
 
 from manage_data import ManageData
 from GUI.base_panel import BasePanel
+from GUI.right_panel.edit_panel import EntryFields
 
 
 class NotesPanel(BasePanel):
@@ -43,10 +44,7 @@ class NotesPanel(BasePanel):
         
         # Create GUI objects
         self._title = wx.StaticText(self, label=self._title)
-        # self._title.SetForegroundColour(self._text_colour)
         self._notes = wx.TextCtrl(self, size=self._notes_field_size, style=wx.TE_MULTILINE)
-        # self._notes.SetForegroundColour(self._text_colour)
-        # self._notes.SetBackgroundColour(self._input_background_colour)
         
         # Enable or disable GUI objects depending on selected EntryRow
         self.entry = self._manage_data.get_selected_entry()
@@ -54,7 +52,7 @@ class NotesPanel(BasePanel):
         if self.entry is None:
             self._notes.Disable()
         else:
-            notes = self.entry[4]
+            notes = self.entry[EntryFields.NOTES]
             self._notes.SetValue(notes)
         
         # Add GUI objects to secondary sizers
@@ -73,18 +71,18 @@ class NotesPanel(BasePanel):
         
     def _bind_events(self):
         self._notes.Bind(wx.EVT_TEXT, self._on_typing)
-        self._notes.Bind(wx.EVT_SET_FOCUS, self._on_set_focus)
-    
-    def _on_set_focus(self, evet) -> None:
-        # self._right_panel.undo_availbale(True)
-        ...
-        
+ 
     def _on_typing(self, event):
-        # value = self._notes.GetValue()
-        # self.entry.notes = value
-        # if not self.undo_in_progress:
-        #     self._right_panel.make_snapshot()
-        ...
+        if self.entry is None:
+            return
+        value = self._notes.GetValue()
+        self.entry[EntryFields.NOTES] = value
+        self._on_enter(None)
+        
+    def _on_enter(self, event) -> None:
+        self._manage_data.update()
+        self._manage_data.save_state()
+        # self.body.mid_panel.refresh() # type: ignore
         
     def set_value(self, value: str) -> None:
         self._notes.SetValue(value)

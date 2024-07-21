@@ -1,6 +1,5 @@
 from __future__ import annotations
 import wx
-from itertools import cycle
 
 from manage_data import ManageData
 from GUI.base_panel import BasePanel
@@ -23,7 +22,7 @@ class BodyPanel(BasePanel):
         self._init_ui()
         self.applay_color_theme(self._current_theme)
         
-        BasePanel._set_body_panel(self)
+        BasePanel.set_body_panel(self)
     
     def _init_ui(self):
         main_box = wx.BoxSizer(wx.HORIZONTAL)

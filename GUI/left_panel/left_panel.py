@@ -1,9 +1,7 @@
 import wx
 import ast
-import copy
 
-from manage_data import ManageData, DataFile
-from manage_data import GeneratePassword, ValidatePassword, PasswordStrength
+from manage_data import ManageData
 
 from GUI.base_panel import BasePanel
 from GUI.left_panel.category_row import CategoryRow
@@ -34,10 +32,10 @@ class LeftPanel(BasePanel):
         """ Function initializing visible interface. """
         
         # Create main sizer
-        self._main_box = wx.BoxSizer(wx.VERTICAL)
+        main_box = wx.BoxSizer(wx.VERTICAL)
         
         # Create ScrolledWindow
-        self.scroll = wx.ScrolledWindow(self, -1)
+        self.scroll = wx.ScrolledWindow(self, -1, style=wx.VSCROLL)
         self.scroll.SetScrollbars(*self._scroll_settings)
         self.scroll.SetScrollRate(30, 30)
         
@@ -47,21 +45,15 @@ class LeftPanel(BasePanel):
         # Create GUI objects
         for category in self._manage_data.all_categories():
             self._display_category(self.scroll, scroll_sizer, category) 
-             
-        # Relay category_row list to the Command module
-        # self._command.category_rows = self._category_rows
-        
-        # Rest category rows dict 
-        # self._category_rows = {}
         
         # Add sizer to ScrolledWindow
         self.scroll.SetSizer(scroll_sizer)
         
         # Add scroll window to the main sizer
-        self._main_box.Add(self.scroll, 1, wx.EXPAND)
+        main_box.Add(self.scroll, 1, wx.EXPAND)
         
         # Set main sizer to the panel
-        self.SetSizer(self._main_box)
+        self.SetSizer(main_box)
         
         # Refresh layout
         self.Layout()
@@ -69,11 +61,6 @@ class LeftPanel(BasePanel):
         # Scroll to selected entity
         self._scroll_to_selected()
 
-    # def _on_scroll(self, event):
-    #     x, y = self.scroll.GetViewStart()
-    #     self._scroll_position = (x, y + 1)
-    #     event.Skip()
-    
     def _scroll_to_selected(self):
         if self._manage_data.selected_category is not None:
             index = self._manage_data.get_category_index(self._manage_data.selected_category)
