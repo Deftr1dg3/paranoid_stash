@@ -232,7 +232,7 @@ class EditPanel(BasePanel):
         confirmed = dialog_popup(message, title)
         if confirmed:
             self._manage_data.delete_entry()
-            # self.body.mid_panel.refresh() # type: ignore
+            self.body.mid_panel.refresh() # type: ignore
             self.body.right_panel.refresh() # type: ignore
             self._on_enter
         

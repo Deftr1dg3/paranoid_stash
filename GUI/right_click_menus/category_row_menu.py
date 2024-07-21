@@ -5,6 +5,7 @@ import wx
 
 from manage_data import ManageData
 from GUI.modals.popups import dialog_popup, get_input
+from GUI.top_panel.select_color_theme import launch_select_color
 
 class CategoryRightClickMenu(wx.Menu):
     
