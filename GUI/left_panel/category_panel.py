@@ -8,12 +8,8 @@ from GUI.base_panel import BasePanel
 from manage_data import ManageData
 
 class CategoryNamePanel(BasePanel):
-    def __init__(self, parent: wx.Panel, manage_date: ManageData, settings: dict, color_themes: dict, current_theme: str, category_name: str) -> None:
+    def __init__(self, parent: BasePanel, category_name: str) -> None:
         self._parent = parent 
-        self._manage_data = manage_date
-        self._settings = settings
-        self._color_themes = color_themes
-        self._current_theme = current_theme
         
         self._category_max_len = int(self._settings['left_panel']['category_max_len'])
         self._replacement_characters = self._settings['left_panel']['replacement_characters']
@@ -27,6 +23,7 @@ class CategoryNamePanel(BasePanel):
         
         # Initializing visible objects
         self._init_ui()
+        self.applay_color_theme()
         
     def _init_ui(self) -> None:
         """ Function initializing visible interface. """
@@ -36,7 +33,6 @@ class CategoryNamePanel(BasePanel):
         
         # Create gui object
         self._category_name = wx.StaticText(self, label=self._name)
-        # self._category_name.SetForegroundColour(self._text_colour)
         
         # Add gui object to the main sizer
         main_box.Add(self._category_name, 0, wx.TOP | wx.LEFT, 6)
@@ -56,8 +52,7 @@ class CategoryNamePanel(BasePanel):
         self._category_name.SetForegroundColour(colour)
         self.Refresh() 
         
-    def applay_color_theme(self, theme_name: str):
-        self._current_theme = theme_name
+    def applay_color_theme(self):
         self._text_colour = self._color_themes[self._current_theme]['text']
         self.SetBackgroundColour(self._color_themes[self._current_theme]['medium'])
         self.Refresh() 

@@ -4,22 +4,19 @@
 import wx 
 
 from manage_data import ManageData
+from GUI.base_panel import BasePanel
+from GUI.menu_functions.menu_functions import MenuFunctions
 from GUI.modals.popups import dialog_popup, get_input
-from GUI.top_panel.select_color_theme import launch_select_color
 
 class CategoryRightClickMenu(wx.Menu):
     
-    def __init__(self, parent: wx.Panel, manage_date: ManageData, settings: dict, color_themes: dict, current_theme: str, body: BaseException) -> None:
-        self._parent = parent 
-        self._manage_data = manage_date
-        self._settings = settings
-        self._color_themes = color_themes
-        self._current_theme = current_theme
-        self._body = body
-        
-        self._config = self._settings['right_click_menu']['category']
-        
+    def __init__(self, parent: BasePanel) -> None:
         super().__init__()
+        
+        self._functions = MenuFunctions(parent)
+        
+        self._config = self._functions.settings['menu']['category']
+        
         
         self._init_menu()
         self._bind_events()
@@ -41,40 +38,19 @@ class CategoryRightClickMenu(wx.Menu):
         self.Bind(wx.EVT_MENU, self._on_move_category_up, id=4)
         self.Bind(wx.EVT_MENU, self._on_move_category_down, id=5)
     
-    def _refresh_body_panel(self):
-        self._body.left_panel.refresh() # type: ignore
-        self._body.mid_panel.refresh() # type: ignore
-        self._body.right_panel.refresh() # type: ignore
         
     def _on_move_category_up(self, event) -> None:
-        self._manage_data.move_category()
-        self._refresh_body_panel()
+        self._functions.move_category_up()
 
     def _on_move_category_down(self, event) -> None:
-        self._manage_data.move_category(direction=1)
-        self._refresh_body_panel()
+        self._functions.move_category_down()
         
     def _on_rename_category(self, event) -> None:
-        color = self._color_themes[self._current_theme]['medium']
-        new_category = get_input(color=color, hint="Enter desired category name:", title="New Category")
-        if new_category is None or new_category == "":
-            return 
-        self._manage_data.rename_category(new_category)
-        self._refresh_body_panel()
+        self._functions.rename_category()
         
     def _on_remove_category(self, event) -> None:
-        message = self._config['remove_dialog']['message']
-        title = self._config['remove_dialog']['title']
-        confirmed = dialog_popup(message=message, title=title)
-        if confirmed:
-            self._manage_data.delete_category()
-            self._refresh_body_panel()
+        self._functions.remove_category()
     
     def _on_clear_category(self, event) -> None:
-        message = self._config['clear_dialog']['message']
-        title = self._config['clear_dialog']['title']
-        confirmed = dialog_popup(message=message, title=title)
-        if confirmed:
-            self._manage_data.clear_category()
-            self._refresh_body_panel()
+        self._functions.clear_category()
            

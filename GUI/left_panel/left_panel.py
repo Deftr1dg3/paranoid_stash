@@ -1,19 +1,13 @@
 import wx
 import ast
 
-from manage_data import ManageData
-
 from GUI.base_panel import BasePanel
 from GUI.left_panel.category_row import CategoryRow
 
 class LeftPanel(BasePanel):
-    def __init__(self, parent: wx.Panel, manage_date: ManageData, settings: dict, color_themes: dict, current_theme: str) -> None:
+    def __init__(self, parent: BasePanel) -> None:
         self._parent = parent 
-        self._manage_data = manage_date
-        self._settings = settings
-        self._color_themes = color_themes
-        self._current_theme = current_theme
-        
+    
         self._size = ast.literal_eval(self._settings['left_panel']['size'])
         self._scroll_settings = ast.literal_eval(self._settings['left_panel']['scroll_settings'])
         
@@ -21,11 +15,9 @@ class LeftPanel(BasePanel):
         
         self._scroll_position = (0, 0)
         
-        # self._main_box = wx.BoxSizer(wx.VERTICAL)
         self._init_ui()
-        self.applay_color_theme(self._current_theme)
+        self.applay_color_theme()
         
-        # self._bind_events()
         
         
     def _init_ui(self):
@@ -67,7 +59,7 @@ class LeftPanel(BasePanel):
             self.scroll.Scroll((0, index))
         
     def _display_category(self, scroll, scroll_sizer, category) -> None:
-        category_row = CategoryRow(scroll, self._manage_data, self._settings, self._color_themes, self._current_theme, category)
+        category_row = CategoryRow(scroll, category)
         # self._category_rows[category.id] = category_row
         scroll_sizer.Add(category_row, 0, wx.EXPAND)
         
@@ -92,8 +84,7 @@ class LeftPanel(BasePanel):
         self._init_ui()
         self.Refresh()
         
-    def applay_color_theme(self, theme_name: str):
-        self._current_theme= theme_name
+    def applay_color_theme(self):
         self.SetBackgroundColour(wx.Colour(self._color_themes[self._current_theme]['medium']))
         self.Refresh()
         

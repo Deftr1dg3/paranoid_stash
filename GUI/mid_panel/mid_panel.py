@@ -2,21 +2,14 @@
 
 import wx 
 import ast
-import copy
 
-from manage_data import ManageData
-from manage_data.manage_password.manage_password import ValidatePassword, StrengthSpecification, GeneratePassword
 from GUI.base_panel import BasePanel
 from GUI.mid_panel.entry_row import EntryRow
 
 
 class MidPanel(BasePanel):
-    def __init__(self, parent: wx.Panel, manage_date: ManageData, settings: dict, color_themes: dict, current_theme: str) -> None:
+    def __init__(self, parent: BasePanel) -> None:
         self._parent = parent 
-        self._manage_data = manage_date
-        self._settings = settings
-        self._color_themes = color_themes
-        self._current_theme = current_theme
         
         super().__init__(self._parent)
         
@@ -24,7 +17,7 @@ class MidPanel(BasePanel):
         
         # Initializing visible objects
         self._init_ui()
-        self.applay_color_theme(self._current_theme)
+        self.applay_color_theme()
         
     def _init_ui(self):
         """ Function initializing visible interface. """
@@ -74,9 +67,7 @@ class MidPanel(BasePanel):
             self.scroll.Scroll((0, index))
         
     def _display_entry(self, scroll_sizer, entry: list) -> None:
-        # entry_row = wx.StaticText(scroll, label="Test test test")
-        entry_row = EntryRow(self.scroll, self._manage_data, self._settings, self._color_themes, self._current_theme, entry)
-        # self._entry_rows[entry_row.id] = entry_row
+        entry_row = EntryRow(self.scroll, entry)
         scroll_sizer.Add(entry_row, 0, wx.EXPAND | wx.TOP | wx.LEFT | wx.RIGHT, 1)
         
     def _clear_categories(self):
@@ -98,25 +89,9 @@ class MidPanel(BasePanel):
         self._clear_categories()
         self.entry_rows.clear()
         self._init_ui()
-        # self._manage_data.selected_entry = None
-        # self.applay_color_theme(self._current_theme)
     
-    def applay_color_theme(self, theme_name: str):
-        self._current_theme = theme_name
+    def applay_color_theme(self):
         self._text_colour = self._color_themes[self._current_theme]['text']
         self._input_background_colour = self._color_themes[self._current_theme]['input_background']
-        
         self.SetBackgroundColour(self._color_themes[self._current_theme]['dark'])
-        
-        # self._record_name.SetForegroundColour(self._text_colour)
-        # self._username.SetForegroundColour(self._text_colour)
-        # self._password.SetForegroundColour(self._text_colour)
-        # self._password_strength.SetForegroundColour(self._text_colour)
-        # self._url.SetForegroundColour(self._text_colour)
-        
-        # self._record_name_title.SetForegroundColour(self._text_colour)
-        # self._username_title.SetForegroundColour(self._text_colour)
-        # self._password_title.SetForegroundColour(self._text_colour)
-        # self._url_title.SetForegroundColour(self._text_colour)
-        
         self.Refresh()

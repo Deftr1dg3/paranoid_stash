@@ -6,10 +6,10 @@ import wx
 import json
 import ast
 
-from manage_data import ManageData, DataFile
-from manage_data import GeneratePassword, ValidatePassword, PasswordStrength
+from manage_data import ManageData
 
 from GUI.main_panel import MainPanel
+from GUI.top_bar_menu.menus import TopBarMenu
 
 
 
@@ -42,9 +42,9 @@ class MainFrame(wx.Frame):
 
         
     def _init_ui(self) -> None:
-        MainPanel(self, self._manage_data, self._settings, self._color_themes, self._theme_name)
+        main_panel = MainPanel(self, self._manage_data, self._settings, self._color_themes, self._theme_name)
         
-        # self.SetMenuBar(TopBarMenu(self, self._command))
+        self.SetMenuBar(TopBarMenu(self, main_panel))
         
         self.Bind(wx.EVT_CLOSE, self._on_close)
     

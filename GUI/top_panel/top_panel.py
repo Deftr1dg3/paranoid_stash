@@ -1,9 +1,5 @@
-import os 
-import sys 
 
 import wx
-
-from manage_data import ManageData
 
 from GUI.base_panel import BasePanel
 from GUI.top_panel.top_left_panel import TopLeftPanel
@@ -12,16 +8,11 @@ from GUI.top_panel.top_right_panel import TopRightPanel
 
 
 class TopPanel(BasePanel):
-    def __init__(self, parent: wx.Panel, manage_date: ManageData, settings: dict, color_themes: dict, theme_name: str) -> None:
+    def __init__(self, parent: BasePanel) -> None:
         super().__init__(parent, size=(-1, 30))
-        self._parent = parent 
-        self._manage_data = manage_date
-        self._settings = settings
-        self.color_themes = color_themes
-        self.theme_name = theme_name
-        
-        self.applay_color_theme(self.theme_name)
+
         self._init_ui()
+        self.applay_color_theme()
         
         BasePanel.set_top_panel(self)
         
@@ -31,9 +22,9 @@ class TopPanel(BasePanel):
         mid_box = wx.BoxSizer(wx.VERTICAL)
         right_box = wx.BoxSizer(wx.VERTICAL)
         
-        self._top_left_panel = TopLeftPanel(self, self._manage_data, self._settings, self.color_themes, self.theme_name)
-        self._top_mid_panel = TopMidPanel(self, self._manage_data, self._settings, self.color_themes, self.theme_name)
-        self._top_right_panel = TopRightPanel(self, self._manage_data, self._settings, self.color_themes, self.theme_name)
+        self._top_left_panel = TopLeftPanel(self)
+        self._top_mid_panel = TopMidPanel(self)
+        self._top_right_panel = TopRightPanel(self)
         
         left_box.Add(self._top_left_panel, 1, wx.EXPAND)
         mid_box.Add(self._top_mid_panel, 1, wx.EXPAND)
@@ -58,8 +49,7 @@ class TopPanel(BasePanel):
     def top_right_panel(self):
         return self._top_right_panel
         
-    def applay_color_theme(self, theme_name: str):
-        self.theme_name = theme_name
-        self.SetBackgroundColour(wx.Colour(self.color_themes[theme_name]['medium']))
+    def applay_color_theme(self):
+        self.SetBackgroundColour(wx.Colour(self._color_themes[self._current_theme]['medium']))
         self.Refresh()
         

@@ -1,26 +1,17 @@
 from __future__ import annotations
 import wx
 
-from manage_data import ManageData
 from GUI.base_panel import BasePanel
 from GUI.left_panel.left_panel import LeftPanel
 from GUI.right_panel.right_panel import RightPanel
 from GUI.mid_panel.mid_panel import MidPanel
 
-
 class BodyPanel(BasePanel):
-    def __init__(self, parent: wx.Panel, manage_date: ManageData, settings: dict, color_themes: dict, current_theme: str) -> None:
+    def __init__(self, parent: BasePanel) -> None:
         super().__init__(parent)
-        self._parent = parent 
-        self._manage_data = manage_date
-        self._settings = settings
-        self._color_themes = color_themes
-        self._current_theme = current_theme
-        
-        # self._manage_data.selected_category = 'Internet'
                                 
         self._init_ui()
-        self.applay_color_theme(self._current_theme)
+        self.applay_color_theme()
         
         BasePanel.set_body_panel(self)
     
@@ -30,9 +21,9 @@ class BodyPanel(BasePanel):
         mid_box = wx.BoxSizer(wx.VERTICAL)
         right_box = wx.BoxSizer(wx.VERTICAL)
         
-        self._left_panel = LeftPanel(self, self._manage_data, self._settings, self._color_themes, self._current_theme)
-        self._mid_panel = MidPanel(self, self._manage_data, self._settings, self._color_themes, self._current_theme)
-        self._right_panel = RightPanel(self, self._manage_data, self._settings, self._color_themes, self._current_theme)
+        self._left_panel = LeftPanel(self)
+        self._mid_panel = MidPanel(self)
+        self._right_panel = RightPanel(self)
         
         left_box.Add(self._left_panel, 1, wx.EXPAND | wx.TOP, 1)
         mid_box.Add(self._mid_panel, 1, wx.EXPAND)
@@ -57,9 +48,8 @@ class BodyPanel(BasePanel):
     def right_panel(self):
         return self._right_panel
         
-    def applay_color_theme(self, theme_name: str):
-        self._current_theme = theme_name
-        self.SetBackgroundColour(wx.Colour(self._color_themes[theme_name]['dark']))
+    def applay_color_theme(self):
+        self.SetBackgroundColour(wx.Colour(self._color_themes[self._current_theme]['dark']))
         self.Refresh()
         
         

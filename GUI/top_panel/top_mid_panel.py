@@ -1,35 +1,24 @@
 #!/usr/bin/env python3
 
 import wx
-import random
 import ast
-from itertools import cycle
-
-from manage_data import ManageData, DataFile
-from manage_data import GeneratePassword, ValidatePassword, PasswordStrength
 
 from GUI.base_panel import BasePanel
 
 class TopMidPanel(BasePanel):
-    def __init__(self, parent: wx.Panel, manage_date: ManageData, settings: dict, color_themes: dict, theme_name: str) -> None:
-        self._parent = parent 
-        self._manage_data = manage_date
-        self._settings = settings
-        self.color_themes = color_themes
-        self.theme_name = theme_name
+    def __init__(self, parent: BasePanel) -> None:
+        super().__init__(parent)
         
         self._search_field_size = ast.literal_eval(self._settings['top_panel']['top_mid_panel']['search_field_size'])
         self._new_entry_label = self._settings['top_panel']['top_mid_panel']['new_entry_label']
         self._search_placeholder = self._settings['top_panel']['top_mid_panel']['search_placeholder']
         
-        self._foreground_color = wx.Colour(self.color_themes[self.theme_name]['text'])
-        
-        super().__init__(parent)
+        self._foreground_color = wx.Colour(self._color_themes[self._current_theme]['text'])
         
         self._init_ui()
         self._bind_events()
         
-        self.applay_color_theme(self.theme_name)
+        self.applay_color_theme()
         
     def _init_ui(self) -> None:
         # Create main sizer
@@ -40,7 +29,6 @@ class TopMidPanel(BasePanel):
         search_box = wx.BoxSizer(wx.VERTICAL)
         
         self._new_entry = wx.Button(self, label=self._new_entry_label)
-        # self._new_entry = wx.StaticText(self, label=self._new_entry_label)
 
         self._search = wx.TextCtrl(self, size=self._search_field_size, style=wx.TE_PROCESS_ENTER)
         self._search.SetHint(self._search_placeholder)
@@ -77,27 +65,19 @@ class TopMidPanel(BasePanel):
 
     def _add_entry(self, event) -> None:
         if self._manage_data.add_entry():
-            self.body.mid_panel.refresh() # type: ignore
-            self.body.right_panel.refresh() # type: ignore
+            self.refresh_mid_panel()
+            self.refresh_left_panel()
         
     def _on_search(self, event) -> None:
         query = self._search.GetValue()
         self._manage_data.search(query)
         self._manage_data.selected_category = None 
         self._manage_data.selected_entry = None 
+        BasePanel.set_selected_entry(None)
+        self.refresh_body_panel()
         
-        self.body.left_panel.refresh() # type: ignore
-        self.body.mid_panel.refresh() # type: ignore
-        self.body.right_panel.refresh() # type: ignore
-        
-    
-        
-    def applay_color_theme(self, theme_name: str):
-        self.theme_name = theme_name
-        self.SetBackgroundColour(wx.Colour(self.color_themes[self.theme_name]['medium']))
-        # self.SetBackgroundColour('red')
-        # Foreground color works only woth Static Text ----------------------------------------
-        self._search.SetForegroundColour(wx.Colour(self.color_themes[self.theme_name]['text']))
-        # self._new_entry.SetForegroundColour(wx.Colour(self.color_themes[self.theme_name]['text']))
-        self._search.SetBackgroundColour(wx.Colour(self.color_themes[self.theme_name]['input_background']))
+    def applay_color_theme(self):
+        self.SetBackgroundColour(wx.Colour(self._color_themes[self._current_theme ]['medium']))
+        self._search.SetForegroundColour(wx.Colour(self._color_themes[self._current_theme ]['text']))
+        self._search.SetBackgroundColour(wx.Colour(self._color_themes[self._current_theme ]['input_background']))
         self.Refresh()

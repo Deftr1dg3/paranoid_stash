@@ -4,21 +4,14 @@
 import wx
 import ast
 
-from manage_data import ManageData
-from manage_data.manage_password.manage_password import ValidatePassword, StrengthSpecification, GeneratePassword
 from GUI.base_panel import BasePanel
-from GUI.right_panel.notes_panel import NotesPanel
 from GUI.mid_panel.record_panel import RecordName, Username, Password, URL
-
+from GUI.right_panel.edit_panel import EntryFields
 
 class EntryRow(BasePanel):
     
-    def __init__(self, parent: wx.ScrolledWindow, manage_date: ManageData, settings: dict, color_themes: dict, current_theme: str, entry: list) -> None:
+    def __init__(self, parent: wx.ScrolledWindow, entry: list) -> None:
         self._parent = parent 
-        self._manage_data = manage_date
-        self._settings = settings
-        self._color_themes = color_themes
-        self._current_theme = current_theme
     
         self._entry = entry
         self._size = ast.literal_eval(self._settings['mid_panel']['entry_row_size'])
@@ -40,8 +33,7 @@ class EntryRow(BasePanel):
         
         # Initializing visible objects and binding events
         self._init_ui()
-        
-        self.applay_color_theme(self._current_theme)
+        self.applay_color_theme()
         
         self._bind_events()
         
@@ -60,10 +52,10 @@ class EntryRow(BasePanel):
         url_box = wx.BoxSizer(wx.VERTICAL)
         
         # Create GUI objects
-        self._record_name = RecordName(self, self._manage_data, self._settings, self._color_themes, self._current_theme, self._entry[0])
-        self._username = Username(self, self._manage_data, self._settings, self._color_themes, self._current_theme, self._entry[1])
-        self._password = Password(self, self._manage_data, self._settings, self._color_themes, self._current_theme, self._entry[2])
-        self._url = URL(self, self._manage_data, self._settings, self._color_themes, self._current_theme, self._entry[3])
+        self._record_name = RecordName(self, self._entry[EntryFields.RECORD_NAME])
+        self._username = Username(self, self._entry[EntryFields.USERNAME])
+        self._password = Password(self, self._entry[EntryFields.PASSWORD])
+        self._url = URL(self, self._entry[EntryFields.URL])
 
         
         # Add GUI objects to secondary sizers
@@ -105,7 +97,7 @@ class EntryRow(BasePanel):
             for entry in self.entry_rows:
                 entry.deselect_entry()
         self.select_entry()
-        self.body.right_panel.refresh() # type: ignore
+        self.refresh_right_panel()
         
     def _on_right_click(self, event) -> None:
         # self.select_entry()
@@ -153,10 +145,12 @@ class EntryRow(BasePanel):
     def select_entry(self) -> None:
         self.is_selected = True
         self._manage_data.selected_entry = id(self._entry)
+        BasePanel.set_selected_entry(self)
         self._smooth_select()
             
     def deselect_entry(self) -> None:
         self.is_selected = False
+        BasePanel.set_selected_entry(None)
         self._smooth_deselect()
         
     def set_selected_colour(self) -> None:
@@ -167,20 +161,19 @@ class EntryRow(BasePanel):
         self.SetBackgroundColour(self._background_colour)
         self.Refresh()
         
-    # def copy_record_name(self):
-    #     self._record_name.copy_to_clipboard()
+    def copy_record_name(self):
+        self._record_name.copy_to_clipboard()
         
-    # def copy_username(self) -> None:
-    #     self._username.copy_to_clipboard()
+    def copy_username(self) -> None:
+        self._username.copy_to_clipboard()
         
-    # def copy_password(self) -> None:
-    #     self._password.copy_to_clipboard()
+    def copy_password(self) -> None:
+        self._password.copy_to_clipboard()
         
-    # def copy_url(self) -> None:
-    #     self._url.copy_to_clipboard()
+    def copy_url(self) -> None:
+        self._url.copy_to_clipboard()
         
-    def applay_color_theme(self, theme_name: str):
-        self._current_theme = theme_name
+    def applay_color_theme(self):
         self._text_colour = wx.Colour(self._color_themes[self._current_theme]['text'])
         self._selection_colour = wx.Colour(self._color_themes[self._current_theme]['selection'])
         self._background_colour = wx.Colour(self._color_themes[self._current_theme]['dark'])
@@ -190,9 +183,11 @@ class EntryRow(BasePanel):
         
         if id(self._entry) == self._manage_data.selected_entry:
             self.set_selected_colour()
+            BasePanel.set_selected_entry(self)
             self.is_selected = True
         else:
-            self.set_regular_colour()
+            # self.set_regular_colour()
+            self.SetBackgroundColour(self._background_colour)
         
         self.Refresh()
     
