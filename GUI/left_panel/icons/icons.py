@@ -8,11 +8,8 @@ from GUI.base_panel import BasePanel
 from GUI.left_panel.icons.icons_names import IconNames
 
 class IconPanel(BasePanel):
-    def __init__(self, parent: wx.Panel, settings: dict, color_themes: dict, current_theme: str, icon_name: IconNames) -> None:
+    def __init__(self, parent: BasePanel, icon_name: IconNames) -> None:
         self._parent = parent 
-        self._settings = settings
-        self._color_themes = color_themes
-        self._current_theme = current_theme
         
         self._icon_name = icon_name
         self._size = ast.literal_eval(self._settings['left_panel']['icon_panel_size'])
@@ -24,7 +21,7 @@ class IconPanel(BasePanel):
         
         self.Bind(wx.EVT_PAINT, self.OnPaint)
         
-        self.applay_color_theme(self._current_theme)
+        self.applay_color_theme()
         
     def _get_icon_function(self):
         match self._icon_name:
@@ -112,8 +109,7 @@ class IconPanel(BasePanel):
         dc.DrawRoundedRectangle(5, 12, 25, 4, 2)
         dc.DrawRoundedRectangle(5, 17, 25, 4, 2)
         
-    def applay_color_theme(self, theme_name: str):
-        self._current_theme = theme_name
+    def applay_color_theme(self):
         self._text_colour = self._color_themes[self._current_theme]['text']
         self._icon_colour = self._color_themes[self._current_theme]['selection']
         self._pen_colour = self._color_themes[self._current_theme]['medium']

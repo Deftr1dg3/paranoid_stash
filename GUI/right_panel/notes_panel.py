@@ -10,12 +10,8 @@ from GUI.right_panel.edit_panel import EntryFields
 
 
 class NotesPanel(BasePanel):
-    def __init__(self, parent: wx.Panel, manage_date: ManageData, settings: dict, color_themes: dict, current_theme: str) -> None:
+    def __init__(self, parent: BasePanel) -> None:
         self._parent = parent 
-        self._manage_data = manage_date
-        self._settings = settings
-        self._color_themes = color_themes
-        self._current_theme = current_theme
         
         self._title = self._settings['right_panel']['notes_title']
         self._notes_field_size = ast.literal_eval(self._settings['right_panel']['notes_field_size'])
@@ -29,8 +25,7 @@ class NotesPanel(BasePanel):
         self._init_ui()
         self._bind_events()
         
-        self.applay_color_theme(self._current_theme)
-        
+        self.applay_color_theme()
         
     def _init_ui(self):
         """ Function initializing visible interface. """
@@ -82,20 +77,15 @@ class NotesPanel(BasePanel):
     def _on_enter(self, event) -> None:
         self._manage_data.update()
         self._manage_data.save_state()
-        # self.body.mid_panel.refresh() # type: ignore
         
     def set_value(self, value: str) -> None:
         self._notes.SetValue(value)
         self._notes.SetInsertionPointEnd()
         
-    
-    def applay_color_theme(self, theme_name: str):
-        self._current_theme = theme_name
+    def applay_color_theme(self):
         self._text_colour = self._color_themes[self._current_theme]['text']
         self._input_background_colour = self._color_themes[self._current_theme]['input_background']
-        
         self._title.SetForegroundColour(self._text_colour)
         self._notes.SetForegroundColour(self._text_colour)
         self._notes.SetBackgroundColour(self._input_background_colour)
-        
         self.Refresh()

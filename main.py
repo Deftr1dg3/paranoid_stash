@@ -3,11 +3,12 @@ import os
 import sys
 import wx 
 import json
+from pathlib import Path
 
 from GUI import MainFrame
 from manage_data import ManageData, DataFile
 
-SETTINGS_PATH = './settings.json'
+SETTINGS_PATH = Path('./settings.json')
 
 with open(SETTINGS_PATH, 'r') as f:
     settings = json.load(f)

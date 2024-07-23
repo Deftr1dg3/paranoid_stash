@@ -2,27 +2,17 @@
 
 
 import wx
-import ast
 import pyperclip
 
-from manage_data import ManageData
-from manage_data.manage_password.manage_password import ValidatePassword, StrengthSpecification, GeneratePassword
 from GUI.base_panel import BasePanel
 from GUI.right_panel.notes_panel import NotesPanel
 from GUI.modals.copy_popup import launch_copy_poup
-from GUI.top_panel.select_color_theme import launch_select_color
-
 
 
 class BaseRecordPanel(BasePanel):
     
-    def __init__(self, parent: wx.Panel, manage_data: ManageData, settings: dict, color_themes: dict, current_theme: str, record_value: str) -> None:
+    def __init__(self, parent: BasePanel, record_value: str) -> None:
         self._parent = parent 
-        self._manage_data = manage_data
-        self._settings = settings
-        self._color_themes = color_themes
-        self._current_theme = current_theme
-        
         self._record_value = record_value
         
         self._displayed_str_length = int(self._settings['mid_panel']['display_string_len'])
@@ -40,7 +30,7 @@ class BaseRecordPanel(BasePanel):
         self._colour_timer = wx.Timer(self)
         
         self._init_ui()
-        self.applay_color_theme(self._current_theme)
+        self.applay_color_theme()
         
         self._bind_events()
         
@@ -71,8 +61,6 @@ class BaseRecordPanel(BasePanel):
         pyperclip.copy(self._record_value)
         launch_copy_poup(self, self._settings)
        
-
-        
     def _change_colour(self) -> None:
         self._set_text_colour(self._selection_colour)
         self._current_colour = self._selection_colour
@@ -116,15 +104,12 @@ class BaseRecordPanel(BasePanel):
         self._display_value.SetForegroundColour(colour)
         self.Refresh() 
     
-    def applay_color_theme(self, theme_name: str):
-        self._current_theme = theme_name
+    def applay_color_theme(self):
         self._text_colour = wx.Colour(self._color_themes[self._current_theme]['text'])
         self._selection_colour = wx.Colour(self._color_themes[self._current_theme]['selection'])
         self._current_colour = wx.Colour(self._color_themes[self._current_theme]['text'])
-        
         # self.SetBackgroundColour(self._color_themes[self._current_theme]['dark'])
         self._display_value.SetForegroundColour(self._text_colour)
-        
         self.Refresh()
     
 

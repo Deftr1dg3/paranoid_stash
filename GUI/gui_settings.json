@@ -97,7 +97,7 @@
       "default_dir": "./"
     }
   },
-  "right_click_menu": {
+  "menu": {
     "category": {
       "rename": "Rename Category",
       "move_up": "Move UP",
@@ -109,11 +109,17 @@
       "clear": "Clear Category",
       "remove_dialog": {
         "title": "IMPORTANT !!!: Confirmation",
-        "message": "If you delete this Category,\nall its data will be PERMANENTLY LOST!\nAre you sure you want to proceed?"
+        "message": "If you DELETE this Category,\nall its data will be PERMANENTLY LOST!\nAre you sure you want to proceed?"
       },
       "clear_dialog": {
         "title": "IMPORTANT !!!: Confirmation",
-        "message": "If you clear this Category,\nall its data will be PERMANENTLY LOST!\nAre you sure you want to proceed?"
+        "message": "If you CLEAR this Category,\nall its data will be PERMANENTLY LOST!\nAre you sure you want to proceed?"
+      }
+    },
+    "entry": {
+      "remove_dialog": {
+        "title": "IMPORTANT !!!: Confirmation",
+        "message": "If you DELETE this Entry,\nall its data will be PERMANENTLY LOST!\nAre you sure you want to proceed?"
       }
     }
   },
@@ -128,5 +134,56 @@
     "current_transparency": "250",
     "background_color": "#101010",
     "text_color": "white"
+  },
+  "top_bar_menu": {
+    "fields": {
+      "File": "file",
+      "Edit": "edit",
+      "Help": "help"
+    },
+    "options": {
+      "file": {
+        "new_category": "New Category",
+        "new_category_shortcut": "Shift+Ctrl+N",
+        "new_entry": "New Entry",
+        "new_entry_shortcut": "Ctrl+N",
+        "remove_category": "Remove Category",
+        "remove_category_shortcut": "Shift+Ctrl+D",
+        "remove_entry": "Remove Entry",
+        "remove_entry_shortcut": "Ctrl+D",
+        "rename_category": "Rename Category",
+        "clear_category": "Clear Category",
+        "clear_category_shortcut": "Shift+Ctrl+C",
+        "import_datafile": "Import Datafile",
+        "show_datafile": "Show DataFile in Folder",
+        "change_datafile_dir": "Change Datafile Directory",
+        "change_password": "Change Password",
+        "restore_from_backup": "Restore from backup"
+      },
+      "edit": {
+        "copy_password": "Copy Password",
+        "copy_password_shortcut": "Ctrl+X",
+        "copy_username": "Copy Username",
+        "copy_username_shortcut": "Ctrl+A",
+        "copy_url": "Copy URL",
+        "copy_url_shortcut": "Ctrl+U",
+        "undo": "Undo",
+        "undo_shortcut": "Ctrl+Z",
+        "redo": "Redo",
+        "redu_shortcut": "Shift+Ctrl+Z",
+        "category_up": "Move Category Up",
+        "category_up_shortcut": "Shift+Ctrl+Up",
+        "category_down": "Move Category Down",
+        "category_down_shortcut": "Shift+Ctrl+Down",
+        "entry_up": "Move Entry Up",
+        "entry_up_shortcut": "Ctrl+Up",
+        "entry_down": "Move Entry Down",
+        "entry_down_shortcut": "Ctrl+Down"
+      },
+      "help": {
+        "help": "Help",
+        "help_shortcut": "Ctrl+H"
+      }
+    }
   }
 }

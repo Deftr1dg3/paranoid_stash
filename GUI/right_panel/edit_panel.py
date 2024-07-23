@@ -29,21 +29,14 @@ STRENGTH_TYPES = {
 
 
 class EditPanel(BasePanel):
-    def __init__(self, parent: wx.Panel, manage_date: ManageData, settings: dict, color_themes: dict, current_theme: str) -> None:
-        self._parent = parent 
-        self._manage_data = manage_date
-        self._settings = settings
-        self._color_themes = color_themes
-        self._current_theme = current_theme
-
-        super().__init__(self._parent)
+    def __init__(self, parent: BasePanel) -> None:
+        super().__init__(parent)
         
-
         self._show_password_ind = False
         self._show_password_label = self._settings['right_panel']['show_password_button_label']
         self._hide_password_label = self._settings['right_panel']['hide_password_button_label']
         self._generate_password_label = self._settings['right_panel']['generate_password_button_label']
-        self._PASSWORD_STRENGTH_OPTIONS = self._settings['right_panel']['password_strength_options']
+        # self._PASSWORD_STRENGTH_OPTIONS = self._settings['right_panel']['password_strength_options']
         self._remove_entry_label = self._settings['right_panel']['remove_entry_button_label']
         self._placeholder = self._settings['right_panel']['entry_placeholder']
         
@@ -64,7 +57,7 @@ class EditPanel(BasePanel):
         self._init_ui()
         self._bind_events()
         
-        self.applay_color_theme(self._current_theme)
+        self.applay_color_theme()
         
     def _init_ui(self):
         """ Function initializing visible interface. """
@@ -82,27 +75,20 @@ class EditPanel(BasePanel):
         # Create GUI objects
         self._record_name_title = wx.StaticText(self._scroll, label=self._record_name_title)
         self._record_name = wx.TextCtrl(self._scroll, style=wx.TE_PROCESS_ENTER)
-
         
         self._username_title = wx.StaticText(self._scroll, label=self._username_title)
         self._username = wx.TextCtrl(self._scroll, style=wx.TE_PROCESS_ENTER)
 
-        
         self._password_title = wx.StaticText(self._scroll, label=self._password_title)
         self._password = wx.TextCtrl(self._scroll, style=wx.TE_PROCESS_ENTER | wx.TE_PASSWORD)
 
-        
         self._reveal_password = wx.Button(self._scroll, label=self._show_password_label)
-        
         self._password_strength = wx.ComboBox(self._scroll, choices=self._dropdown_options, style=wx.CB_READONLY)
-
         self._generate_password_button = wx.Button(self._scroll, label=self._generate_password_label)
-        
         
         self._url_title = wx.StaticText(self._scroll, label=self._url_title)
         self._url = wx.TextCtrl(self._scroll, style=wx.TE_PROCESS_ENTER)
 
-        
         self._remove_entry = wx.Button(self._scroll, label=self._remove_entry_label)
         
         # Add GUI objects to the ScrolledWindow sizer
@@ -141,6 +127,8 @@ class EditPanel(BasePanel):
             password = self.entry[EntryFields.PASSWORD]
             url = self.entry[EntryFields.URL]
             self._record_name.SetValue(entry_name)
+            self._record_name.SetInsertionPointEnd()
+            self._record_name.SetFocus()
             self._username.SetValue(username)
             self._password.SetValue(password)
             self._validate_password_strength(None)
@@ -224,7 +212,7 @@ class EditPanel(BasePanel):
     def _on_enter(self, event) -> None:
         self._manage_data.update()
         self._manage_data.save_state()
-        self.body.mid_panel.refresh() # type: ignore
+        self.refresh_mid_panel()
     
     def _on_remove_entry(self, event):
         title = self._settings['right_panel']['remove_entry']['title']
@@ -232,8 +220,8 @@ class EditPanel(BasePanel):
         confirmed = dialog_popup(message, title)
         if confirmed:
             self._manage_data.delete_entry()
-            self.body.mid_panel.refresh() # type: ignore
-            self.body.right_panel.refresh() # type: ignore
+            self.refresh_mid_panel()
+            self.refresh_right_panel()
             self._on_enter
         
     def _validate_password_strength(self, event) -> None:
@@ -293,8 +281,7 @@ class EditPanel(BasePanel):
             self._reveal_password.SetLabel(self._show_password_label)
             self.Layout()
         
-    def applay_color_theme(self, theme_name: str):
-        self._current_theme = theme_name
+    def applay_color_theme(self):
         self._text_colour = self._color_themes[self._current_theme]['text']
         self._input_background_colour = self._color_themes[self._current_theme]['input_background']
         

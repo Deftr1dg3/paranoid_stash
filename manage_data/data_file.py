@@ -226,6 +226,7 @@ class ManageData:
             return 
         del self._data[self.selected_category]
         self.selected_category = None
+        self.selected_entry = None
         self.update()
         self.save_state()
         
@@ -245,6 +246,8 @@ class ManageData:
     
     def move_entry(self, direction: int = -1) -> None:
         if self.selected_entry is None:
+            return
+        if self.search_results is not None:
             return
         category, e_ind = self.get_entry_index(self.selected_entry)
         if not e_ind == -1:
