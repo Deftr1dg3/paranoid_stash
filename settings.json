@@ -1,8 +1,12 @@
 {
   "data": {
-    "data_file": "./data/PS_datafile",
+    "data_file": "./data/main_datafile.psdf",
     "backups": "./data/backups",
-    "control_hash": "./data/control_hash"
+    "control_hash": "./data/control_hash/hash_file",
+    "extension": ".psdf",
+    "backup_file_name_format": "%Y%m%d-%H%M%S",
+    "encoding": "utf-8",
+    "max_backups": 3
   },
   "color_theme": "blue"
 }

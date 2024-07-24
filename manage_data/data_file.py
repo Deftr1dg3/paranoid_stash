@@ -7,6 +7,9 @@ from typing import NamedTuple
 
 from .aes_encryption import AES_Encripton
 from .manage_password import GeneratePassword, PasswordStrength
+from manage_data.backup.backup import BackUp
+
+from pathlib import Path
 
 
 class Data(dict):
@@ -22,33 +25,47 @@ class Data(dict):
                 
 
 class IODataFile:
-    def __init__(self, file_path: str) -> None:
-        self._file_path = file_path
+    def __init__(self, settings: dict) -> None:
+        self._settings = settings 
+        
+        self._file_path = Path(self._settings['data_file'])
+    
+    @property
+    def file_path(self) -> Path:
+        return self._file_path 
+    
+    @file_path.setter
+    def file_path(self, path: Path) -> None:
+        self._file_path = path
         
     def get_data(self) -> str:
-        with open(self._file_path, "r", encoding="utf-8") as f:
+        with open(self._file_path, "r", encoding=self._settings['encoding']) as f:
             data = f.read()
         return data
         
     def save_data(self, data: str) -> None:
-        with open(self._file_path, "w", encoding="utf-8") as f:
+        with open(self._file_path, "w", encoding=self._settings['encoding']) as f:
             f.write(data)
 
 
 class DataFile:
     def __init__(self, settings: dict) -> None:
-        self._io = IODataFile(settings['data_file'])
-        self._aes_encryption = AES_Encripton()
+        self._settings = settings 
         
+        self._io = IODataFile(settings)
+        self._aes_encryption = AES_Encripton()
+        self._backup = BackUp(settings)
+        
+        self._json_data: str
+        self._b64_encrypted_data: str
         self._password: str
         self._data: Data 
         
-        # print(f'{self._password = }')
-        
-        # atexit.register(self.backup)
+        atexit.register(self.backup)
     
-    # def backup(self):
-    #     ...
+    def backup(self):
+        self.save_data()
+        self._backup.save_backup_file(json_data=self._json_data, b64_data=self._b64_encrypted_data)
     
     @property
     def data(self) -> Data:
@@ -77,22 +94,27 @@ class DataFile:
             decrypted_bytes_data = self._aes_encryption.decrypt(self._password, encrypted_bytes_data)
         except ValueError:
             raise ValueError('Unable to decrypt')
-        decrypted_json_data = decrypted_bytes_data.decode('utf-8')
+        decrypted_json_data = decrypted_bytes_data.decode(self._settings['encoding'])
         self._data = json.loads(decrypted_json_data)
         return self._data
     
     def save_data(self) -> None:
-        json_data = json.dumps(self._data)
-        bytes_data = json_data.encode('utf-8')
+        self._json_data = json.dumps(self._data)
+        bytes_data = self._json_data.encode(self._settings['encoding'])
         encrypted_bytes_data = self._aes_encryption.encrypt(self._password, bytes_data)
-        b64_encrypted_data = b64encode(encrypted_bytes_data).decode('utf-8')
-        self._io.save_data(b64_encrypted_data)
+        self._b64_encrypted_data = b64encode(encrypted_bytes_data).decode(self._settings['encoding'])
+        self._io.save_data(self._b64_encrypted_data)
+    
+    def change_datafile_path(self, new_path: str):
+        self._settings['data_file'] = new_path
+        self._io.file_path = Path(new_path)
      
 
 class State(NamedTuple):
     data: Data 
     selected_category: str | None
     selected_entry: int | None
+    search_results: list | None
 
   
 class DataState:
@@ -106,9 +128,13 @@ class DataState:
         data = state.data 
         selected_category = state.selected_category
         selected_entry = state.selected_entry
+        search_results = state.search_results
         
         self._current_index += 1
-        self._data_state.insert(self._current_index, State(data=data, selected_category=selected_category, selected_entry=selected_entry))
+        self._data_state.insert(self._current_index, State(data=data,
+                                                           selected_category=selected_category,
+                                                           selected_entry=selected_entry,
+                                                           search_results=search_results))
         self._data_state = self._data_state[:self._current_index + 1]
 
     def forward(self) -> State:
@@ -151,11 +177,18 @@ class ManageData:
             i += 1
         return -1
 
-    def get_entry_index(self, entry_id: int) -> tuple[str, int]:
-        for category in self._data.keys():
-            for i in range(len(self._data[category])):
-                if id(self._data[category][i]) == entry_id:
-                    return category, i
+    def get_entry_index(self, entry_id: int, from_search: bool = False) -> tuple[str, int]:
+        if not from_search:
+            for category in self._data.keys():
+                for i in range(len(self._data[category])):
+                    if id(self._data[category][i]) == entry_id:
+                        return category, i
+                    
+        if self.search_results is not None:          
+            for i in range(len(self.search_results)):
+                if id(self.search_results[i]) == self.selected_entry:
+                    return ('', i)
+                
         return ('', -1)
 
     def update(self) -> None:
@@ -301,6 +334,7 @@ class ManageData:
         self._data = next_state.data
         self.selected_category = next_state.selected_category
         self.selected_entry = next_state.selected_entry
+        self.search_results = next_state.search_results
         
         self._df.data = self._data
         self.update()
@@ -311,10 +345,21 @@ class ManageData:
         self._data = prev_state.data
         self.selected_category = prev_state.selected_category
         self.selected_entry = prev_state.selected_entry
+        self.search_results = prev_state.search_results
         
         self._df.data = self._data
         self.update()
          
+    
+    # Password ------------------------------------------------------------------------
+
+    def change_password(self, new_password: str):
+        ...
+        self.update()
+        self.save_state()
+    
+    # Password ------------------------------------------------------------------------
+
     def __str__(self):
         return f'{self._data}'
 

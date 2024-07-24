@@ -2,7 +2,7 @@ import wx
 import ast
 
 from GUI.base_panel import BasePanel
-from GUI.top_panel.select_color_theme import SelectColorThemeFrame, launch_select_color
+from GUI.menu_functions.menu_functions import MenuFunctions
 
 class TopRightPanel(BasePanel):
     def __init__(self, parent: BasePanel) -> None:
@@ -10,10 +10,11 @@ class TopRightPanel(BasePanel):
         self._size = ast.literal_eval(self._settings['top_panel']['top_right_panel']['size'])
         self._panel_title = self._settings['top_panel']['top_right_panel']['top_right_panel_title']
         self._theme_button_label = self._settings['top_panel']['top_right_panel']['theme_button_label']
-        
-        self._foreground_color = wx.Colour(self._color_themes[self._current_theme]['text'])
+        self._color_panel_active = False
         
         super().__init__(parent, size=self._size)
+        
+        self._functions = MenuFunctions(self)
         
         self._init_ui()
         self.applay_color_theme()
@@ -47,8 +48,8 @@ class TopRightPanel(BasePanel):
         self._theme_button.Bind(wx.EVT_BUTTON, self._on_color_theme)
     
     def _on_color_theme(self, event):
-        launch_select_color(self, self._settings, self._color_themes)
-        
+        self._functions.choose_color_theme()
+                
     def applay_color_theme(self):
         self.SetBackgroundColour(wx.Colour(self._color_themes[self._current_theme]['medium']))
         self._entry_edit_title.SetForegroundColour(wx.Colour(self._color_themes[self._current_theme]['text']))

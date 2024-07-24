@@ -120,7 +120,19 @@
       "remove_dialog": {
         "title": "IMPORTANT !!!: Confirmation",
         "message": "If you DELETE this Entry,\nall its data will be PERMANENTLY LOST!\nAre you sure you want to proceed?"
-      }
+      },
+      "copy_password": "Copy Password",
+      "copy_password_shortcut": "Ctrl+X",
+      "copy_username": "Copy Username",
+      "copy_username_shortcut": "Ctrl+A",
+      "copy_url": "Copy URL",
+      "copy_url_shortcut": "Ctrl+U",
+      "entry_up": "Move Entry Up",
+      "entry_up_shortcut": "Ctrl+Up",
+      "entry_down": "Move Entry Down",
+      "entry_down_shortcut": "Ctrl+Down",
+      "remove_entry": "Remove Entry",
+      "remove_entry_shortcut": "Ctrl+D"
     }
   },
   "copy_popup": {

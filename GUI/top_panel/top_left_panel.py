@@ -43,9 +43,6 @@ class TopLeftPanel(BasePanel):
     def _bind_events(self):
         self._new_category.Bind(wx.EVT_BUTTON, self.add_category)
         
-    def _name_is_valid(self, new_category):
-        return not (new_category in self._manage_data.data)
-        
     def add_category(self, event):
         self._functions.add_category()
 

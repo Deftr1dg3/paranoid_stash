@@ -97,7 +97,7 @@ class TopBarMenu(wx.MenuBar):
         self._main_frame.Bind(wx.EVT_MENU, self._on_copy_username, id=42)
         self._main_frame.Bind(wx.EVT_MENU, self._on_copy_url, id=43)
         self._main_frame.Bind(wx.EVT_MENU, self._on_undo, id=31)
-        self._main_frame.Bind(wx.EVT_MENU, self._on_reverse_undo, id=32)
+        self._main_frame.Bind(wx.EVT_MENU, self._on_redo, id=32)
         
         
         self._main_frame.Bind(wx.EVT_MENU, self._on_move_category_up, id=33)
@@ -178,7 +178,7 @@ class TopBarMenu(wx.MenuBar):
         self._functions.remove_entry()
     
     def _on_undo(self, event) -> None:
-        ...
+        self._functions.undo()
     
-    def _on_reverse_undo(self, event) -> None:
-        ...
+    def _on_redo(self, event) -> None:
+        self._functions.redu()
