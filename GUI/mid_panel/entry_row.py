@@ -7,6 +7,7 @@ import ast
 from GUI.base_panel import BasePanel
 from GUI.mid_panel.record_panel import RecordName, Username, Password, URL
 from GUI.right_panel.edit_panel import EntryFields
+from GUI.right_click_menus.entry_row_menu import EntryRightClickMenu
 
 class EntryRow(BasePanel):
     
@@ -100,13 +101,13 @@ class EntryRow(BasePanel):
         self.refresh_right_panel()
         
     def _on_right_click(self, event) -> None:
-        # self.select_entry()
-        # right_click_menu = EntryRightClickMenu(self, self._command, self._entry)
-        # position_in_widget = event.GetPosition()
-        # position_on_screen = event.GetEventObject().ClientToScreen(position_in_widget)
-        # position = self.ScreenToClient(position_on_screen)
-        # self.PopupMenu(right_click_menu, position)
-        ...
+        self._on_left_click(None)
+        right_click_menu = EntryRightClickMenu(self)
+        position_in_widget = event.GetPosition()
+        position_on_screen = event.GetEventObject().ClientToScreen(position_in_widget)
+        position = self.ScreenToClient(position_on_screen)
+        self.PopupMenu(right_click_menu, position)
+
     
     def _smooth_select(self) -> None:
         self._target_colour = self._selection_colour

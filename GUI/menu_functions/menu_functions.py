@@ -1,25 +1,30 @@
 from __future__ import annotations
 import time
 
-from manage_data import ManageData
 from GUI.base_panel import BasePanel
+from GUI.menu_functions.select_color_theme import SelectColorThemeFrame
 from GUI.modals.popups import dialog_popup, get_input, message_popup
+
+
+from typing import Optional
 
 class MenuFunctions():
     
-    _instance: MenuFunctions | None = None
+    _instance: Optional['MenuFunctions'] = None
     
-    # def __new__(cls, *args, **kwargs):
-    #     if cls._instance is None:
-    #         inst = super().__new__(cls, *args, **kwargs)
-    #         cls._instance = inst 
-    #     return cls._instance
+    def __new__(cls, *args, **kwargs):
+        if cls._instance is None:
+            inst = super().__new__(cls)
+            cls._instance = inst 
+        return cls._instance
     
     def __init__(self, base_panel: BasePanel) -> None:
 
         self._base_panel = base_panel
         
         self._config = self.settings['menu']
+        
+        self._color_panel_active = False
     
     @property
     def settings(self):
@@ -142,10 +147,51 @@ class MenuFunctions():
         confirmed = dialog_popup(message=message, title=title)
         if confirmed:
             self.manage_data.delete_entry()
+
+            if self.manage_data.search_results is not None:
+                query = self._base_panel.top_panel.top_mid_panel.get_query()
+                self.manage_data.search(query)
+            
             BasePanel.set_selected_entry(None)
             self._base_panel.refresh_mid_panel()
             self._base_panel.refresh_right_panel()
     
     
     # Entry ------------------------------------------------------
+    
+    # State ------------------------------------------------------
+    
+    def undo(self):
+        self.manage_data.backward()
+        self._base_panel.refresh_body_panel()
+    
+    def redu(self):
+        self.manage_data.forward()
+        self._base_panel.refresh_body_panel() 
+    
+    # State ------------------------------------------------------
+    
+    # State ------------------------------------------------------
+    
+    def search(self):
+        query = self._base_panel.top_panel.top_mid_panel.get_query()
+        self.manage_data.search(query)
+        self.manage_data.search(query)
+        self.manage_data.selected_category = None 
+        self.manage_data.selected_entry = None 
+        BasePanel.set_selected_entry(None)
+        self._base_panel.refresh_body_panel()
+        
+    def choose_color_theme(self):
+        if not self._color_panel_active:
+            self._color_panel_active = True
+            self.frame = SelectColorThemeFrame(self._base_panel, self.settings, self._base_panel._color_themes)
+            self.frame.Show()
+        else:
+            try:
+                self.frame.Raise()
+            except RuntimeError:
+                self._color_panel_active = False 
+                self.choose_color_theme()
+    
     

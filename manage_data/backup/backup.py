@@ -3,43 +3,52 @@
 import os
 from datetime import datetime
 from hashlib import sha256
+from pathlib import Path
 
 
 class BackUp:
     
-    _BACKUP_DIR_PATH = settings.BACKUP_PATH
-    _CONTROL_HASH_PATH = BackupConst.CONTROL_HASH_PATH
-    
-    def __init__(self) -> None:
-        self._hash_file = self._control_hash_path()
-        self._backup_dir = self._backup_dir_path()
+    def __init__(self, settings: dict) -> None:
         
-        self._control_backups_ammount()
-    
-    def _backup_dir_path(self) -> str:
-        if not os.path.exists(self._BACKUP_DIR_PATH):
-            os.makedirs(self._BACKUP_DIR_PATH)
-        return self._BACKUP_DIR_PATH
+        self._settings = settings
         
-    def _control_hash_path(self) -> str:
-        if not os.path.exists(self._CONTROL_HASH_PATH):
-            dirname = os.path.dirname(self._CONTROL_HASH_PATH)
-            os.makedirs(dirname, exist_ok=True)
-            with open(self._CONTROL_HASH_PATH, "w", encoding=GeneralConst.ENCODING_FORMAT) as f:
-                ...
-        return self._CONTROL_HASH_PATH
+        self._hash_file = self._validate_control_hash_path(Path(settings['control_hash']))
+        self._backup_dir = self._validate_backup_dir_path(Path(settings['backups']))
+        
+        self._available_backups = self._control_backups_ammount()
+        
+        self._new_hash: str
+        
+    
+    def _validate_backup_dir_path(self, backup_path: Path) -> Path:
+        if not backup_path.exists():
+            backup_path.mkdir(parents=True, exist_ok=True)
+        try:
+            return backup_path.relative_to(Path.cwd())
+        except ValueError:
+            return Path(os.path.relpath(backup_path, Path.cwd()))
+        
+    def _validate_control_hash_path(self, hash_path: Path) -> Path:
+        path = hash_path.parent 
+        if not hash_path.exists():
+            path.mkdir(parents=True, exist_ok=True)
+            hash_path.touch(exist_ok=True)
+        try:
+            return hash_path.relative_to(Path.cwd())
+        except ValueError:
+            return Path(os.path.relpath(hash_path, Path.cwd()))
         
     def _create_backup_file_name(self) -> str:
         current_datetime = datetime.now()
-        file_name = current_datetime.strftime(BackupConst.BACKUP_FILE_NAME_FORMAT) + GeneralConst.DATAFILE_EXTENSION
+        file_name = current_datetime.strftime(self._settings['backup_file_name_format']) + self._settings['extension']
         return file_name
 
     def _create_control_hash(self, json_data: str) -> str:
-        data_hash = sha256(json_data.encode(GeneralConst.ENCODING_FORMAT)).hexdigest()
+        data_hash = sha256(json_data.encode('utf-8')).hexdigest()
         return data_hash
 
     def _get_control_hash(self) -> str:
-        with open(self._hash_file, "r") as f:
+        with open(self._hash_file, "r", encoding=self._settings['encoding']) as f:
             control_hash = f.read()
         return control_hash
     
@@ -52,29 +61,29 @@ class BackUp:
     
     def _backup_data(self, b64_data: str) -> None:
         file_name = self._create_backup_file_name()
-        file_path = self._backup_dir + os.sep + file_name 
-        with open(file_path, "w", encoding=GeneralConst.ENCODING_FORMAT) as f:
+        file_path = self._backup_dir / file_name 
+        with open(file_path, "w", encoding=self._settings['encoding']) as f:
             f.write(b64_data)
-        with open(self._hash_file, "w", encoding=GeneralConst.ENCODING_FORMAT) as f:
+        with open(self._hash_file, "w", encoding=self._settings['encoding']) as f:
             f.write(self._new_hash)
             
-    def _get_backups_list(self) -> list[str]:
+    def _get_backups_list(self) -> list[Path]:
         backups = os.listdir(self._backup_dir)
-        backups_abspath = [self._backup_dir + os.sep + file for file in backups]
+        backups_abspath = [self._backup_dir / file for file in backups]
         sorted_backups = sorted(backups_abspath, key=os.path.getctime, reverse=True)
         return sorted_backups
     
-    def _remove_old_backups(self, sorted_backups: list[str]) -> list[str]:
-        if len(sorted_backups) > BackupConst.STORED_BACKUPS:
-            for file in sorted_backups[BackupConst.STORED_BACKUPS:]:
+    def _remove_old_backups(self, sorted_backups: list[Path]) -> list[Path]:
+        if len(sorted_backups) > self._settings['max_backups']:
+            for file in sorted_backups[self._settings['max_backups']:]:
                 if os.path.isfile(file):
                     os.remove(file)
-            return sorted_backups[:BackupConst.STORED_BACKUPS]
-        return sorted_backups[:BackupConst.STORED_BACKUPS]
+        return sorted_backups[:self._settings['max_backups']]
                 
-    def _control_backups_ammount(self) -> None:
+    def _control_backups_ammount(self) -> list[Path]:
         sorted_backups = self._get_backups_list()
         available_backups = self._remove_old_backups(sorted_backups)
+        return available_backups
         
     def save_backup_file(self, json_data: str, b64_data: str) -> None:
         if self._made_changes(json_data):

@@ -39,10 +39,14 @@ class MainFrame(wx.Frame):
         self.SetTitle(title)
         
         self._init_ui()
+        
+        self.Raise()
 
         
     def _init_ui(self) -> None:
         main_panel = MainPanel(self, self._manage_data, self._settings, self._color_themes, self._theme_name)
+        
+        main_panel.Raise()
         
         self.SetMenuBar(TopBarMenu(self, main_panel))
         

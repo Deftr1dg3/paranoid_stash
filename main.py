@@ -38,7 +38,7 @@ try:
     f.Show()
     app.MainLoop()
 except Exception as ex:
-    print(f'EXCEPTION ==> {ex}')
+    print(f'EXCEPTION IN MAIN ==> {ex}')
 except BaseException as ex:
-    print(f'BASE ==> {ex}')
+    print(f'BASE EXCEPTION IN MAIN ==> {ex}')
 

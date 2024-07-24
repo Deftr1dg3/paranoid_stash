@@ -1,3 +1,4 @@
+from __future__ import annotations
 import wx
 import ast
 import json
@@ -114,16 +115,8 @@ class SelectColorThemePanel(BasePanel):
         
 class SelectColorThemeFrame(wx.Frame):
     
-    _instance = None 
-    
-    def __new__(cls, *args, **kwargs):
-        if cls._instance is  None:
-
-            new_inst = super().__new__(cls, *args, **kwargs)
-            cls._instance = new_inst
-        return cls._instance
-
     def __init__(self, parent: BasePanel, settings: dict, color_themes: dict):
+        
         self._parent = parent 
         self._settings = settings
         self._color_themes = color_themes
@@ -144,16 +137,3 @@ class SelectColorThemeFrame(wx.Frame):
     def _init_ui(self):
         panel = SelectColorThemePanel(self) 
 
-
-class SelectColor(wx.App):
-    
-    def __init__(self, parent: BasePanel, settings: dict, color_themes: dict):
-        super().__init__()
-        self.frame = SelectColorThemeFrame(parent, settings, color_themes)
-        self.frame.Show()
-        
-
-def launch_select_color(parent: BasePanel, settings: dict, color_themes: dict):
-    app = SelectColor(parent, settings, color_themes)
-    app.MainLoop()
-    # app.Destroy()

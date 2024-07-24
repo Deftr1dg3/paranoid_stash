@@ -4,6 +4,7 @@ import wx
 import ast
 
 from GUI.base_panel import BasePanel
+from GUI.menu_functions.menu_functions import MenuFunctions
 
 class TopMidPanel(BasePanel):
     def __init__(self, parent: BasePanel) -> None:
@@ -14,6 +15,8 @@ class TopMidPanel(BasePanel):
         self._search_placeholder = self._settings['top_panel']['top_mid_panel']['search_placeholder']
         
         self._foreground_color = wx.Colour(self._color_themes[self._current_theme]['text'])
+        
+        self._functions = MenuFunctions(self)
         
         self._init_ui()
         self._bind_events()
@@ -64,17 +67,13 @@ class TopMidPanel(BasePanel):
         self._dummy_panel.SetFocus()
 
     def _add_entry(self, event) -> None:
-        if self._manage_data.add_entry():
-            self.refresh_mid_panel()
-            self.refresh_left_panel()
+        self._functions.add_entry()
+            
+    def get_query(self):
+        return self._search.GetValue()
         
     def _on_search(self, event) -> None:
-        query = self._search.GetValue()
-        self._manage_data.search(query)
-        self._manage_data.selected_category = None 
-        self._manage_data.selected_entry = None 
-        BasePanel.set_selected_entry(None)
-        self.refresh_body_panel()
+        self._functions.search()
         
     def applay_color_theme(self):
         self.SetBackgroundColour(wx.Colour(self._color_themes[self._current_theme ]['medium']))
