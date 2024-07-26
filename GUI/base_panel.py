@@ -3,6 +3,7 @@ import wx
 from collections import deque
 
 from manage_data import ManageData
+# from GUI.menu_functions.menu_functions import MenuFunctions
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
@@ -32,6 +33,11 @@ class BasePanel(wx.Panel):
         inst = super().__new__(cls, *args, **kwargs)
         cls.instances.append(inst)
         return inst
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        
+        # self._functions = MenuFunctions(self)
 
     @property
     def settings(self):
@@ -92,5 +98,5 @@ class BasePanel(wx.Panel):
         self.refresh_right_panel()
     
     def applay_color_theme(self):
-        pass
+        raise NotImplementedError(f'Function "apply_color_theme()" is not implemented in {self.__class__.__name__}.')
 

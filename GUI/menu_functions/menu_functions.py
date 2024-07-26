@@ -1,12 +1,14 @@
 from __future__ import annotations
 import time
 
-from GUI.base_panel import BasePanel
 from GUI.menu_functions.select_color_theme import SelectColorThemeFrame
 from GUI.modals.popups import dialog_popup, get_input, message_popup
+from GUI.base_panel import BasePanel
 
+from typing import Optional, TYPE_CHECKING
 
-from typing import Optional
+if TYPE_CHECKING:
+    from GUI.base_panel import BasePanel
 
 class MenuFunctions():
     
@@ -47,14 +49,16 @@ class MenuFunctions():
         time.sleep(0.05)
     
     def move_entry_up(self) -> None:
-        self.manage_data.move_entry()
-        self._base_panel.refresh_mid_panel()
-        time.sleep(0.05)
+        if self.manage_data.search_results is None:
+            self.manage_data.move_entry()
+            self._base_panel.refresh_mid_panel()
+            time.sleep(0.05)
 
     def move_entry_down(self) -> None:
-        self.manage_data.move_entry(direction=1)
-        self._base_panel.refresh_mid_panel()
-        time.sleep(0.05)
+        if self.manage_data.search_results is None:
+            self.manage_data.move_entry(direction=1)
+            self._base_panel.refresh_mid_panel()
+            time.sleep(0.05)
        
     # Move --------------------------------------------------------   
          
@@ -162,12 +166,14 @@ class MenuFunctions():
     # State ------------------------------------------------------
     
     def undo(self):
-        self.manage_data.backward()
-        self._base_panel.refresh_body_panel()
+        if self.manage_data.backward():
+            self._base_panel.refresh_body_panel()
+            self._base_panel.body.right_panel.deselect_all()
     
     def redu(self):
-        self.manage_data.forward()
-        self._base_panel.refresh_body_panel() 
+        if self.manage_data.forward():
+            self._base_panel.refresh_body_panel() 
+            self._base_panel.body.right_panel.deselect_all()
     
     # State ------------------------------------------------------
     

@@ -8,5 +8,7 @@
     "encoding": "utf-8",
     "max_backups": 3
   },
-  "color_theme": "blue"
+  "color_theme": "blue",
+  "color_themes": "./GUI/color_themes.json",
+  "gui_settings": "./GUI/gui_settings.json"
 }

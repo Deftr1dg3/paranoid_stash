@@ -1,6 +1,28 @@
 {
   "global": {
-    "settings_path": "settings.json"
+    "settings_path": "settings.json",
+    "app_name": "Paranoid Stash"
+  },
+  "first_launch": {
+    "create_new": "Create New DataFile",
+    "import_datafile": "Select Existing DataFile"
+  },
+  "new_password": {
+    "title": "Create New Password",
+    "input_field_size": [200, -1],
+    "new_password_hint": "Insert new password",
+    "confirm_password_hint": "Confirm new password",
+    "cancel_label": "Cancel",
+    "confirm_label": "Confirm",
+    "margin_buttons": 10
+  },
+  "password_does_not_match": {
+    "title": "Invalid.",
+    "message": "Confirmation of password does not match."
+  },
+  "password_created": {
+    "title": "The password has been applied.",
+    "message": "IMPORTANT.\nPlease remember this passowrd. There is no way to restore it."
   },
   "mainframe_size": {
     "size": "(1100, 610)",

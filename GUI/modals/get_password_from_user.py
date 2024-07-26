@@ -4,13 +4,7 @@
 import wx 
 import os
 import sys
-from data_file import DataFile
-from settings import Settings
-from gui.modals.popups import dialog_popup, message_popup
-from exceptions import UnableToDecodeTheFile
-from gui.colours import ColourTheme
-from gui.modals.popups import select_file
-from config import PasswordWindowConst, GeneralConst, WrongExtensionPopup, EmptyFieldPopup
+
 
 class SetPassword(wx.Frame):
     def __init__(self, data_file: DataFile, settings: Settings) -> None:

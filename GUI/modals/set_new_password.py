@@ -6,27 +6,33 @@ import wx
 import os
 import sys
 
+from manage_data import DataFile
+from GUI.base_panel import BasePanel
+from GUI.modals.popups import message_popup
 
 
-class SetNewPassword(wx.Frame):
-    def __init__(self, data_file: DataFile, settings: Settings, change_password: bool = False) -> None:
-
-        super().__init__(None, style=wx.CLOSE_BOX, title=SetNewPasswordConst.TITLE)
+class SetNewPassword(BasePanel):
+    def __init__(self, parent: wx.Frame, data_file: DataFile,  gui_settings: dict, color_themes: dict, current_theme: str, main_app: wx.App, parent_frame: wx.Frame, change_password: bool = False) -> None:
+        super().__init__(parent)
         
-        self.SetBackgroundColour(ColourTheme.AVAILABLE_COLOUR_SCHEMES[settings.COLOUR_SCHEME].MID_PANEL)
+        self._parent = parent
         
-        self._data_file = data_file
-        self._settings = settings
+        self._df = data_file
+        self._gui_settings = gui_settings
+        self._color_themes = color_themes 
+        self._current_theme = current_theme
         self._change_password = change_password
+        self._main_app = main_app
+        self._parent_frame = parent_frame
         
-        self.CenterOnScreen()
+        self._config = self._gui_settings['new_password']
         
         self._init_ui()
         self._bind_events()
         
-        
+        self.applay_color_theme()
+    
     def _init_ui(self) -> None:
-        panel = wx.Panel(self)
         
         main_box = wx.BoxSizer(wx.VERTICAL)
         
@@ -35,15 +41,15 @@ class SetNewPassword(wx.Frame):
         password_strength_box = wx.BoxSizer(wx.HORIZONTAL)
         buttons_box = wx.BoxSizer(wx.HORIZONTAL)
         
-        self._new_password = wx.TextCtrl(panel, style=wx.TE_PROCESS_ENTER | wx.TE_PASSWORD, size=SetNewPasswordConst.INPUT_FIELD_SIZE)
-        self._new_password.SetHint(SetNewPasswordConst.NEW_PASSOWRD_HINT)
-        self._new_password.SetFocus()
+        self._new_password = wx.TextCtrl(self, style=wx.TE_PROCESS_ENTER | wx.TE_PASSWORD, size=self._config['input_field_size'])
+        self._new_password.SetHint(self._config['new_password_hint'])
+        # self._new_password.SetFocus()
         
-        self._confirm_new_password = wx.TextCtrl(panel, style=wx.TE_PROCESS_ENTER | wx.TE_PASSWORD, size=SetNewPasswordConst.INPUT_FIELD_SIZE)
-        self._confirm_new_password.SetHint(SetNewPasswordConst.CONFIRM_NEW_PASSWORD_HINT)
+        self._confirm_new_password = wx.TextCtrl(self, style=wx.TE_PROCESS_ENTER | wx.TE_PASSWORD, size=self._config['input_field_size'])
+        self._confirm_new_password.SetHint(self._config['confirm_password_hint'])
         
-        self._cancel = wx.Button(panel, label=SetNewPasswordConst.CANCEL_LABEL)
-        self._confirm = wx.Button(panel, label=SetNewPasswordConst.CONFIRM_LABEL)
+        self._cancel = wx.Button(self, label=self._config['cancel_label'])
+        self._confirm = wx.Button(self, label=self._config['confirm_label'])
         
         new_password_box.Add(self._new_password)
         confirm_new_password_box.Add(self._confirm_new_password)
@@ -52,14 +58,14 @@ class SetNewPassword(wx.Frame):
         buttons_box.Add(self._confirm, 0, wx.LEFT, 30)
         
         main_box.Add(new_password_box, 0, wx.ALIGN_CENTER | wx.TOP, 60)
-        main_box.Add(confirm_new_password_box, 0, wx.ALIGN_CENTER | wx.TOP, SetNewPasswordConst.DISTANCE_BETWEEN_BUTTONS)
+        main_box.Add(confirm_new_password_box, 0, wx.ALIGN_CENTER | wx.TOP, self._config['margin_buttons'])
         
         main_box.Add(password_strength_box, 0, wx.ALIGN_CENTER | wx.TOP, 10)
         
         main_box.Add(buttons_box, 0, wx.ALIGN_CENTER | wx.TOP, 10)
         
-        panel.SetSizer(main_box)
-        panel.Layout()
+        self.SetSizer(main_box)
+        self.Layout()
         
         
     def _bind_events(self) -> None:
@@ -69,12 +75,13 @@ class SetNewPassword(wx.Frame):
         self._confirm_new_password.Bind(wx.EVT_TEXT_ENTER, self._on_confirm_new_password_enter)
         
     def _on_new_password_enter(self, event) -> None:
-        password = self._new_password.GetValue()
-        if len(password) == 0:
-            message_popup(EmptyFieldPopup.TITLE, EmptyFieldPopup.MESSAGE)
-            self._new_password.SetFocus()
-            return 
-        self._confirm_new_password.SetFocus()
+        # password = self._new_password.GetValue()
+        # if len(password) == 0:
+        #     message_popup(EmptyFieldPopup.TITLE, EmptyFieldPopup.MESSAGE)
+        #     self._new_password.SetFocus()
+        #     return 
+        # self._confirm_new_password.SetFocus()
+        ...
         
     def _on_confirm_new_password_enter(self, event) -> None:
         self._on_confirm(None)
@@ -83,31 +90,58 @@ class SetNewPassword(wx.Frame):
         password = self._new_password.GetValue()
         confirmation = self._confirm_new_password.GetValue()
         if not password == confirmation:
-            message_popup(PasswordDoesNotMatchPopup.MESSAGE, PasswordDoesNotMatchPopup.TITLE)
+            message_popup(self._gui_settings['password_does_not_match']['message'], self._gui_settings['password_does_not_match']['title'])
             self._new_password.SetValue("")
             self._confirm_new_password.SetValue("")
             self._new_password.SetFocus()
             return 
-        self._data_file.password = password
+        self._df.password = password
         if self._change_password:
-            self._data_file.commit()
+            self._df.save_data()
         else:
-            self._data_file.create()
-        message_popup(PasswordCreatedPopup.MESSAGE, PasswordCreatedPopup.TITLE)
-        self._restart()
+            self._df.create_new_data_file()
+        message_popup(self._gui_settings['password_created']['message'], self._gui_settings['password_created']['title'])
+        self._parent_frame.Destroy()
+        self._on_cancel(None)
+
+    
+    def _on_cancel(self, event):
+        self._parent.Destroy()
+    
+    def applay_color_theme(self):
+        self.SetBackgroundColour(wx.Colour(self._color_themes[self._current_theme]['medium']))
+
+
+
+class SetNewPasswordFrame(wx.Frame):
+    def __init__(self, data_file: DataFile,  gui_settings: dict, color_themes: dict, current_theme: str, main_app: wx.App, parent_frame: wx.Frame, change_password: bool = False) -> None:
         
-    def _restart(self) -> None:
-        python = sys.executable
-        os.execl(python, python, * sys.argv)
+        super().__init__(None, style=wx.CLOSE_BOX, title=gui_settings['new_password']['title'])
+        
+        self._df = data_file
+        self._gui_settings = gui_settings
+        self._color_themes = color_themes 
+        self._current_theme = current_theme
+        self._change_password = change_password
+        self._main_app = main_app
+        self._parent_frame = parent_frame
+        
+        self.CenterOnScreen()
+        
+        self._init_ui()
+
+        
+    def _init_ui(self) -> None:
+        panel = SetNewPassword(self, self._df, self._gui_settings, self._color_themes, self._current_theme, self._main_app, self._parent_frame, self._change_password)
+        
+    # def _restart(self) -> None:
+    #     python = sys.executable
+    #     os.execl(python, python, * sys.argv)
              
-    def _on_cancel(self, event) -> None:
-        self.Close()
+    # def _on_cancel(self, event) -> None:
+    #     self.Close()
 
 
-def launch_set_new_password(data_file: DataFile, settings: Settings, change_password: bool = False):
-    app = wx.App()
-    SetNewPassword(data_file, settings, change_password).Show()
-    app.MainLoop()
 
 
 

@@ -38,12 +38,17 @@ class RightPanel(BasePanel):
         self._main_box.Add(edit_box, 1, wx.EXPAND)
         self._main_box.Add(notes_box, 0, wx.EXPAND)
         
+        self._dummy_panel = wx.Panel(self, size=(0, 0))
+        
         self.SetSizer(self._main_box)
         self.Layout()
         
     def refresh(self):
         self._main_box.Clear(True)
         self._init_ui()
+    
+    def deselect_all(self):
+        self._dummy_panel.SetFocus()
         
     def applay_color_theme(self):
         self.SetBackgroundColour(wx.Colour(self._color_themes[self._current_theme]['medium']))

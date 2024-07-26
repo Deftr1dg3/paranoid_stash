@@ -113,39 +113,58 @@ class DataFile:
 class State(NamedTuple):
     data: Data 
     selected_category: str | None
-    selected_entry: int | None
+    selected_entry_ind: int | None
     search_results: list | None
 
   
 class DataState:
-    _data_state = []
     
     def __init__(self):
-        self._current_index = -1
+        self._undo = []
+        self._redo = []
+        self._max_stack_len = 1000
     
     def add(self, data_state: ManageData) -> None:
-        state = copy.deepcopy(data_state)
+            
+        if data_state.selected_entry is not None:
+            selected_entry_ind = data_state.get_entry_index(data_state.selected_entry)
+        else:
+            selected_entry_ind = -1
+        
+        state = copy.deepcopy(data_state) 
         data = state.data 
         selected_category = state.selected_category
-        selected_entry = state.selected_entry
         search_results = state.search_results
         
-        self._current_index += 1
-        self._data_state.insert(self._current_index, State(data=data,
-                                                           selected_category=selected_category,
-                                                           selected_entry=selected_entry,
-                                                           search_results=search_results))
-        self._data_state = self._data_state[:self._current_index + 1]
+        new_state = State(data=data,
+                            selected_category=selected_category,
+                            selected_entry_ind=selected_entry_ind,
+                            search_results=search_results)
 
-    def forward(self) -> State:
-        if self._current_index < len(self._data_state):
-            self._current_index += 1 
-        return self._data_state[self._current_index]
+        # if self._undo:
+        #     print(f'{self._undo[-1] == new_state}')
+        # if self._redo:
+        #     print(f'{self._redo[-1] == new_state }')
+        
+        self._undo.append(new_state)
+
+
+    def forward(self) -> State | None:
+        if self._redo:
+            state = self._redo.pop()
+            self._undo.append(state)
+            return state 
+        return None
     
-    def backward(self) -> State:
-        if self._current_index > 0:
-            self._current_index -= 1
-        return self._data_state[self._current_index]
+    def backward(self) -> State | None:
+        if self._undo:
+            if len(self._undo) > 1:
+                state = self._undo.pop()
+                self._redo.append(state)
+            else:
+                state = self._undo[0]
+            return state 
+        return None
     
 
 class ManageData:
@@ -177,19 +196,18 @@ class ManageData:
             i += 1
         return -1
 
-    def get_entry_index(self, entry_id: int, from_search: bool = False) -> tuple[str, int]:
-        if not from_search:
-            for category in self._data.keys():
-                for i in range(len(self._data[category])):
-                    if id(self._data[category][i]) == entry_id:
-                        return category, i
+    def get_entry_index(self, entry_id: int) -> int:
+        if self.selected_category is not None:
+            category_content = self._data[self.selected_category]
+            for i in range(len(category_content)):
+                if id(category_content[i]) == entry_id:
+                    return i
                     
-        if self.search_results is not None:          
+        if self.search_results is not None:       
             for i in range(len(self.search_results)):
                 if id(self.search_results[i]) == self.selected_entry:
-                    return ('', i)
-                
-        return ('', -1)
+                    return i       
+        return -1
 
     def update(self) -> None:
         self._df.save_data()
@@ -282,19 +300,21 @@ class ManageData:
             return
         if self.search_results is not None:
             return
-        category, e_ind = self.get_entry_index(self.selected_entry)
+        e_ind = self.get_entry_index(self.selected_entry)
         if not e_ind == -1:
             step = 1 * direction 
             swap = e_ind + step
-            if 0 <= swap < len(self._data[category]) and self.selected_category == category:
-                self._data[category][e_ind], self._data[category][swap] = self._data[category][swap], self._data[category][e_ind]
+            if 0 <= swap < len(self._data[self.selected_category]):
+                self._data[self.selected_category][e_ind], self._data[self.selected_category][swap] = self._data[self.selected_category][swap], self._data[self.selected_category][e_ind]
                 self.update()
                 self.save_state()
     
     def get_entry_by_id(self, entry_id: int) -> list | None:
-        category, e_ind = self.get_entry_index(entry_id)
+        e_ind = self.get_entry_index(entry_id)
+        if self.search_results is not None:
+            return self.search_results[e_ind]
         if not e_ind == -1:
-            return self._data[category][e_ind]
+            return self._data[self.selected_category][e_ind]
     
     def get_selected_entry(self) -> list | None:
         if self.selected_entry is None:
@@ -304,9 +324,9 @@ class ManageData:
     def delete_entry(self) -> None:
         if self.selected_entry is None:
             return
-        category, e_ind = self.get_entry_index(self.selected_entry)
+        e_ind = self.get_entry_index(self.selected_entry)
         if not e_ind == -1:
-            del self._data[category][e_ind]
+            del self._data[self.selected_category][e_ind]
             self.selected_entry = None
             self.update()
             self.save_state()
@@ -328,28 +348,63 @@ class ManageData:
         
     # Manage instance states ------------------------------------------------------------------------
     
-    def forward(self):
+    def get_entry_id_by_index(self, index: int | None) -> int | None:
+        if index is None or index == -1:
+            return
+        if self.selected_category:
+            return id(self._data[self.selected_category][index])
+        if self.search_results:
+            return id(self.search_results[index])
+    
+    
+    def forward(self) -> bool:
         next_state = self._state.forward()
         
-        self._data = next_state.data
-        self.selected_category = next_state.selected_category
-        self.selected_entry = next_state.selected_entry
-        self.search_results = next_state.search_results
+        # print(f'{len(self._state._undo) = }')
+        # print(f'{len(self._state._redo) = }')
         
-        self._df.data = self._data
-        self.update()
+        if next_state is not None:
+            
+            self._data = next_state.data
+            self._df.data = self._data
+            
+            self.selected_category = next_state.selected_category
+            self.search_results = next_state.search_results
+            
+            self.selected_entry = self.get_entry_id_by_index(next_state.selected_entry_ind)
+            
+            # self.print_attrs()
+
+            self.update()
+            return True
+        return False
     
-    def backward(self):
+    def backward(self) -> bool:
         prev_state = self._state.backward()
         
-        self._data = prev_state.data
-        self.selected_category = prev_state.selected_category
-        self.selected_entry = prev_state.selected_entry
-        self.search_results = prev_state.search_results
+        # print(f'{len(self._state._undo) = }')
+        # print(f'{len(self._state._redo) = }')
         
-        self._df.data = self._data
-        self.update()
+        if prev_state is not None:
+        
+            self._data = prev_state.data
+            self._df.data = self._data
+            
+            self.selected_category = prev_state.selected_category
+            self.search_results = prev_state.search_results
+            
+            self.selected_entry = self.get_entry_id_by_index(prev_state.selected_entry_ind)
+            
+            # self.print_attrs()
+            
+            self.update()
+            return True 
+        return False
          
+    # def print_attrs(self):
+    #     print(f'{self.selected_category = }')
+    #     print(f'{self.selected_entry = }')
+        # print(f'{self.search_results = }\n')
     
     # Password ------------------------------------------------------------------------
 

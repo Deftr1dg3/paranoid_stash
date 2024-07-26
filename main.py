@@ -5,7 +5,7 @@ import wx
 import json
 from pathlib import Path
 
-from GUI import MainFrame
+from GUI import GUIApp, MainFrame
 from manage_data import ManageData, DataFile
 
 SETTINGS_PATH = Path('./settings.json')
@@ -13,24 +13,26 @@ SETTINGS_PATH = Path('./settings.json')
 with open(SETTINGS_PATH, 'r') as f:
     settings = json.load(f)
 
+print("WORKED TILL HERE", flush=True)
 df = DataFile(settings['data'])
-df.password = 'hello'
+print("WORKED TILL HERE", flush=True)
+df.password = '1234'
+
 
 # df.create_new_data_file()
 
+print("WORKED TILL HERE")
+
 try:
     df.load_data()
-except ValueError:
-    print('Unable to decrypt file')
-    os._exit(0)
+except Exception as ex:
+    print(f'Unable to decrypt file -> {ex}')
+else:
+    print("ELSO")
+    
+print("WORKED TILL HERE END")
 
 md = ManageData(df)
-
-
-# md.selected_category = 'Internet'
-# md.add_entry()
-
-# print(md)
 
 try:
     app = wx.App()
@@ -41,4 +43,8 @@ except Exception as ex:
     print(f'EXCEPTION IN MAIN ==> {ex}')
 except BaseException as ex:
     print(f'BASE EXCEPTION IN MAIN ==> {ex}')
+    
+    
+# app = GUIApp(settings)
+# app.MainLoop()
 

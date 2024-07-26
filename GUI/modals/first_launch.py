@@ -4,47 +4,49 @@
 import wx
 import os
 import sys
-from data_file import DataFile
-from settings import Settings
-from gui.colours import ColourTheme
-from gui.modals.popups import select_file, dialog_popup
-from gui.modals.set_new_password import launch_set_new_password
-from config import FirstLaunchConst, GeneralConst, WrongExtensionPopup
 
+from GUI.base_panel import BasePanel
+from GUI.modals.set_new_password import SetNewPasswordFrame
+from manage_data.data_file import DataFile
 
-class FirstLaunch(wx.Frame):
-    def __init__(self, data_file: DataFile, settings: Settings) -> None:
-        super().__init__(None, style=wx.CLOSE_BOX, title=GeneralConst.APP_NAME)
+class FirstLaunch(BasePanel):
+    def __init__(self, parent, data_file: DataFile,  gui_settings: dict, color_themes: dict, current_theme: str, main_app: wx.App) -> None:
+        super().__init__(parent)
         
-        self.SetBackgroundColour(ColourTheme.AVAILABLE_COLOUR_SCHEMES[settings.COLOUR_SCHEME].MID_PANEL)
+        self._parent = parent
         
-        self._data_file = data_file
-        self._settings = settings
+        self._df = data_file
+        self._gui_settings = gui_settings
+        self._color_themes = color_themes 
+        self._current_theme = current_theme
+        self._main_app = main_app
         
-        self.CenterOnScreen()
+        self._config = self._gui_settings['first_launch']
         
         self._init_ui()
         self._bind_events()
         
+        self.applay_color_theme()
+        
         
     def _init_ui(self) -> None:
-        panel = wx.Panel(self)
-        
         main_box = wx.BoxSizer(wx.VERTICAL)
         
         button_box = wx.BoxSizer(wx.HORIZONTAL)
         
-        self._create_new = wx.Button(panel, label=FirstLaunchConst.CREATE_NEW_LABEL)
-        self._import_datafile = wx.Button(panel, label=FirstLaunchConst.IMPORT_DATAFILE_LABEL)
+        self._create_new = wx.Button(self, label=self._config['create_new'])
+        self._import_datafile = wx.Button(self, label=self._config['import_datafile'])
       
         button_box.Add(self._create_new)
         button_box.Add(self._import_datafile, 0, wx.LEFT, 20)
 
         main_box.Add(button_box, 1, wx.ALIGN_CENTER | wx.TOP, 90)
         
-        panel.SetSizer(main_box)
-        panel.Layout()
+        self.SetSizer(main_box)
+        self.Layout()
         
+        
+   
         
     def _bind_events(self) -> None:
         self._create_new.Bind(wx.EVT_BUTTON, self._on_create_new)
@@ -52,44 +54,62 @@ class FirstLaunch(wx.Frame):
         
         
     def _on_create_new(self, event) -> None:
-        launch_set_new_password(self._data_file, self._settings)
+        # launch_set_new_password(self._data_file, self._settings)
+        self._new_password_frame = SetNewPasswordFrame(self._df, self._gui_settings, self._color_themes, self._current_theme, self._main_app, self._parent)
+        self._new_password_frame.Show()
     
     
     def _on_import_datafile(self, event) -> None:
-        new_file = select_file()
-        if new_file is not None:
-            self._settings.DATAFILE_PATH = new_file
-            self._restart()
+        # new_file = select_file()
+        # if new_file is not None:
+        #     self._settings.DATAFILE_PATH = new_file
+        #     self._restart()
+        ...
                 
     
     def _import_file_to_default_path(self, file_path: str) -> None:
-        default_datafile_path = self._data_file.datafile
+        # default_datafile_path = self._data_file.datafile
         
-        with open(file_path, "r", encoding="utf-8") as f:
-            file_data = f.read()
+        # with open(file_path, "r", encoding="utf-8") as f:
+        #     file_data = f.read()
             
-        with open(default_datafile_path, "w", encoding="utf-8") as f:
-            f.write(file_data)
+        # with open(default_datafile_path, "w", encoding="utf-8") as f:
+        #     f.write(file_data)
+        ...
 
 
     def _validate_path(self, path: str) -> bool:
-        file_name, extension = os.path.splitext(path)
-        if extension == GeneralConst.DATAFILE_EXTENSION:
-            return True
-        proceed = dialog_popup(WrongExtensionPopup.MESSAGE, WrongExtensionPopup.TITLE)
-        if proceed:
-            return True
-        return False
+        # file_name, extension = os.path.splitext(path)
+        # if extension == GeneralConst.DATAFILE_EXTENSION:
+        #     return True
+        # proceed = dialog_popup(WrongExtensionPopup.MESSAGE, WrongExtensionPopup.TITLE)
+        # if proceed:
+        #     return True
+        # return False
+        ...
     
-    
-    def _restart(self) -> None:
-        python = sys.executable
-        os.execl(python, python, * sys.argv)
+    def applay_color_theme(self):
+        self.SetBackgroundColour(wx.Colour(self._color_themes[self._current_theme]['medium']))
 
 
-def launch_first_start(data_file: DataFile, settings: Settings):
-    app = wx.App()
-    FirstLaunch(data_file, settings).Show()
-    app.MainLoop()
+class FirstLaunchFrame(wx.Frame):
+    def __init__(self, data_file: DataFile, gui_settings: dict, color_themes: dict, current_theme: str, main_app: wx.App):
+        super().__init__(None, style=wx.CLOSE_BOX, title=gui_settings['global']['app_name'])
+        
+        self._df = data_file
+        self._gui_settings = gui_settings
+        self._color_themes = color_themes 
+        self._current_theme = current_theme
+        self._main_app = main_app
+        
+        self.CenterOnScreen()
+        self._init_ui()
+        
+    def _init_ui(self):
+        
+        panel = FirstLaunch(self, self._df, self._gui_settings, self._color_themes, self._current_theme, self._main_app)
+    
+
+
     
 

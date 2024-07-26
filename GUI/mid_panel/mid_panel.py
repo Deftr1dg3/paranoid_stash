@@ -68,7 +68,7 @@ class MidPanel(BasePanel):
         #     return
             
         if self._manage_data.selected_entry is not None:
-            _, index = self._manage_data.get_entry_index(self._manage_data.selected_entry)
+            index = self._manage_data.get_entry_index(self._manage_data.selected_entry)
             self.scroll.Scroll((0, index))
         
     def _display_entry(self, scroll_sizer, entry: list) -> None:

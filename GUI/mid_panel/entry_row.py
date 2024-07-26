@@ -98,6 +98,7 @@ class EntryRow(BasePanel):
             for entry in self.entry_rows:
                 entry.deselect_entry()
         self.select_entry()
+        self._manage_data.save_state()
         self.refresh_right_panel()
         
     def _on_right_click(self, event) -> None:
