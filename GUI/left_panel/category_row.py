@@ -134,6 +134,7 @@ class CategoryRow(BasePanel):
         self.select_row()
         self._manage_data.selected_entry = None
         self._manage_data.search_results  = None
+        self._manage_data.save_state()
         self.refresh_mid_panel()
         self.refresh_right_panel()
 
