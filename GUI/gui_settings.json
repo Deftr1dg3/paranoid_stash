@@ -16,6 +16,24 @@
     "confirm_label": "Confirm",
     "margin_buttons": 10
   },
+  "empy_field": {
+    "title": "Unable to proceed.",
+    "message": "No characters inserted."
+  },
+  "get_password": {
+    "size": [400, 200],
+    "title": "Password",
+    "password_hint": "Insert password ... ",
+    "select_another_datafile": "^ Select another DataFile",
+    "wrong_password": {
+      "message": "Either the file is not correct or password. Do you wish to try again?",
+      "title": "Unable to decode the file."
+    },
+    "no_password_provided": {
+      "message": "No password inserted.",
+      "title": "Unable to proceed."
+    }
+  },
   "password_does_not_match": {
     "title": "Invalid.",
     "message": "Confirmation of password does not match."
@@ -155,6 +173,11 @@
       "entry_down_shortcut": "Ctrl+Down",
       "remove_entry": "Remove Entry",
       "remove_entry_shortcut": "Ctrl+D"
+    },
+    "default_datafile_name": "PSdata",
+    "save_message": {
+      "title": "Success.",
+      "message": "The file has been saved as -> {}"
     }
   },
   "copy_popup": {
@@ -188,7 +211,7 @@
         "rename_category": "Rename Category",
         "clear_category": "Clear Category",
         "clear_category_shortcut": "Shift+Ctrl+C",
-        "import_datafile": "Import Datafile",
+        "save_datafile_as": "Save DataFile as...",
         "show_datafile": "Show DataFile in Folder",
         "change_datafile_dir": "Change Datafile Directory",
         "change_password": "Change Password",

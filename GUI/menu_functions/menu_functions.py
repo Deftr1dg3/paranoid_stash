@@ -1,9 +1,11 @@
 from __future__ import annotations
 import time
+from pathlib import Path
 
 from GUI.menu_functions.select_color_theme import SelectColorThemeFrame
-from GUI.modals.popups import dialog_popup, get_input, message_popup
+from GUI.modals.popups import dialog_popup, get_input, message_popup, save_file_as
 from GUI.base_panel import BasePanel
+from GUI.modals.set_new_password import SetNewPasswordFrame
 
 from typing import Optional, TYPE_CHECKING
 
@@ -139,9 +141,10 @@ class MenuFunctions():
     # Entry ------------------------------------------------------
     
     def add_entry(self):
-        self.manage_data.add_entry()
-        self._base_panel.refresh_mid_panel()
-        self._base_panel.refresh_right_panel()
+        if self.manage_data.search_results is None:
+            self.manage_data.add_entry()
+            self._base_panel.refresh_mid_panel()
+            self._base_panel.refresh_right_panel()
         
     def remove_entry(self):
         if self.manage_data.selected_entry is None:
@@ -200,4 +203,22 @@ class MenuFunctions():
                 self._color_panel_active = False 
                 self.choose_color_theme()
     
+    def change_password(self):
+        set_new_password = SetNewPasswordFrame(self._base_panel, self.manage_data._df, self.settings, self._base_panel._color_themes, self._base_panel._current_theme, change_password=True)
+        set_new_password.Show()
     
+
+    # State ------------------------------------------------------
+    
+    # Datafile ------------------------------------------------------
+    
+    def save_datafile_as(self):
+        save_as = save_file_as("/", self._config['default_datafile_name'])
+        if save_as is not None:
+            datafile_path: Path = self.manage_data._df.io.file_path
+            with open(datafile_path, "r", encoding="utf-8") as f:
+                data = f.read()
+            with open(save_as, "w", encoding="utf-8") as f:
+                f.write(data)
+            message_popup(self._config['save_message']['message'].format(save_as), self._config['save_message']['title'])
+            

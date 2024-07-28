@@ -35,7 +35,7 @@ class TopBarMenu(wx.MenuBar):
         file_menu.AppendSeparator()
         file_menu.Append(5, f"&{self._options['file']['clear_category']}\t{self._options['file']['clear_category_shortcut']}")
         file_menu.AppendSeparator()
-        file_menu.Append(11, f"&{self._options['file']['import_datafile']}")
+        file_menu.Append(11, f"&{self._options['file']['save_datafile_as']}")
         file_menu.Append(7, f"&{self._options['file']['show_datafile']}")
         file_menu.Append(8, f"&{self._options['file']['change_datafile_dir']}")
         file_menu.AppendSeparator()
@@ -127,7 +127,7 @@ class TopBarMenu(wx.MenuBar):
         ...
         
     def _on_save_datafile_as(self, event) -> None:
-        ...
+        self._functions.save_datafile_as()
         
     def _on_restore_from_backup(self, event) -> None:
         ...
@@ -142,7 +142,7 @@ class TopBarMenu(wx.MenuBar):
         ...
     
     def _on_change_file_password(self, event) -> None:
-        ...
+        self._functions.change_password()
         
         
     #  Edit funcs --------------------------------------------
