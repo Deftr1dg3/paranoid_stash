@@ -11,6 +11,7 @@ from manage_data.backup.backup import BackUp
 
 from pathlib import Path
 
+SETTINGS = "settings.json"
 
 class Data(dict):
     _default_categories = ["Internet", "Emails", "Crypto", "Development", "Databases", "Funds", "Payments", "Apps"]
@@ -27,7 +28,6 @@ class Data(dict):
 class IODataFile:
     def __init__(self, settings: dict) -> None:
         self._settings = settings 
-        
         self._file_path = Path(self._settings['data_file'])
     
     @property
@@ -35,8 +35,18 @@ class IODataFile:
         return self._file_path 
     
     @file_path.setter
-    def file_path(self, path: Path) -> None:
-        self._file_path = path
+    def file_path(self, path: str) -> None:
+        new_path = Path(path).with_suffix(self._settings['extension'])
+        self._settings['data_file'] = str(new_path)
+        self.save_new_datafile_path(str(new_path))
+        self._file_path = new_path
+    
+    def save_new_datafile_path(self, path: str):
+        with open(SETTINGS, 'r') as f:
+            data = json.load(f)
+        data['data'].update(self._settings)
+        with open(SETTINGS, 'w') as f:
+            json.dump(data, f, indent=2)
         
     def get_data(self) -> str:
         with open(self._file_path, "r", encoding=self._settings['encoding']) as f:
@@ -52,7 +62,7 @@ class DataFile:
     def __init__(self, settings: dict) -> None:
         self._settings = settings 
         
-        self._io = IODataFile(settings)
+        self.io = IODataFile(settings)
         self._aes_encryption = AES_Encripton()
         self._backup = BackUp(settings)
         
@@ -85,10 +95,11 @@ class DataFile:
     
     def create_new_data_file(self) -> None:
         self._data = Data()
+        self.change_datafile_path(self._settings['default_datafile_path'])
         self.save_data()
     
     def load_data(self) -> Data:
-        b64_string = self._io.get_data()
+        b64_string = self.io.get_data()
         encrypted_bytes_data = b64decode(b64_string) 
         try:
             decrypted_bytes_data = self._aes_encryption.decrypt(self._password, encrypted_bytes_data)
@@ -103,11 +114,10 @@ class DataFile:
         bytes_data = self._json_data.encode(self._settings['encoding'])
         encrypted_bytes_data = self._aes_encryption.encrypt(self._password, bytes_data)
         self._b64_encrypted_data = b64encode(encrypted_bytes_data).decode(self._settings['encoding'])
-        self._io.save_data(self._b64_encrypted_data)
+        self.io.save_data(self._b64_encrypted_data)
     
     def change_datafile_path(self, new_path: str):
-        self._settings['data_file'] = new_path
-        self._io.file_path = Path(new_path)
+        self.io.file_path = new_path
      
 
 class State(NamedTuple):
@@ -140,14 +150,8 @@ class DataState:
                             selected_category=selected_category,
                             selected_entry_ind=selected_entry_ind,
                             search_results=search_results)
-
-        # if self._undo:
-        #     print(f'{self._undo[-1] == new_state}')
-        # if self._redo:
-        #     print(f'{self._redo[-1] == new_state }')
         
         self._undo.append(new_state)
-
 
     def forward(self) -> State | None:
         if self._redo:

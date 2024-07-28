@@ -2,12 +2,13 @@
 
 import wx
 import json 
+from pathlib import Path
 
 
-SETTINGS_PATH = './GUI/gui_settings.json'
+# SETTINGS_PATH = './GUI/gui_settings.json'
 
-with open(SETTINGS_PATH, 'r') as f:
-    SETTINGS = json.load(f)
+# with open(SETTINGS_PATH, 'r') as f:
+#     SETTINGS = json.load(f)
 
     
 
@@ -41,15 +42,12 @@ def dialog_popup(message: str = "", title: str = "", yes_default=False, parent: 
     return False
 
 
-def select_file(dir: str) -> (str | None):
-
-    title = SETTINGS['file_popup']['select_file']['title']
-    wildcard = SETTINGS['file_popup']['select_file']['wildcard']
+def select_file(dir: str, title: str = "Selecet File", wildcard: str = "*.*") -> (str | None):
     
     file_dialog = wx.FileDialog(None, 
                             title, 
                             wildcard=wildcard, 
-                            style=wx.FD_SAVE | wx.FD_OVERWRITE_PROMPT,
+                            style=wx.FD_OPEN,
                             defaultDir=dir)
     if file_dialog.ShowModal() == wx.ID_OK:
         file_path = file_dialog.GetPath()
@@ -58,9 +56,7 @@ def select_file(dir: str) -> (str | None):
     file_dialog.Destroy()
     
     
-def save_file_as(dir: str, file_name: str) -> (str | None):
-    title = SETTINGS['save_file']['select_file']['title']
-    
+def save_file_as(dir: str, file_name: str, title: str = "Save File as...") -> (str | None):
     file_dialog = wx.FileDialog(None,
                             title, 
                             defaultFile=file_name, 
@@ -73,8 +69,7 @@ def save_file_as(dir: str, file_name: str) -> (str | None):
     file_dialog.Destroy()
 
 
-def select_dir(dir: str) -> (str | None):
-    title = SETTINGS['save_file']['select_file']['title']
+def select_dir(dir: str, title: str = "Select Directory") -> (str | None):
     dir_dialog = wx.DirDialog(None, title)
     if dir_dialog.ShowModal() == wx.ID_OK:
         dir_path = dir_dialog.GetPath()

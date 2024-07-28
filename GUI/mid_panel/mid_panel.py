@@ -62,11 +62,6 @@ class MidPanel(BasePanel):
         self._scroll_to_selected()
     
     def _scroll_to_selected(self):
-        # if self._manage_data.search_results is not None and self._manage_data.selected_entry is not None:
-        #     _, index = self._manage_data.get_entry_index(self._manage_data.selected_entry, from_search=True)
-        #     self.scroll.Scroll((0, index))
-        #     return
-            
         if self._manage_data.selected_entry is not None:
             index = self._manage_data.get_entry_index(self._manage_data.selected_entry)
             self.scroll.Scroll((0, index))

@@ -12,7 +12,7 @@ from GUI.modals.popups import message_popup
 
 
 class SetNewPassword(BasePanel):
-    def __init__(self, parent: wx.Frame, data_file: DataFile,  gui_settings: dict, color_themes: dict, current_theme: str, main_app: wx.App, parent_frame: wx.Frame, change_password: bool = False) -> None:
+    def __init__(self, parent: wx.Frame, data_file: DataFile,  gui_settings: dict, color_themes: dict, current_theme: str, change_password: bool = False) -> None:
         super().__init__(parent)
         
         self._parent = parent
@@ -22,8 +22,6 @@ class SetNewPassword(BasePanel):
         self._color_themes = color_themes 
         self._current_theme = current_theme
         self._change_password = change_password
-        self._main_app = main_app
-        self._parent_frame = parent_frame
         
         self._config = self._gui_settings['new_password']
         
@@ -67,7 +65,6 @@ class SetNewPassword(BasePanel):
         self.SetSizer(main_box)
         self.Layout()
         
-        
     def _bind_events(self) -> None:
         self._confirm.Bind(wx.EVT_BUTTON, self._on_confirm)
         self._cancel.Bind(wx.EVT_BUTTON, self._on_cancel)
@@ -75,13 +72,12 @@ class SetNewPassword(BasePanel):
         self._confirm_new_password.Bind(wx.EVT_TEXT_ENTER, self._on_confirm_new_password_enter)
         
     def _on_new_password_enter(self, event) -> None:
-        # password = self._new_password.GetValue()
-        # if len(password) == 0:
-        #     message_popup(EmptyFieldPopup.TITLE, EmptyFieldPopup.MESSAGE)
-        #     self._new_password.SetFocus()
-        #     return 
-        # self._confirm_new_password.SetFocus()
-        ...
+        password = self._new_password.GetValue()
+        if len(password) == 0:
+            message_popup(self._gui_settings['empy_field']['title'], self._gui_settings['empy_field']['message'])
+            self._new_password.SetFocus()
+            return 
+        self._confirm_new_password.SetFocus()
         
     def _on_confirm_new_password_enter(self, event) -> None:
         self._on_confirm(None)
@@ -97,14 +93,18 @@ class SetNewPassword(BasePanel):
             return 
         self._df.password = password
         if self._change_password:
-            self._df.save_data()
+            try:
+                self._df.save_data()
+                message_popup("The new password has been applied successfully!", "Success.")
+            except:
+                message_popup("Unable to apply new password.", "Fail.")
         else:
             self._df.create_new_data_file()
-        message_popup(self._gui_settings['password_created']['message'], self._gui_settings['password_created']['title'])
-        self._parent_frame.Destroy()
+            message_popup(self._gui_settings['password_created']['message'], self._gui_settings['password_created']['title'])
+            self.GetParent().GetParent().launch_main_app()
+            self.GetParent().GetParent().close()
         self._on_cancel(None)
 
-    
     def _on_cancel(self, event):
         self._parent.Destroy()
     
@@ -112,35 +112,24 @@ class SetNewPassword(BasePanel):
         self.SetBackgroundColour(wx.Colour(self._color_themes[self._current_theme]['medium']))
 
 
-
 class SetNewPasswordFrame(wx.Frame):
-    def __init__(self, data_file: DataFile,  gui_settings: dict, color_themes: dict, current_theme: str, main_app: wx.App, parent_frame: wx.Frame, change_password: bool = False) -> None:
+    def __init__(self, parent: BasePanel,  data_file: DataFile,  gui_settings: dict, color_themes: dict, current_theme: str, change_password: bool = False) -> None:
         
-        super().__init__(None, style=wx.CLOSE_BOX, title=gui_settings['new_password']['title'])
+        super().__init__(parent, style=wx.CLOSE_BOX, title=gui_settings['new_password']['title'])
         
         self._df = data_file
         self._gui_settings = gui_settings
         self._color_themes = color_themes 
         self._current_theme = current_theme
         self._change_password = change_password
-        self._main_app = main_app
-        self._parent_frame = parent_frame
+        self._parent = parent
         
         self.CenterOnScreen()
-        
         self._init_ui()
-
         
     def _init_ui(self) -> None:
-        panel = SetNewPassword(self, self._df, self._gui_settings, self._color_themes, self._current_theme, self._main_app, self._parent_frame, self._change_password)
+        panel = SetNewPassword(self, self._df, self._gui_settings, self._color_themes, self._current_theme, self._change_password)
         
-    # def _restart(self) -> None:
-    #     python = sys.executable
-    #     os.execl(python, python, * sys.argv)
-             
-    # def _on_cancel(self, event) -> None:
-    #     self.Close()
-
 
 
 
