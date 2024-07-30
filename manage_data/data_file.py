@@ -11,12 +11,22 @@ from manage_data.backup.backup import BackUp
 
 from pathlib import Path
 
-SETTINGS = "settings.json"
+# SETTINGS = "settings.json"
+
+import logging 
+
+log_format = '%(asctime)s - %(levelname)s - %(message)s'
+logging.basicConfig(
+    filename='app.log', 
+    level=logging.DEBUG, 
+    format=log_format
+)
 
 class Data(dict):
     _default_categories = ["Internet", "Emails", "Crypto", "Development", "Databases", "Funds", "Payments", "Apps"]
     def __init__(self, data: list[list] | None = None):
         super().__init__()
+        
         if data is None:
             for category in self._default_categories:
                 self[category] = list()
@@ -29,6 +39,7 @@ class IODataFile:
     def __init__(self, settings: dict) -> None:
         self._settings = settings 
         self._file_path = Path(self._settings['data_file'])
+        self._settings_path = Path(self._settings['settings_path'])
     
     @property
     def file_path(self) -> Path:
@@ -42,19 +53,23 @@ class IODataFile:
         self._file_path = new_path
     
     def save_new_datafile_path(self, path: str):
-        with open(SETTINGS, 'r') as f:
+        with open(self._settings_path, 'r') as f:
             data = json.load(f)
         data['data'].update(self._settings)
-        with open(SETTINGS, 'w') as f:
+        with open(self._settings_path, 'w') as f:
             json.dump(data, f, indent=2)
         
-    def get_data(self) -> str:
-        with open(self._file_path, "r", encoding=self._settings['encoding']) as f:
+    def get_data(self, path: Path | None = None) -> str:
+        if path is None:
+            path = self._file_path
+        with open(path, "r", encoding=self._settings['encoding']) as f:
             data = f.read()
         return data
         
-    def save_data(self, data: str) -> None:
-        with open(self._file_path, "w", encoding=self._settings['encoding']) as f:
+    def save_data(self, data: str, path: Path | None = None) -> None:
+        if path is None:
+            path = self._file_path
+        with open(path, "w", encoding=self._settings['encoding']) as f:
             f.write(data)
 
 
@@ -72,6 +87,7 @@ class DataFile:
         self._data: Data 
         
         atexit.register(self.backup)
+        
     
     def backup(self):
         self.save_data()
@@ -98,8 +114,12 @@ class DataFile:
         self.change_datafile_path(self._settings['default_datafile_path'])
         self.save_data()
     
-    def load_data(self) -> Data:
-        b64_string = self.io.get_data()
+    def load_data(self, path: str | None = None) -> Data:
+        if path is not None:
+            target_path = Path(path)
+        else:
+            target_path = None
+        b64_string = self.io.get_data(target_path)
         encrypted_bytes_data = b64decode(b64_string) 
         try:
             decrypted_bytes_data = self._aes_encryption.decrypt(self._password, encrypted_bytes_data)
@@ -177,7 +197,7 @@ class ManageData:
     
     def __init__(self, df: DataFile) -> None:
         self._df = df 
-        self._data = df.data
+        # self._df.data = df.data
         self._state = DataState()
         self._pass_gen = GeneratePassword()
         
@@ -188,11 +208,15 @@ class ManageData:
         self.save_state()
     
     @property
-    def data(self):
-        return self._data
+    def data(self) -> Data:
+        return self._df.data
+    
+    @data.setter
+    def data(self, new_data: Data):
+        self._df.data = new_data
     
     def get_category_index(self, category: str) -> int:
-        items = self._data.keys()
+        items = self._df.data.keys()
         i = 0
         for itm in items:
             if itm == category:
@@ -202,7 +226,7 @@ class ManageData:
 
     def get_entry_index(self, entry_id: int) -> int:
         if self.selected_category is not None:
-            category_content = self._data[self.selected_category]
+            category_content = self._df.data[self.selected_category]
             for i in range(len(category_content)):
                 if id(category_content[i]) == entry_id:
                     return i
@@ -212,6 +236,13 @@ class ManageData:
                 if id(self.search_results[i]) == self.selected_entry:
                     return i       
         return -1
+    
+    def get_entry_category_and_index(self, entry_id: int) -> tuple[str, int]:
+        for category in self.all_categories():
+            for i in range(len(self._df.data[category])):
+                if id(self._df.data[category][i]) == entry_id:
+                    return category, i 
+        return "", -1
 
     def update(self) -> None:
         self._df.save_data()
@@ -222,31 +253,31 @@ class ManageData:
     # Categories ------------------------------------------------------------------------
     
     def add_category(self, category: str) -> None:
-        if category in self._data:
+        if category in self._df.data:
             raise KeyError(f'Category with such name => {category} already in data.')
-        self._data[category] = list()
+        self._df.data[category] = list()
         self.selected_category = category
         self.update() 
         self.save_state()
     
     def all_categories(self) -> list:
-        return list(self._data.keys())
+        return list(self._df.data.keys())
     
     def get_category_data(self, category: str) -> list:
-        if category not in self._data:
+        if category not in self._df.data:
             return []
-        return self._data[category]
+        return self._df.data[category]
     
     def rename_category(self, new_category: str) -> None:
         if self.selected_category is None:
             return 
-        items = [list(row) for row in self._data.items()]
+        items = [list(row) for row in self._df.data.items()]
         category_index = self.get_category_index(self.selected_category)
         items[category_index][0] = new_category
         new_data = Data(items)
         
-        self._data = new_data
-        self._df.data = self._data
+        self._df.data = new_data
+        self._df.data = self._df.data
         self.selected_category = new_category
         self.update()
         self.save_state()
@@ -255,7 +286,7 @@ class ManageData:
         if self.selected_category is None:
             return
 
-        items = [list(row) for row in self._data.items()]
+        items = [list(row) for row in self._df.data.items()]
         category_index = self.get_category_index(self.selected_category)
         
         step = 1 * direction 
@@ -264,22 +295,22 @@ class ManageData:
             items[category_index], items[swap] = items[swap], items[category_index]
             new_data = Data(items)
             
-            self._data = new_data 
-            self._df.data = self._data 
+            self._df.data = new_data 
+            self._df.data = self._df.data 
             self.update()
             self.save_state()
             
     def clear_category(self) -> None:
         if self.selected_category is None:
             return 
-        self._data[self.selected_category].clear()
+        self._df.data[self.selected_category].clear()
         self.update()
         self.save_state()
           
     def delete_category(self) -> None:
         if self.selected_category is None:
             return 
-        del self._data[self.selected_category]
+        del self._df.data[self.selected_category]
         self.selected_category = None
         self.selected_entry = None
         self.update()
@@ -293,7 +324,7 @@ class ManageData:
             password_strength = PasswordStrength()
             new_entry[2] = self._pass_gen.generate_password(password_strength.STRONG)
             self.selected_entry = id(new_entry)
-            self._data[self.selected_category].append(new_entry)
+            self._df.data[self.selected_category].append(new_entry)
             self.update()
             self.save_state()
             return True 
@@ -308,8 +339,8 @@ class ManageData:
         if not e_ind == -1:
             step = 1 * direction 
             swap = e_ind + step
-            if 0 <= swap < len(self._data[self.selected_category]):
-                self._data[self.selected_category][e_ind], self._data[self.selected_category][swap] = self._data[self.selected_category][swap], self._data[self.selected_category][e_ind]
+            if 0 <= swap < len(self._df.data[self.selected_category]):
+                self._df.data[self.selected_category][e_ind], self._df.data[self.selected_category][swap] = self._df.data[self.selected_category][swap], self._df.data[self.selected_category][e_ind]
                 self.update()
                 self.save_state()
     
@@ -318,7 +349,7 @@ class ManageData:
         if self.search_results is not None:
             return self.search_results[e_ind]
         if not e_ind == -1:
-            return self._data[self.selected_category][e_ind]
+            return self._df.data[self.selected_category][e_ind]
     
     def get_selected_entry(self) -> list | None:
         if self.selected_entry is None:
@@ -330,10 +361,24 @@ class ManageData:
             return
         e_ind = self.get_entry_index(self.selected_entry)
         if not e_ind == -1:
-            del self._data[self.selected_category][e_ind]
+            del self._df.data[self.selected_category][e_ind]
             self.selected_entry = None
             self.update()
             self.save_state()
+    
+    def move_entry_to_category(self, category: str) -> bool:
+        if self.selected_entry is None:
+            return False 
+        current_category, entry_index = self.get_entry_category_and_index(self.selected_entry)
+        if current_category == category:
+            return True
+        last_index = len(self._df.data[current_category]) - 1
+        self._df.data[current_category][entry_index], self._df.data[current_category][last_index] = self._df.data[current_category][last_index], self._df.data[current_category][entry_index]
+        entry = self._df.data[current_category].pop()
+        self._df.data[category].append(entry)
+        self.selected_entry = None
+        return True
+        
     
     # Search ------------------------------------------------------------------------
 
@@ -342,8 +387,8 @@ class ManageData:
         if not pattern:
             self.search_results = None 
             return
-        for category in self._data.keys():
-            for entry in self._data[category]:
+        for category in self._df.data.keys():
+            for entry in self._df.data[category]:
                 if pattern.lower() in entry[0].lower():
                     results.append(entry)
         self.search_results = results
@@ -356,7 +401,7 @@ class ManageData:
         if index is None or index == -1:
             return
         if self.selected_category:
-            return id(self._data[self.selected_category][index])
+            return id(self._df.data[self.selected_category][index])
         if self.search_results:
             return id(self.search_results[index])
     
@@ -369,8 +414,8 @@ class ManageData:
         
         if next_state is not None:
             
-            self._data = next_state.data
-            self._df.data = self._data
+            self._df.data = next_state.data
+            self._df.data = self._df.data
             
             self.selected_category = next_state.selected_category
             self.search_results = next_state.search_results
@@ -391,8 +436,8 @@ class ManageData:
         
         if prev_state is not None:
         
-            self._data = prev_state.data
-            self._df.data = self._data
+            self._df.data = prev_state.data
+            self._df.data = self._df.data
             
             self.selected_category = prev_state.selected_category
             self.search_results = prev_state.search_results
@@ -420,7 +465,7 @@ class ManageData:
     # Password ------------------------------------------------------------------------
 
     def __str__(self):
-        return f'{self._data}'
+        return f'{self._df.data}'
 
 
 

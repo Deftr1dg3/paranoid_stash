@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 
 import wx
-import ast
 
 from GUI.base_panel import BasePanel
 from GUI.menu_functions.menu_functions import MenuFunctions
@@ -10,7 +9,7 @@ class TopMidPanel(BasePanel):
     def __init__(self, parent: BasePanel) -> None:
         super().__init__(parent)
         
-        self._search_field_size = ast.literal_eval(self._settings['top_panel']['top_mid_panel']['search_field_size'])
+        self._search_field_size = self._settings['top_panel']['top_mid_panel']['search_field_size']
         self._new_entry_label = self._settings['top_panel']['top_mid_panel']['new_entry_label']
         self._search_placeholder = self._settings['top_panel']['top_mid_panel']['search_placeholder']
         
@@ -25,7 +24,7 @@ class TopMidPanel(BasePanel):
         
     def _init_ui(self) -> None:
         # Create main sizer
-        main_box = wx.BoxSizer(wx.HORIZONTAL)
+        self._main_box = wx.BoxSizer(wx.HORIZONTAL)
         
         # Create secondary sizers, that will be added to the main sizer.
         button_box = wx.BoxSizer(wx.VERTICAL)
@@ -41,13 +40,13 @@ class TopMidPanel(BasePanel):
         search_box.Add(self._search, 0, wx.EXPAND)
         
         # Add sizers to the main sizer.
-        main_box.Add(button_box, 0, wx.ALL | wx.EXPAND, 5)
-        main_box.AddStretchSpacer()
+        self._main_box.Add(button_box, 0, wx.ALL | wx.EXPAND, 5)
+        self._main_box.AddStretchSpacer()
         
-        main_box.Add(search_box, 0, wx.ALL | wx.EXPAND, 3)
+        self._main_box.Add(search_box, 0, wx.ALL | wx.EXPAND, 3)
         
         # Set main sizer to the panel
-        self.SetSizer(main_box)
+        self.SetSizer(self._main_box)
         
         # Refresh layout
         self.Layout()
@@ -57,9 +56,10 @@ class TopMidPanel(BasePanel):
     def _bind_events(self) -> None:
         self._new_entry.Bind(wx.EVT_BUTTON, self._add_entry)
         self._search.Bind(wx.EVT_TEXT, self._on_search)
+        # self._search.Bind(wx.EVT_SET_FOCUS, self._on_search)
         self._search.Bind(wx.EVT_TEXT_ENTER, self._on_enter_pressed)
     
-    def _on_enter_pressed(self, event):
+    def _on_enter_pressed(self, event) -> None:
         self.deselect_search()
         event.Skip()
         
@@ -74,8 +74,13 @@ class TopMidPanel(BasePanel):
         
     def _on_search(self, event) -> None:
         self._functions.search()
+    
+    # def refresh(self) -> None:
+    #     self._main_box.Clear(True)
+    #     self._init_ui()
+    #     self._bind_events()
         
-    def applay_color_theme(self):
+    def applay_color_theme(self) -> None:
         self.SetBackgroundColour(wx.Colour(self._color_themes[self._current_theme ]['medium']))
         self._search.SetForegroundColour(wx.Colour(self._color_themes[self._current_theme ]['text']))
         self._search.SetBackgroundColour(wx.Colour(self._color_themes[self._current_theme ]['input_background']))

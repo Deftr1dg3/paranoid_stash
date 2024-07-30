@@ -2,13 +2,14 @@
 
 
 import wx
-import os
 import sys
 from pathlib import Path
 
 from manage_data import DataFile
 from GUI.base_panel import BasePanel
 from GUI.modals.popups import message_popup, dialog_popup, select_file
+
+from typing import Optional
 
 
 class GetPassword(BasePanel):
@@ -70,7 +71,9 @@ class GetPassword(BasePanel):
         except ValueError:
             another_try = dialog_popup(self._config['wrong_password']['message'], self._config['wrong_password']['title'], yes_default=True)
             if not another_try:
-                os._exit(0)
+                if not isinstance(self.GetParent().main_app, "wx.App"):
+                    self.GetParent().main_app.restore_df()
+                sys.exit(0)
             self._password.SetValue("")
         else:
             self.GetParent().main_app.LaunchMainApp()
@@ -86,15 +89,15 @@ class GetPassword(BasePanel):
             self._df.change_datafile_path(file_path)
         
     def applay_color_theme(self):
-        self.SetBackgroundColour(wx.Colour(self._color_themes[self._current_theme]['medium']))
+        self.SetBackgroundColour(wx.Colour(self._color_themes[self._current_theme]['dark']))
     
     def _on_close(self, event) -> None:
-        os._exit(0)
+        sys.exit(0)
 
 
 
 class GetPasswordFrame(wx.Frame):
-    def __init__(self, data_file: DataFile,  gui_settings: dict, color_themes: dict, current_theme: str, main_app: wx.App) -> None:
+    def __init__(self, data_file: DataFile,  gui_settings: dict, color_themes: dict, current_theme: str, main_app: wx.App | object) -> None:
         
         self._df = data_file
         self._gui_settings = gui_settings

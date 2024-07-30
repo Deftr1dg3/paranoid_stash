@@ -1,7 +1,7 @@
 from __future__ import annotations
 import wx
-import ast
 import json
+from pathlib import Path
 
 from GUI.base_panel import BasePanel
 
@@ -13,12 +13,11 @@ class CirclePanel(BasePanel):
         
         self._brush_color = self._color_themes[self._theme]['dark']
         self._pen_colour = self._color_themes[self._theme]['medium']
-        self._pen_size = int(self._settings['select_color']['circle_panel_pen_size'])
+        self._pen_size = self._settings['select_color']['circle_panel_pen_size']
         
         self._bind_events()
         self.applay_color_theme()
         
-    
     def _bind_events(self) -> None:
         self.Bind(wx.EVT_PAINT, self._on_paint)
 
@@ -41,13 +40,12 @@ class SelectColorThemePanel(BasePanel):
         super().__init__(parent)
         self._parent = parent 
         
-        self._settings_path = self._settings['global']['settings_path']
-        self._size = ast.literal_eval(self._settings['select_color']['size'])
+        self._settings_path = Path(self._settings['global']['settings_path'])
+        self._size = self._settings['select_color']['size']
         
         self._radio_buttons = {}
         
         self._init_ui()
-        
         self.applay_color_theme()
         
         self.top_panel.top_mid_panel.deselect_search() 
@@ -121,7 +119,7 @@ class SelectColorThemeFrame(wx.Frame):
         self._settings = settings
         self._color_themes = color_themes
         
-        self._size = ast.literal_eval(self._settings['select_color']['size'])
+        self._size = self._settings['select_color']['size']
         self._title = self._settings['select_color']['title']
         
         x = len(self._color_themes) * 70 
@@ -135,5 +133,4 @@ class SelectColorThemeFrame(wx.Frame):
         self._init_ui()
         
     def _init_ui(self):
-        panel = SelectColorThemePanel(self) 
-
+        panel = SelectColorThemePanel(self)

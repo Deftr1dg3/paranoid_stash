@@ -52,3 +52,4 @@ class EntryRightClickMenu(wx.Menu):
                
     def _on_remove_entry(self, event) -> None:
         self._functions.remove_entry()
+        

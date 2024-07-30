@@ -70,7 +70,7 @@ class FirstLaunch(BasePanel):
         self.GetParent().main_app.LaunchMainApp()
     
     def applay_color_theme(self):
-        self.SetBackgroundColour(wx.Colour(self._color_themes[self._current_theme]['medium']))
+        self.SetBackgroundColour(wx.Colour(self._color_themes[self._current_theme]['dark']))
         
     def _on_close(self, event) -> None:
         os._exit(0)

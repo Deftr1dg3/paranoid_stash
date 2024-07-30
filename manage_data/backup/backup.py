@@ -15,7 +15,7 @@ class BackUp:
         self._hash_file = self._validate_control_hash_path(Path(settings['control_hash']))
         self._backup_dir = self._validate_backup_dir_path(Path(settings['backups']))
         
-        self._available_backups = self._control_backups_ammount()
+        # self._available_backups = self._control_backups_ammount()
         
         self._new_hash: str
         
@@ -88,9 +88,11 @@ class BackUp:
     def save_backup_file(self, json_data: str, b64_data: str) -> None:
         if self._made_changes(json_data):
             self._backup_data(b64_data)
+            self._control_backups_ammount()
             return 
         if not self._get_backups_list():
             self._backup_data(b64_data)
+            self._control_backups_ammount()
             return
             
    

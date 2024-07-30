@@ -175,7 +175,7 @@ class EntryRow(BasePanel):
     def copy_url(self) -> None:
         self._url.copy_to_clipboard()
         
-    def applay_color_theme(self):
+    def applay_color_theme(self) -> None:
         self._text_colour = wx.Colour(self._color_themes[self._current_theme]['text'])
         self._selection_colour = wx.Colour(self._color_themes[self._current_theme]['selection'])
         self._background_colour = wx.Colour(self._color_themes[self._current_theme]['dark'])
