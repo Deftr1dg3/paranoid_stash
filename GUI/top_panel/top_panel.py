@@ -9,7 +9,8 @@ from GUI.top_panel.top_right_panel import TopRightPanel
 
 class TopPanel(BasePanel):
     def __init__(self, parent: BasePanel) -> None:
-        super().__init__(parent, size=(-1, 30))
+        size = tuple(self.settings['top_panel']['size'])
+        super().__init__(parent, size=size)
 
         self._init_ui()
         self.applay_color_theme()

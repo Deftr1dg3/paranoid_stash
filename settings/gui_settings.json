@@ -1,7 +1,8 @@
 {
   "global": {
-    "settings_path": "settings.json",
-    "app_name": "Paranoid Stash"
+    "settings_path": "settings/settings.json",
+    "app_name": "Paranoid Stash",
+    "backups": "data/backups"
   },
   "first_launch": {
     "create_new": "Create New DataFile",
@@ -43,8 +44,8 @@
     "message": "IMPORTANT.\nPlease remember this passowrd. There is no way to restore it."
   },
   "mainframe_size": {
-    "size": "(1100, 610)",
-    "min_size": "(800, 400)",
+    "size": [1100, 610],
+    "min_size": [800, 400],
     "title": "Paranoid Stash 0000 0110 0001 0011"
   },
   "left_panel": {
@@ -99,28 +100,29 @@
     }
   },
   "top_panel": {
+    "size": [-1, 30],
     "top_left_panel": {
-      "size": "(200, 30)",
-      "new_category_button_size": "(180, -1)",
+      "size": [200, 30],
+      "new_category_button_size": [180, -1],
       "new_category_label": "Category +"
     },
     "top_mid_panel": {
       "new_entry_label": "Entry +",
-      "search_field_size": "(200, -1)",
+      "search_field_size": [200, -1],
       "search_placeholder": "Search record ..."
     },
     "top_right_panel": {
-      "size": "(250, 30)",
+      "size": [250, 30],
       "top_right_panel_title": "Edit Entry:",
       "theme_button_label": "Color Theme"
     }
   },
   "select_color": {
-    "size": "(70, 190)",
+    "size": [70, 190],
     "title": "Select Color Theme",
     "circle_background_color": "#00000000",
     "circle_panel_pen_color": "GREY",
-    "circle_panel_pen_size": "8"
+    "circle_panel_pen_size": 8
   },
   "file_popup": {
     "save_file": {
@@ -182,13 +184,13 @@
   },
   "copy_popup": {
     "frame_background_color": "#00000000",
-    "size": "(200, 200)",
-    "round_angle_radius": "10",
+    "size": [200, 200],
+    "round_angle_radius": 10,
     "message": "Copied...",
-    "font_size": "30",
-    "transformation_speed": "30",
-    "transformation_step": "6",
-    "current_transparency": "250",
+    "font_size": 30,
+    "transformation_speed": 30,
+    "transformation_step": 6,
+    "current_transparency": 250,
     "background_color": "#101010",
     "text_color": "white"
   },
@@ -213,7 +215,9 @@
         "clear_category_shortcut": "Shift+Ctrl+C",
         "save_datafile_as": "Save DataFile as...",
         "show_datafile": "Show DataFile in Folder",
+        "copy_datafile_path": "Copy Datafile Path",
         "change_datafile_dir": "Change Datafile Directory",
+        "change_datafile": "Change Datafile",
         "change_password": "Change Password",
         "restore_from_backup": "Restore from backup"
       },
@@ -228,6 +232,9 @@
         "undo_shortcut": "Ctrl+Z",
         "redo": "Redo",
         "redu_shortcut": "Shift+Ctrl+Z",
+        "search": "Search",
+        "search_shortcut": "Ctrl+F",
+        "move_entry_to": "Move Entry To ...",
         "category_up": "Move Category Up",
         "category_up_shortcut": "Shift+Ctrl+Up",
         "category_down": "Move Category Down",

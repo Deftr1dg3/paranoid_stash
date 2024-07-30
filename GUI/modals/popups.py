@@ -42,7 +42,7 @@ def dialog_popup(message: str = "", title: str = "", yes_default=False, parent: 
     return False
 
 
-def select_file(dir: str, title: str = "Selecet File", wildcard: str = "*.*") -> (str | None):
+def select_file(dir: str = "", title: str = "Selecet File", wildcard: str = "*.*") -> (str | None):
     
     file_dialog = wx.FileDialog(None, 
                             title, 
@@ -56,7 +56,7 @@ def select_file(dir: str, title: str = "Selecet File", wildcard: str = "*.*") ->
     file_dialog.Destroy()
     
     
-def save_file_as(dir: str, file_name: str, title: str = "Save File as...") -> (str | None):
+def save_file_as(dir: str = "", file_name: str = "demo", title: str = "Save File as...") -> (str | None):
     file_dialog = wx.FileDialog(None,
                             title, 
                             defaultFile=file_name, 
@@ -69,7 +69,7 @@ def save_file_as(dir: str, file_name: str, title: str = "Save File as...") -> (s
     file_dialog.Destroy()
 
 
-def select_dir(dir: str, title: str = "Select Directory") -> (str | None):
+def select_dir(dir: str = "", title: str = "Select Directory") -> (str | None):
     dir_dialog = wx.DirDialog(None, title)
     if dir_dialog.ShowModal() == wx.ID_OK:
         dir_path = dir_dialog.GetPath()

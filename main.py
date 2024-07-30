@@ -1,52 +1,62 @@
 #!/usr/bin/env python3
-import os 
 import sys
-import wx 
 import json
+import logging
 from pathlib import Path
 
-from GUI import GUIApp, MainFrame
-from manage_data import ManageData, DataFile
-
-SETTINGS_PATH = Path('./settings.json')
-
-with open(SETTINGS_PATH, 'r') as f:
-    settings = json.load(f)
+from GUI import GUIApp
 
 
-# print("WORKED TILL HERE", flush=True)
-# df = DataFile(settings['data'])
-# print("WORKED TILL HERE", flush=True)
-# df.password = '1234'
+log_format = format='%(asctime)s - %(levelname)s - %(message)s'
+logging.basicConfig(
+    filename='app.log', 
+    level=logging.DEBUG, 
+    format=log_format
+)
 
 
-# df.create_new_data_file()
+SETTINGS_PATH = Path('settings/settings.json')
+GUI_SETTINGS_PATH = Path('settings/gui_settings.json')
+COLOR_THEMES_PATH = Path('settings/color_themes.json')
 
-# print("WORKED TILL HERE")
 
-# try:
-#     df.load_data()
-# except Exception as ex:
-#     print(f'Unable to decrypt file -> {ex}')
-# else:
-#     print("ELSO")
+def _load_configs() -> tuple[dict, dict, dict]:
+    try:
+        with open(SETTINGS_PATH, 'r') as f:
+            settings = json.load(f)
+    except Exception as ex:
+        raise 
     
-# print("WORKED TILL HERE END")
-
-# md = ManageData(df)
-
-# try:
-#     app = wx.App()
-#     f = MainFrame(md, settings['color_theme'])
-#     f.Show()
-#     app.MainLoop()
-# except Exception as ex:
-#     print(f'EXCEPTION IN MAIN ==> {ex}')
-# except BaseException as ex:
-#     print(f'BASE EXCEPTION IN MAIN ==> {ex}')
+    try:
+        with open(GUI_SETTINGS_PATH, 'r') as f:
+            gui_settings = json.load(f)
+    except Exception as ex:
+         raise
     
-
+    try:
+        with open(COLOR_THEMES_PATH, 'r') as f:
+            color_themes = json.load(f)
+    except Exception as ex:
+         raise
+        
+    return settings, gui_settings, color_themes
+    
+    
+def main():
+    try:
+        settings, gui_settings, color_themes = _load_configs()
+    except Exception as ex:
+        logging.error(f"Exception: {ex}")
+        sys.exit(1)
+    
+    try: 
+        app = GUIApp(settings=settings, gui_settinghs=gui_settings, color_themes=color_themes)
+        app.MainLoop()
+    except Exception as ex:
+        logging.error(f"Exception: {ex}")
+        sys.exit(1)
+        
+    
 if __name__ == '__main__':  
-    app = GUIApp(settings)
-    app.MainLoop()
+    main()
 

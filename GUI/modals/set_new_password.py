@@ -103,13 +103,14 @@ class SetNewPassword(BasePanel):
             message_popup(self._gui_settings['password_created']['message'], self._gui_settings['password_created']['title'])
             self.GetParent().GetParent().launch_main_app()
             self.GetParent().GetParent().close()
+            
         self._on_cancel(None)
 
     def _on_cancel(self, event):
         self._parent.Destroy()
     
     def applay_color_theme(self):
-        self.SetBackgroundColour(wx.Colour(self._color_themes[self._current_theme]['medium']))
+        self.SetBackgroundColour(wx.Colour(self._color_themes[self._current_theme]['dark']))
 
 
 class SetNewPasswordFrame(wx.Frame):

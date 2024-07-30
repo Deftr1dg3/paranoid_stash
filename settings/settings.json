@@ -3,13 +3,12 @@
     "data_file": "/Users/stasusbondevito/Documents/PYTHON/Projects/ParanoidStash/data/PSdata",
     "default_datafile_path": "data/PSdata",
     "backups": "data/backups",
+    "settings_path": "settings/settings.json",
     "control_hash": "data/control_hash/hash_file",
     "extension": "",
     "backup_file_name_format": "%Y%m%d-%H%M%S",
     "encoding": "utf-8",
     "max_backups": 3
   },
-  "color_theme": "blue",
-  "color_themes": "GUI/color_themes.json",
-  "gui_settings": "GUI/gui_settings.json"
+  "color_theme": "green"
 }

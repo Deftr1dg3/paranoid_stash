@@ -5,8 +5,7 @@ import wx
 import pyperclip
 
 from GUI.base_panel import BasePanel
-from GUI.right_panel.notes_panel import NotesPanel
-from GUI.modals.copy_popup import launch_copy_poup
+from GUI.modals.copy_popup import CopyPopup
 
 
 class BaseRecordPanel(BasePanel):
@@ -59,7 +58,8 @@ class BaseRecordPanel(BasePanel):
         
     def copy_to_clipboard(self) -> None:
         pyperclip.copy(self._record_value)
-        launch_copy_poup(self, self._settings)
+        copy_indicator = CopyPopup(self)
+        copy_indicator.Show()
        
     def _change_colour(self) -> None:
         self._set_text_colour(self._selection_colour)
@@ -129,3 +129,4 @@ class Password(BaseRecordPanel):
     
 class URL(BaseRecordPanel):
     ...
+    

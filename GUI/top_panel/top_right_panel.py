@@ -1,5 +1,4 @@
 import wx
-import ast
 
 from GUI.base_panel import BasePanel
 from GUI.menu_functions.menu_functions import MenuFunctions
@@ -7,7 +6,7 @@ from GUI.menu_functions.menu_functions import MenuFunctions
 class TopRightPanel(BasePanel):
     def __init__(self, parent: BasePanel) -> None:
         
-        self._size = ast.literal_eval(self._settings['top_panel']['top_right_panel']['size'])
+        self._size = self._settings['top_panel']['top_right_panel']['size']
         self._panel_title = self._settings['top_panel']['top_right_panel']['top_right_panel_title']
         self._theme_button_label = self._settings['top_panel']['top_right_panel']['theme_button_label']
         self._color_panel_active = False
@@ -55,5 +54,4 @@ class TopRightPanel(BasePanel):
         self._entry_edit_title.SetForegroundColour(wx.Colour(self._color_themes[self._current_theme]['text']))
         self._theme_button.SetForegroundColour(wx.Colour(self._color_themes[self._current_theme]['text']))
         self.Refresh()
-        
-        
+           
