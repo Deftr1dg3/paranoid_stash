@@ -6,6 +6,7 @@ import threading
 import pyperclip
 import platform
 import subprocess
+import webbrowser
 from pathlib import Path 
 
 import logging
@@ -120,13 +121,13 @@ class MenuFunctions():
             self.manage_data.search_results = None
             self._base_panel.refresh_body_panel()
         else:
-            message_popup(message="Category with this name alrady exists.", title="INVALID !")
+            message_popup(message="Category with this name alrady exists.", title=self.settings['popup']['error']['title'])
     
     def rename_category(self) -> None:
         if self._base_panel._manage_data.selected_category is None:
             return
         color = self._base_panel._color_themes[self._base_panel._current_theme]['medium']
-        new_category = get_input(color=color, hint="Enter desired category name:", title="New Category")
+        new_category = get_input(color=color, hint=self.settings['popup']['new_category']['message'], title=self.settings['popup']['new_category']['title'])
         if new_category is None or new_category == "":
             return 
         self.manage_data.rename_category(new_category)
@@ -180,10 +181,12 @@ class MenuFunctions():
             self._base_panel.refresh_right_panel()
     
     def move_entry_to_category(self, category: str):
+        if self.manage_data.selected_entry is None:
+            message_popup(message="No entry selected.", title="Error.")
         if self.manage_data.move_entry_to_category(category=category):
             BasePanel.set_selected_entry(None)
             self._base_panel.refresh_body_panel()
-            message_popup(f"Entry moved to {category} successfully.", "Info.")
+            message_popup(f"Entry moved to '{category}' category successfully.", "Info.")
     
     
     # Entry ------------------------------------------------------
@@ -240,12 +243,12 @@ class MenuFunctions():
     # Datafile ------------------------------------------------------
     
     def save_datafile_as(self) -> None:
-        save_as = save_file_as(self._config['default_datafile_name'])
+        save_as = save_file_as(file_name=self._config['default_datafile_name'])
         if save_as is not None:
             save_as = Path(save_as)
             datafile_path: Path = self.manage_data._df.io.file_path
             if save_as.exists():
-                confirmed = dialog_popup(f"Aru you sure you want to replace it?", "File Already Exist")
+                confirmed = dialog_popup(message=self.settings['popup']['file_already_exists']['message'], title=self.settings['popup']['file_already_exists']['title'])
                 if confirmed:
                     with open(datafile_path, "r", encoding="utf-8") as f:
                         data = f.read()
@@ -260,7 +263,7 @@ class MenuFunctions():
                 message_popup(self._config['save_message']['message'].format(save_as), self._config['save_message']['title'])
             
     def show_datafile_in_folder(self) -> None:
-        datafile_path: Path = self.manage_data._df.io.file_path
+        datafile_path = str(self.manage_data._df.io.file_path.resolve())
         
         if platform.system() == 'Windows':
             subprocess.run(['explorer', '/select,', datafile_path])
@@ -275,7 +278,6 @@ class MenuFunctions():
         copy_indicator = CopyPopup(self._base_panel) 
         copy_indicator.Show()    
     
-    
     def change_datafile_dir(self) -> None:
         datafile_path: Path = self.manage_data._df.io.file_path
         file_name = datafile_path.name 
@@ -283,7 +285,7 @@ class MenuFunctions():
         if new_directory is not None:
             new_path = Path(new_directory) / str(file_name)
             if new_path.exists():
-                confirmed = dialog_popup(f"Aru you sure you want to replace it?", "File Already Exist")
+                confirmed = dialog_popup(message=self.settings['popup']['file_already_exists']['message'], title=self.settings['popup']['file_already_exists']['title'])
                 if confirmed:
                     self.manage_data._df.io.file_path = str(new_path) 
                     self.manage_data.update()
@@ -292,34 +294,35 @@ class MenuFunctions():
             self.manage_data._df.io.file_path = str(new_path) 
             self.manage_data.update()
     
-    # def change_datafile(self) -> None:
-    #     self._current_file = str(self.manage_data._df.io.file_path)
-    #     self._current_password = self.manage_data._df.password 
-    #     new_datafile = select_file()
-    #     if new_datafile is not None:
-    #         self.manage_data._df.io.file_path = new_datafile
-    #         get_password = GetPasswordFrame(self.manage_data._df, self.settings, self._base_panel._color_themes, self._base_panel._current_theme, self)
-    #         get_password.Show()
+    def load_data_from_file(self, new_datafile: str | None = None) -> None:
+        if new_datafile is None:
+            self._new_datafile = select_file()
+        else:
+            self._new_datafile = new_datafile
+            
+        if self._new_datafile is not None:
+            get_password = GetPasswordFrame(self.manage_data._df, self.settings, self._base_panel._color_themes, self._base_panel._current_theme, self, self._new_datafile)
+            get_password.Show()
     
-    # def restore_df(self):
-    #     self.manage_data._df.io.file_path = self._current_file
-    #     self.manage_data._df.password = self._current_password
+    def launch_main_app(self) -> None:
+        self._base_panel.refresh_body_panel()
+        message_popup(message=self.settings['popup']['message']['data_loaded'], title=self.settings['popup']['success']['title'])
     
-    # def LaunchMainApp(self) -> None:
-    #     self._base_panel.refresh_body_panel()
+    def create_backup(self) -> None:
+        created = self.manage_data._df.backup()
+        if created is None:
+            message_popup(message=self.settings['popup']['message']['unable_to_create_backup'], title=self.settings['popup']['error']['title'])
+        else:
+            message_popup(message=self.settings['popup']['message']['backup_created'].format(created), title=self.settings['popup']['success']['title'])
     
     def restore_from_backup(self) -> None:
-        current_file = str(self.manage_data._df.io.file_path)
         backups_dir = self.settings['global']['backups']
         restore_from = select_file(dir=backups_dir, title="Select Backup File")
         if restore_from is not None:
-            self.manage_data._df.backup()
-            try:
-                self.manage_data._df.load_data(restore_from)
-            except ValueError:
-                message_popup(message=self.settings['get_password']['wrong_password']['message'], title=self.settings['get_password']['wrong_password']['title'])
-            else:
-                self._base_panel.refresh_body_panel()
+            self.load_data_from_file(restore_from)
+    
+    def help(self):
+        webbrowser.open(self.settings['global']['git_repo'])
             
             
                 

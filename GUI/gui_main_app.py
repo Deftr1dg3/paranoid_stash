@@ -36,7 +36,7 @@ class GUIApp(wx.App):
         self._first_launch = FirstLaunchFrame(self._data_file, self._gui_settings, self._color_themes, self._current_theme, self)
         self._first_launch.Show()
         
-    def LaunchMainApp(self):
+    def launch_main_app(self):
         self._manage_data = ManageData(self._data_file)
         self._main_frame = MainFrame(self._manage_data, self._gui_settings, self._color_themes, self._current_theme)
         self._main_frame.Show()

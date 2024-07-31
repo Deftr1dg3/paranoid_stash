@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-
+from __future__ import annotations
 
 import wx
 import sys
@@ -9,17 +9,21 @@ from manage_data import DataFile
 from GUI.base_panel import BasePanel
 from GUI.modals.popups import message_popup, dialog_popup, select_file
 
-from typing import Optional
+from typing import TYPE_CHECKING, Union
+
+if TYPE_CHECKING:
+    from GUI.menu_functions.menu_functions import MenuFunctions
 
 
 class GetPassword(BasePanel):
-    def __init__(self, parent: wx.Frame, data_file: DataFile,  gui_settings: dict, color_themes: dict, current_theme: str) -> None:
+    def __init__(self, parent: GetPasswordFrame, data_file: DataFile,  gui_settings: dict, color_themes: dict, current_theme: str, file_path: str | None = None) -> None:
         super().__init__(parent)
          
         self._df = data_file
         self._gui_settings = gui_settings
         self._color_themes = color_themes 
         self._current_theme = current_theme
+        self._file_path = file_path
         
         self._config = self._gui_settings['get_password']
         
@@ -60,6 +64,7 @@ class GetPassword(BasePanel):
         self._on_confirm(None)
         
     def _on_confirm(self, event) -> None:
+        self._df.backup_password()
         password = self._password.GetValue()
         if len(password) == 0:
             message_popup(self._config['no_password_provided']['title'], self._config['no_password_provided']['message'])
@@ -67,16 +72,17 @@ class GetPassword(BasePanel):
             return 
         try:
             self._df.password = password
-            self._df.load_data()
+            self._df.load_data(self._file_path)
         except ValueError:
+            self._df.restore_password()
             another_try = dialog_popup(self._config['wrong_password']['message'], self._config['wrong_password']['title'], yes_default=True)
             if not another_try:
-                if not isinstance(self.GetParent().main_app, "wx.App"):
-                    self.GetParent().main_app.restore_df()
-                sys.exit(0)
+                if not Path(self._gui_settings['global']['default_datfile_path']).exists():
+                    self._df.restore_default_datafile_path()
+                self.GetParent().Destroy()
             self._password.SetValue("")
         else:
-            self.GetParent().main_app.LaunchMainApp()
+            self.GetParent().main_app.launch_main_app()
             self.GetParent().Destroy()
         
     def _on_clear(self, event) -> None:
@@ -97,12 +103,13 @@ class GetPassword(BasePanel):
 
 
 class GetPasswordFrame(wx.Frame):
-    def __init__(self, data_file: DataFile,  gui_settings: dict, color_themes: dict, current_theme: str, main_app: wx.App | object) -> None:
+    def __init__(self, data_file: DataFile,  gui_settings: dict, color_themes: dict, current_theme: str, main_app: Union[wx.App, 'MenuFunctions'], file_path: str | None = None) -> None:
         
         self._df = data_file
         self._gui_settings = gui_settings
         self._color_themes = color_themes 
         self._current_theme = current_theme
+        self._file_path = file_path
         self.main_app = main_app
         
         self._config = self._gui_settings['get_password']
@@ -114,4 +121,4 @@ class GetPasswordFrame(wx.Frame):
 
         
     def _init_ui(self):
-        panel = GetPassword(self, self._df, self._gui_settings, self._color_themes, self._current_theme)
+        panel = GetPassword(self, self._df, self._gui_settings, self._color_themes, self._current_theme, self._file_path)
