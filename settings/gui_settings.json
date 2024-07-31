@@ -2,7 +2,33 @@
   "global": {
     "settings_path": "settings/settings.json",
     "app_name": "Paranoid Stash",
-    "backups": "data/backups"
+    "backups": "data/backups",
+    "default_datfile_path": "data/PSdata",
+    "git_repo": "https://github.com/Deftr1dg3/paranoid_stash.git"
+  },
+  "popup": {
+    "error": {
+      "title": "Error."
+    },
+    "success": {
+      "title": "Success."
+    },
+    "info": {
+      "title": "Info."
+    },
+    "message": {
+      "backup_created": "Backup file:\n{}\nIMPORTANT:\nEvery backup stored with its own password.",
+      "unable_to_create_backup": "Unable to create backup.",
+      "data_loaded": "The data has been uploaded successfully.\nIMPORTANT:\nWas applied the last inserted password."
+    },
+    "file_already_exists": {
+      "title": "File Already Exist",
+      "message": "Aru you sure you want to replace it?"
+    },
+    "new_category": {
+      "title": "New Category",
+      "message": "Enter desired category name:"
+    }
   },
   "first_launch": {
     "create_new": "Create New DataFile",
@@ -36,7 +62,7 @@
     }
   },
   "password_does_not_match": {
-    "title": "Invalid.",
+    "title": "Error.",
     "message": "Confirmation of password does not match."
   },
   "password_created": {
@@ -217,7 +243,9 @@
         "show_datafile": "Show DataFile in Folder",
         "copy_datafile_path": "Copy Datafile Path",
         "change_datafile_dir": "Change Datafile Directory",
-        "change_datafile": "Change Datafile",
+        "load_from_datafile": "Load From Datafile",
+        "cretae_backup": "Cretae Backup",
+        "cretae_backup_shortcut": "Shift+Ctrl+B",
         "change_password": "Change Password",
         "restore_from_backup": "Restore from backup"
       },

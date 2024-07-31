@@ -4,7 +4,11 @@ import os
 from datetime import datetime
 from hashlib import sha256
 from pathlib import Path
+import logging
 
+
+log_format = '%(asctime)s - %(levelname)s - %(message)s'
+logging.basicConfig(filename="app.log", level=logging.INFO, format=log_format)
 
 class BackUp:
     
@@ -59,13 +63,18 @@ class BackUp:
             return True
         return False
     
-    def _backup_data(self, b64_data: str) -> None:
+    def _backup_data(self, b64_data: str) -> str | None:
         file_name = self._create_backup_file_name()
         file_path = self._backup_dir / file_name 
-        with open(file_path, "w", encoding=self._settings['encoding']) as f:
-            f.write(b64_data)
-        with open(self._hash_file, "w", encoding=self._settings['encoding']) as f:
-            f.write(self._new_hash)
+        try:
+            with open(file_path, "w", encoding=self._settings['encoding']) as f:
+                f.write(b64_data)
+            with open(self._hash_file, "w", encoding=self._settings['encoding']) as f:
+                f.write(self._new_hash)
+        except Exception as ex:
+            logging.error(f"Unable to save backup due to Exception:\n{ex}")
+        else:
+            return file_name
             
     def _get_backups_list(self) -> list[Path]:
         backups = os.listdir(self._backup_dir)
@@ -85,14 +94,10 @@ class BackUp:
         available_backups = self._remove_old_backups(sorted_backups)
         return available_backups
         
-    def save_backup_file(self, json_data: str, b64_data: str) -> None:
+    def save_backup_file(self, json_data: str, b64_data: str) -> str | None:
         if self._made_changes(json_data):
-            self._backup_data(b64_data)
+            created = self._backup_data(b64_data)
             self._control_backups_ammount()
-            return 
-        if not self._get_backups_list():
-            self._backup_data(b64_data)
-            self._control_backups_ammount()
-            return
-            
+            return created
+        return "already exists"
    

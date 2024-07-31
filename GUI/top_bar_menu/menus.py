@@ -39,7 +39,9 @@ class TopBarMenu(wx.MenuBar):
         file_menu.Append(7, f"&{self._options['file']['show_datafile']}")
         file_menu.Append(38, f"&{self._options['file']['copy_datafile_path']}")
         file_menu.Append(8, f"&{self._options['file']['change_datafile_dir']}")
-        # file_menu.Append(9, f"&{self._options['file']['change_datafile']}")
+        file_menu.Append(9, f"&{self._options['file']['load_from_datafile']}")
+        file_menu.AppendSeparator()
+        file_menu.Append(40, f"&{self._options['file']['cretae_backup']}\t{self._options['file']['cretae_backup_shortcut']}")
         file_menu.AppendSeparator()
         file_menu.Append(6, f"&{self._options['file']['change_password']}")
         file_menu.Append(10, f"&{self._options['file']['restore_from_backup']}")
@@ -51,6 +53,11 @@ class TopBarMenu(wx.MenuBar):
         
         # Create "Edit" menu ------------------------------------------------------------------------------------------
         
+        
+        # Menu inside menu ----------------------------------------
+        
+        # Move entry to another category ------------
+        
         self._id_category = {}
         categories_menu = wx.Menu()
         for category in self._base_panel._manage_data.all_categories():
@@ -58,6 +65,8 @@ class TopBarMenu(wx.MenuBar):
             categories_menu.Append(item_id, f"{category}")
             self._id_category[item_id] = category
             self._main_frame.Bind(wx.EVT_MENU, self._on_move_entry_to, id=item_id)
+        
+        # Main menu ------------------------------------------------
         
         edit_menu = wx.Menu()
         edit_menu.Append(41, f"&{self._options['edit']['copy_password']}\t{self._options['edit']['copy_password_shortcut']}")
@@ -99,7 +108,7 @@ class TopBarMenu(wx.MenuBar):
         self._main_frame.Bind(wx.EVT_MENU, self._on_change_file_password, id=6)
         self._main_frame.Bind(wx.EVT_MENU, self._on_show_datafile_in_folder, id=7)
         self._main_frame.Bind(wx.EVT_MENU, self._on_change_datafile_directory, id=8)
-        # self._main_frame.Bind(wx.EVT_MENU, self._on_change_datafile, id=9)
+        self._main_frame.Bind(wx.EVT_MENU, self._on_load_from_datafile, id=9)
         self._main_frame.Bind(wx.EVT_MENU, self._on_restore_from_backup, id=10)
         self._main_frame.Bind(wx.EVT_MENU, self._on_save_datafile_as, id=11)
         
@@ -114,6 +123,7 @@ class TopBarMenu(wx.MenuBar):
         # self._main_frame.Bind(wx.EVT_MENU, self._on_search, id=37)
         self._main_frame.Bind(wx.EVT_MENU, self._on_copy_datafile_path, id=38)
         # self._main_frame.Bind(wx.EVT_MENU, self._on_move_entry_to, id=39)
+        self._main_frame.Bind(wx.EVT_MENU, self._on_create_backup, id=40)
         
         
         self._main_frame.Bind(wx.EVT_MENU, self._on_move_category_up, id=33)
@@ -124,7 +134,76 @@ class TopBarMenu(wx.MenuBar):
         # Bind "Help" menu
         self._main_frame.Bind(wx.EVT_MENU, self._on_help, id=61)
     
+
+
+    #  File funcs --------------------------------------------
+
+    def _on_add_category(self, event: wx.Event) -> None:
+        self._functions.add_category()
+    
+    def _on_add_entry(self, event: wx.Event) -> None:
+        self._functions.add_entry()
         
+    def _on_remove_category(self, event: wx.Event) -> None:
+        self._functions.remove_category()
+        
+    def _on_remove_entry(self, event: wx.Event) -> None:
+        self._functions.remove_entry()
+    
+    def _on_rename_category(self, event: wx.Event) -> None:
+        self._functions.rename_category()
+    
+    def _on_clear_category(self, event: wx.Event) -> None:
+        self._functions.clear_category()
+    
+    def _on_save_datafile_as(self, event: wx.Event) -> None:
+        self._functions.save_datafile_as()
+    
+    def _on_show_datafile_in_folder(self, event: wx.Event) -> None:
+        self._functions.show_datafile_in_folder()
+    
+    def _on_copy_datafile_path(self, event: wx.Event) -> None:
+        self._functions.copy_datafile_path()
+    
+    def _on_change_datafile_directory(self, event: wx.Event) -> None:
+        self._functions.change_datafile_dir()
+    
+    def _on_load_from_datafile(self, event: wx.Event) -> None:
+        self._functions.load_data_from_file()
+    
+    def _on_create_backup(self, event: wx.Event) -> None:
+        self._functions.create_backup()
+    
+    def _on_change_file_password(self, event: wx.Event) -> None:
+        self._functions.change_password()
+    
+    def _on_restore_from_backup(self, event: wx.Event) -> None:
+        self._functions.restore_from_backup()
+
+   
+    
+    #  Edit funcs --------------------------------------------
+    
+    def _on_copy_password(self, event: wx.Event) -> None:
+        self._functions.copy_password()
+        
+    def _on_copy_username(self, event: wx.Event) -> None:
+        self._functions.copy_username()
+    
+    def _on_copy_url(self, event: wx.Event) -> None:
+        self._functions.copy_url()
+    
+    def _on_undo(self, event: wx.Event) -> None:
+        self._functions.undo()
+    
+    def _on_redo(self, event: wx.Event) -> None:
+        self._functions.redu()
+    
+    def _on_move_entry_to(self, event: wx.Event):
+        event_id = event.GetId()
+        category = self._id_category[event_id]
+        self._functions.move_entry_to_category(category=category)
+    
     def _on_move_category_up(self, event: wx.Event) -> None:
         self._functions.move_category_up()
     
@@ -136,74 +215,9 @@ class TopBarMenu(wx.MenuBar):
     
     def _on_move_entry_down(self, event: wx.Event) -> None:
         self._functions.move_entry_down()
-
+        
     
-    
-    def _on_move_entry_to(self, event: wx.Event):
-        event_id = event.GetId()
-        category = self._id_category[event_id]
-        self._functions.move_entry_to_category(category=category)
-    
-    
-    def _on_copy_datafile_path(self, event: wx.Event) -> None:
-        self._functions.copy_datafile_path()
-    
+    #  Help funcs --------------------------------------------
+  
     def _on_help(self, event: wx.Event) -> None:
-        ...
-        
-    def _on_save_datafile_as(self, event: wx.Event) -> None:
-        self._functions.save_datafile_as()
-        
-    def _on_restore_from_backup(self, event: wx.Event) -> None:
-        self._functions.restore_from_backup()
-        
-    # def _on_change_datafile(self, event: wx.Event) -> None:
-    #     self._functions.change_datafile()
-        
-    def _on_change_datafile_directory(self, event: wx.Event) -> None:
-        self._functions.change_datafile_dir()
-        
-    def _on_show_datafile_in_folder(self, event: wx.Event) -> None:
-        self._functions.show_datafile_in_folder()
-    
-    def _on_change_file_password(self, event: wx.Event) -> None:
-        self._functions.change_password()
-        
-        
-    #  Edit funcs --------------------------------------------
-    
-    def _on_copy_password(self, event: wx.Event) -> None:
-        self._functions.copy_password()
-        
-    def _on_copy_username(self, event: wx.Event) -> None:
-        self._functions.copy_username()
-    
-    def _on_copy_url(self, event: wx.Event) -> None:
-        self._functions.copy_url()
-
-
-    #  File funcs --------------------------------------------
-
-    def _on_add_category(self, event: wx.Event) -> None:
-        self._functions.add_category()
-        
-    def _on_remove_category(self, event: wx.Event) -> None:
-        self._functions.remove_category()
-        
-    def _on_rename_category(self, event: wx.Event) -> None:
-        self._functions.rename_category()
-    
-    def _on_clear_category(self, event: wx.Event) -> None:
-        self._functions.clear_category()
-
-    def _on_add_entry(self, event: wx.Event) -> None:
-        self._functions.add_entry()
-    
-    def _on_remove_entry(self, event: wx.Event) -> None:
-        self._functions.remove_entry()
-    
-    def _on_undo(self, event: wx.Event) -> None:
-        self._functions.undo()
-    
-    def _on_redo(self, event: wx.Event) -> None:
-        self._functions.redu()
+        self._functions.help()

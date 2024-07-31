@@ -83,15 +83,18 @@ class DataFile:
         
         self._json_data: str
         self._b64_encrypted_data: str
-        self._password: str
         self._data: Data 
+        
+        self._password: str = ""
+        self._password_backup: str = ""
         
         atexit.register(self.backup)
         
     
-    def backup(self):
-        self.save_data()
-        self._backup.save_backup_file(json_data=self._json_data, b64_data=self._b64_encrypted_data)
+    def backup(self) -> str | None:
+        if self.save_data():
+            created = self._backup.save_backup_file(json_data=self._json_data, b64_data=self._b64_encrypted_data)
+            return created
     
     @property
     def data(self) -> Data:
@@ -119,6 +122,7 @@ class DataFile:
             target_path = Path(path)
         else:
             target_path = None
+            
         b64_string = self.io.get_data(target_path)
         encrypted_bytes_data = b64decode(b64_string) 
         try:
@@ -129,15 +133,28 @@ class DataFile:
         self._data = json.loads(decrypted_json_data)
         return self._data
     
-    def save_data(self) -> None:
-        self._json_data = json.dumps(self._data)
+    def save_data(self) -> bool:
+        try:
+            self._json_data = json.dumps(self._data)
+        except AttributeError:
+            return False
         bytes_data = self._json_data.encode(self._settings['encoding'])
         encrypted_bytes_data = self._aes_encryption.encrypt(self._password, bytes_data)
         self._b64_encrypted_data = b64encode(encrypted_bytes_data).decode(self._settings['encoding'])
         self.io.save_data(self._b64_encrypted_data)
+        return True
     
     def change_datafile_path(self, new_path: str):
         self.io.file_path = new_path
+    
+    def restore_default_datafile_path(self):
+        self.io.file_path = self._settings['default_datafile_path']
+    
+    def backup_password(self):
+        self._password_backup = self._password
+    
+    def restore_password(self):
+        self._password = self._password_backup
      
 
 class State(NamedTuple):

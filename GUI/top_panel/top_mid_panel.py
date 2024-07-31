@@ -61,6 +61,7 @@ class TopMidPanel(BasePanel):
     
     def _on_enter_pressed(self, event) -> None:
         self.deselect_search()
+        self._on_search(None)
         event.Skip()
         
     def deselect_search(self):
@@ -74,14 +75,10 @@ class TopMidPanel(BasePanel):
         
     def _on_search(self, event) -> None:
         self._functions.search()
-    
-    # def refresh(self) -> None:
-    #     self._main_box.Clear(True)
-    #     self._init_ui()
-    #     self._bind_events()
         
     def applay_color_theme(self) -> None:
         self.SetBackgroundColour(wx.Colour(self._color_themes[self._current_theme ]['medium']))
         self._search.SetForegroundColour(wx.Colour(self._color_themes[self._current_theme ]['text']))
         self._search.SetBackgroundColour(wx.Colour(self._color_themes[self._current_theme ]['input_background']))
         self.Refresh()
+        
