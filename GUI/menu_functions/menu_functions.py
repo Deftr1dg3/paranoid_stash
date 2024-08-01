@@ -17,6 +17,7 @@ from GUI.base_panel import BasePanel
 from GUI.modals.set_new_password import SetNewPasswordFrame
 from GUI.modals.copy_popup import CopyPopup
 from GUI.modals.get_password_from_user import GetPasswordFrame
+from GUI.modals.file_encryption import FileEncryptionFrame
 
 from typing import Optional, TYPE_CHECKING
 
@@ -323,6 +324,17 @@ class MenuFunctions():
     
     def help(self):
         webbrowser.open(self.settings['global']['git_repo'])
+        
+    
+    # File Encryption ------------------------------------------------------
+    
+    def file_encryption(self) -> None:
+        file_encryption = FileEncryptionFrame(self._base_panel, self._base_panel.settings)
+        file_encryption.Show()
+    
+    def decrypt_file(self) -> None:
+        ...
+    
             
             
                 

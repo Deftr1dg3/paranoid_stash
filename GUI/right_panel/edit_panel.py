@@ -301,3 +301,4 @@ class EditPanel(BasePanel):
         self._url_title.SetForegroundColour(self._text_colour)
         
         self.Refresh()
+        
