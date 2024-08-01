@@ -88,12 +88,22 @@ class TopBarMenu(wx.MenuBar):
         
         # Create "Edit" menu ------------------------------------------------------------------------------------------
         
+        # Create "Encryption" menu ------------------------------------------------------------------------------------------
+        
+        encryption_menu = wx.Menu()
+        encryption_menu.Append(44, f"&{self._options['file_encryption']['encrypt_file']}\t{self._options['file_encryption']['encrypt_file_shortcut']}")
+        # encryption_menu.Append(45, f"&{self._options['file_encryption']['decrypt_file']}")
+        
+        self.Append(encryption_menu, f"&{self._fields[2]}")
+        
+        # Create "Encryption" menu ------------------------------------------------------------------------------------------
+        
         # Create "Help" menu ------------------------------------------------------------------------------------------
         
         help_menu = wx.Menu()
         help_menu.Append(61, f"&{self._options['help']['help']}\t{self._options['help']['help_shortcut']}")
         
-        self.Append(help_menu, f"&{self._fields[2]}")
+        self.Append(help_menu, f"&{self._fields[3]}")
         
         # Create "Help" menu ------------------------------------------------------------------------------------------
         
@@ -125,11 +135,14 @@ class TopBarMenu(wx.MenuBar):
         # self._main_frame.Bind(wx.EVT_MENU, self._on_move_entry_to, id=39)
         self._main_frame.Bind(wx.EVT_MENU, self._on_create_backup, id=40)
         
-        
         self._main_frame.Bind(wx.EVT_MENU, self._on_move_category_up, id=33)
         self._main_frame.Bind(wx.EVT_MENU, self._on_move_category_down, id=34)
         self._main_frame.Bind(wx.EVT_MENU, self._on_move_entry_up, id=35)
         self._main_frame.Bind(wx.EVT_MENU, self._on_move_entry_down, id=36)
+        
+        # Bind "file encryption"
+        self._main_frame.Bind(wx.EVT_MENU, self._on_file_encryption, id=44)
+        # self._main_frame.Bind(wx.EVT_MENU, self._on_file_decrypt, id=45)
         
         # Bind "Help" menu
         self._main_frame.Bind(wx.EVT_MENU, self._on_help, id=61)
@@ -215,6 +228,15 @@ class TopBarMenu(wx.MenuBar):
     
     def _on_move_entry_down(self, event: wx.Event) -> None:
         self._functions.move_entry_down()
+        
+    
+    #  File Encryption funcs --------------------------------------------
+
+    def _on_file_encryption(self, event: wx.Event) -> None:
+        self._functions.file_encryption()
+    
+    # def _on_file_decrypt(self, event: wx.Event) -> None:
+    #     self._functions.file_encryption()
         
     
     #  Help funcs --------------------------------------------

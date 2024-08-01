@@ -95,8 +95,18 @@ class GetPassword(BasePanel):
             self._df.change_datafile_path(file_path)
         
     def applay_color_theme(self):
-        self.SetBackgroundColour(wx.Colour(self._color_themes[self._current_theme]['dark']))
+        self._text_colour = self._color_themes[self._current_theme]['text']
+        self._input_background_colour = self._color_themes[self._current_theme]['input_background']
+        
+        self._password.SetForegroundColour(self._text_colour)
+        
+        self._password.SetBackgroundColour(self._input_background_colour )
     
+        self.SetBackgroundColour(self._color_themes[self._current_theme]['dark'])
+        
+        self.Refresh()
+        
+            
     def _on_close(self, event) -> None:
         sys.exit(0)
 

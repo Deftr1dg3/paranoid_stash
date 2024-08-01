@@ -1,0 +1,59 @@
+
+KMS Keys could be found in the next dir: 
+
+https://learn.microsoft.com/en-us/windows-server/get-started/kms-client-activation-keys
+
+Windows 10, 11 Pro  Key --> W269N-WFGWX-YVC9B-4J6C9-T83GX
+
+Steps:
+
+1. Insert Key into the system:
+
+slmgr /ipk <kmsclientkey>
+
+2. Set KMS server:
+
+slmgr /skms [kms{7,8,9}.msguides.com, etc...] 
+
+3. Activate inserted key 
+
+slmgr /ato
+
+4. Check activation status:
+
+slmgr /dli
+
+
+ACROBAT:
+
+Sign Acrobat:
+
+% sudo codesign --force --deep --sign - /Applications/Adobe\ Acrobat\ DC/Adobe\ Acrobat.app
+
+Я избавляюсь от него удалением файлов внутри подпапок по путям 
+
+/Library/Application Support/Adobe/ARMDC и 
+/Library/Application Support/Adobe/ARMNext 
+
+и заодно на всякий случай переименовываю либо удаляю 
+
+/Applications/Adobe Acrobat DC/Adobe Acrobat.app/Contents/Plugins/~Updater.acroplugin
+
+Ну и 
+
+/Library/LaunchAgents и 
+/Library/LaunchDaemons 
+
+удаляю ненужные после этого файлы, содержащие в имени ARMDC. И не помню, чтобы после этого он у меня самовольно обновлялся.
+
+
+
+
+### Install Windows with local account
+	Needs to disconnect internet.
+
+1. Preass Shift + F10 to open terminal 
+2. % ncpa.cpl 
+3. Disable internet connection
+4. oobe\bypassnro - The Machine will be restarted without internet.
+

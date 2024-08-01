@@ -4,7 +4,8 @@
     "app_name": "Paranoid Stash",
     "backups": "data/backups",
     "default_datfile_path": "data/PSdata",
-    "git_repo": "https://github.com/Deftr1dg3/paranoid_stash.git"
+    "git_repo": "https://github.com/Deftr1dg3/paranoid_stash.git",
+    "encoding": "utf-8"
   },
   "popup": {
     "error": {
@@ -19,11 +20,14 @@
     "message": {
       "backup_created": "Backup file:\n{}\nIMPORTANT:\nEvery backup stored with its own password.",
       "unable_to_create_backup": "Unable to create backup.",
-      "data_loaded": "The data has been uploaded successfully.\nIMPORTANT:\nWas applied the last inserted password."
+      "data_loaded": "The data has been uploaded successfully.\nIMPORTANT:\nWas applied the last inserted password.",
+      "file_saved": "File saved as:\n{}",
+      "exception": "Unable to proceed due to:\n{}",
+      "wrong_extension": "Wrong extension.\nExpected for {}, but got {}."
     },
     "file_already_exists": {
       "title": "File Already Exist",
-      "message": "Aru you sure you want to replace it?"
+      "message": "{}\nAru you sure you want to replace it?"
     },
     "new_category": {
       "title": "New Category",
@@ -42,6 +46,21 @@
     "cancel_label": "Cancel",
     "confirm_label": "Confirm",
     "margin_buttons": 10
+  },
+  "file_encryption": {
+    "title": "File Encryption",
+    "input_field_size": [250, -1],
+    "encrypt_label": "Encrypt File",
+    "decrypt_label": "Decrypt File",
+    "margin_buttons": 10,
+    "marging_side_buttons": 5,
+    "file_hint": "File path",
+    "save_as_hint": "Save as ...",
+    "password_hint": "Password",
+    "brows_label": "Brows",
+    "save_as_label": "Save as",
+    "copy_label": "Copy",
+    "encrypted_extension": ".enc"
   },
   "empy_field": {
     "title": "Unable to proceed.",
@@ -224,6 +243,7 @@
     "fields": {
       "File": "file",
       "Edit": "edit",
+      "File Encryption": "file_encryption",
       "Help": "help"
     },
     "options": {
@@ -271,6 +291,11 @@
         "entry_up_shortcut": "Ctrl+Up",
         "entry_down": "Move Entry Down",
         "entry_down_shortcut": "Ctrl+Down"
+      },
+      "file_encryption": {
+        "encrypt_file": "Files Encryption",
+        "encrypt_file_shortcut": "Shift+Ctrl+F",
+        "decrypt_file": "Decrypt File"
       },
       "help": {
         "help": "Help",
