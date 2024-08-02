@@ -183,11 +183,11 @@ class MenuFunctions():
     
     def move_entry_to_category(self, category: str):
         if self.manage_data.selected_entry is None:
-            message_popup(message="No entry selected.", title="Error.")
+            message_popup(self.settings['popup']['message']['no_entry_selected'], self.settings['popup']['error']['title'])
         if self.manage_data.move_entry_to_category(category=category):
             BasePanel.set_selected_entry(None)
             self._base_panel.refresh_body_panel()
-            message_popup(f"Entry moved to '{category}' category successfully.", "Info.")
+            message_popup(self.settings['popup']['success']['title'].format(category), self.settings['popup']['success']['title'])
     
     
     # Entry ------------------------------------------------------

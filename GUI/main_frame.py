@@ -1,5 +1,4 @@
 import sys
-import os 
 import wx
 
 from manage_data import ManageData

@@ -233,13 +233,7 @@ class ManageData:
         self._df.data = new_data
     
     def get_category_index(self, category: str) -> int:
-        items = self._df.data.keys()
-        i = 0
-        for itm in items:
-            if itm == category:
-                return i 
-            i += 1
-        return -1
+        return  list(self._df.data.keys()).index(category)
 
     def get_entry_index(self, entry_id: int) -> int:
         if self.selected_category is not None:
@@ -277,7 +271,7 @@ class ManageData:
         self.update() 
         self.save_state()
     
-    def all_categories(self) -> list:
+    def all_categories(self) -> list[str]:
         return list(self._df.data.keys())
     
     def get_category_data(self, category: str) -> list:
@@ -304,7 +298,10 @@ class ManageData:
             return
 
         items = [list(row) for row in self._df.data.items()]
-        category_index = self.get_category_index(self.selected_category)
+        try:
+            category_index = self.get_category_index(self.selected_category)
+        except Exception:
+            return
         
         step = 1 * direction 
         swap = category_index + step 
