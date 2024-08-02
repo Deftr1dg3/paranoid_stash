@@ -24,7 +24,7 @@ class LeftPanel(BasePanel):
         """ Function initializing visible interface. """
         
         # Create main sizer
-        main_box = wx.BoxSizer(wx.VERTICAL)
+        self._main_box = wx.BoxSizer(wx.VERTICAL)
         
         # Create ScrolledWindow
         self.scroll = wx.ScrolledWindow(self, -1, style=wx.VSCROLL)
@@ -42,10 +42,10 @@ class LeftPanel(BasePanel):
         self.scroll.SetSizer(scroll_sizer)
         
         # Add scroll window to the main sizer
-        main_box.Add(self.scroll, 1, wx.EXPAND)
+        self._main_box.Add(self.scroll, 1, wx.EXPAND)
         
         # Set main sizer to the panel
-        self.SetSizer(main_box)
+        self.SetSizer(self._main_box)
         
         # Refresh layout
         self.Layout()
@@ -64,18 +64,21 @@ class LeftPanel(BasePanel):
         scroll_sizer.Add(category_row, 0, wx.EXPAND)
         
     def _clear_categories(self):
-        # Get the sizer from the ScrolledWindow
-        scroll_sizer = self.scroll.GetSizer()
+        # # Get the sizer from the ScrolledWindow
+        # scroll_sizer = self.scroll.GetSizer()
         
-        # Destroy all children of the ScrolledWindow
-        for child in self.scroll.GetChildren():
-            child.Destroy()
+        # # Destroy all children of the ScrolledWindow
+        # for child in self.scroll.GetChildren():
+        #     child.Destroy()
             
-        # Clear the sizer
-        scroll_sizer.Clear(True)
+        # # Clear the sizer
+        # scroll_sizer.Clear(True)
         
-        # Layout the sizer
-        scroll_sizer.Layout()
+        # # Layout the sizer
+        # scroll_sizer.Layout()
+        
+        self._main_box.Clear(True)
+        
         self.Layout() 
         
     def refresh(self):

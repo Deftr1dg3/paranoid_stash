@@ -23,7 +23,10 @@
       "data_loaded": "The data has been uploaded successfully.\nIMPORTANT:\nWas applied the last inserted password.",
       "file_saved": "File saved as:\n{}",
       "exception": "Unable to proceed due to:\n{}",
-      "wrong_extension": "Wrong extension.\nExpected for {}, but got {}."
+      "wrong_extension": "Wrong extension.\nExpected for {}, but got {}.",
+      "entry_moved": "Entry moved to '{}' category successfully.",
+      "no_entry_selected": "No Entry Selected.",
+      "no_category_selected": "No Category Selected."
     },
     "file_already_exists": {
       "title": "File Already Exist",

@@ -21,8 +21,10 @@ class GetPassword(BasePanel):
          
         self._df = data_file
         self._gui_settings = gui_settings
-        self._color_themes = color_themes 
-        self._current_theme = current_theme
+        if file_path is None:
+            self._color_themes = color_themes 
+            self._current_theme = current_theme
+
         self._file_path = file_path
         
         self._config = self._gui_settings['get_password']
@@ -31,8 +33,6 @@ class GetPassword(BasePanel):
         self._bind_events()
         
         self.applay_color_theme()
-        
-        
         
     def _init_ui(self) -> None:
         
@@ -45,7 +45,8 @@ class GetPassword(BasePanel):
         self._password.SetHint(self._config['password_hint'])
         self._password.SetFocus()
         
-        self._choose_datafile = wx.Button(self, label=self._config['select_another_datafile'])
+        if self._file_path is None:
+            self._choose_datafile = wx.Button(self, label=self._config['select_another_datafile'])
         
         input_box.Add(self._password, 1, wx.ALIGN_CENTER)
 
@@ -56,7 +57,9 @@ class GetPassword(BasePanel):
         self.Layout()
         
     def _bind_events(self) -> None:
-        self._choose_datafile.Bind(wx.EVT_BUTTON, self._on_choose_another_datafile)
+        if self._file_path is None:
+            self._choose_datafile.Bind(wx.EVT_BUTTON, self._on_choose_another_datafile)
+            
         self._password.Bind(wx.EVT_TEXT_ENTER, self._on_key_down)
         self.Bind(wx.EVT_CLOSE, self._on_close)
         
@@ -95,14 +98,15 @@ class GetPassword(BasePanel):
             self._df.change_datafile_path(file_path)
         
     def applay_color_theme(self):
-        self._text_colour = self._color_themes[self._current_theme]['text']
-        self._input_background_colour = self._color_themes[self._current_theme]['input_background']
+        self.SetFocus()
+                
+        text_color = self._color_themes[self._current_theme]['text']
+        input_background = self._color_themes[self._current_theme]['input_background']
+        general_background = self._color_themes[self._current_theme]['dark']
         
-        self._password.SetForegroundColour(self._text_colour)
-        
-        self._password.SetBackgroundColour(self._input_background_colour )
-    
-        self.SetBackgroundColour(self._color_themes[self._current_theme]['dark'])
+        self._password.SetForegroundColour(text_color)
+        self._password.SetBackgroundColour(input_background)
+        self.SetBackgroundColour(general_background)
         
         self.Refresh()
         
