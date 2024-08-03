@@ -9,6 +9,9 @@ __pycache__/
 *demo*
 data/
 # testfile
+*copy*
+CompileApp
+.python-version
 
 # C extensions
 *.so

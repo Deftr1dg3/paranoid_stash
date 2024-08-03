@@ -1,4 +1,5 @@
-#!/usr/bin/env python3
+#/Library/Frameworks/Python.framework/Versions/3.12/bin/python3
+
 import sys
 import json
 import logging
