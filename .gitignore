@@ -10,8 +10,10 @@ __pycache__/
 data/
 # testfile
 *copy*
-CompileApp
+CompiledApp/
 .python-version
+dist_works
+
 
 # C extensions
 *.so
