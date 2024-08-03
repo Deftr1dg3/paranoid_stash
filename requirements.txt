@@ -3,7 +3,7 @@ macholib==1.16.3
 modulegraph==0.19.6
 packaging==24.1
 pillow==10.4.0
-py2app==0.28.8
+py2app==0.28.6
 pycryptodome==3.20.0
 pyinstaller==6.9.0
 pyinstaller-hooks-contrib==2024.7

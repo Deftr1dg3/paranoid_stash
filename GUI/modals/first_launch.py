@@ -67,7 +67,7 @@ class FirstLaunch(BasePanel):
         self.GetParent().Destroy()
         
     def launch_main_app(self):
-        self.GetParent().main_app.LaunchMainApp()
+        self.GetParent().main_app.launch_main_app()
     
     def applay_color_theme(self):
         self.SetBackgroundColour(wx.Colour(self._color_themes[self._current_theme]['dark']))
