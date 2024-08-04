@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 
 import wx 
-import ast
 
 from GUI.base_panel import BasePanel
 from GUI.mid_panel.entry_row import EntryRow
@@ -13,7 +12,7 @@ class MidPanel(BasePanel):
         
         super().__init__(self._parent)
         
-        self._scroll_settings = ast.literal_eval(self._settings['mid_panel']['scroll_settings'])
+        self._scroll_settings = self._settings['mid_panel']['scroll_settings']
         
         # Initializing visible objects
         self._init_ui()

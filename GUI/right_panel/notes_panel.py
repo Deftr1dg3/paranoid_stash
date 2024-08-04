@@ -2,9 +2,7 @@
 
 
 import wx 
-import ast
 
-from manage_data import ManageData
 from GUI.base_panel import BasePanel
 from GUI.right_panel.edit_panel import EntryFields
 
@@ -14,7 +12,7 @@ class NotesPanel(BasePanel):
         self._parent = parent 
         
         self._title = self._settings['right_panel']['notes_title']
-        self._notes_field_size = ast.literal_eval(self._settings['right_panel']['notes_field_size'])
+        self._notes_field_size = self._settings['right_panel']['notes_field_size']
         
         self._text_colour = self._color_themes[self._current_theme]['text']
         self._input_background_colour = self._color_themes[self._current_theme]['input_background']
@@ -89,3 +87,4 @@ class NotesPanel(BasePanel):
         self._notes.SetForegroundColour(self._text_colour)
         self._notes.SetBackgroundColour(self._input_background_colour)
         self.Refresh()
+        

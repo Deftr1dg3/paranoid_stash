@@ -1,7 +1,7 @@
 import wx
 
 from GUI.base_panel import BasePanel
-from GUI.menu_functions.menu_functions import MenuFunctions
+# from GUI.menu_functions.menu_functions import MenuFunctions
 
 class TopRightPanel(BasePanel):
     def __init__(self, parent: BasePanel) -> None:
@@ -13,7 +13,7 @@ class TopRightPanel(BasePanel):
         
         super().__init__(parent, size=self._size)
         
-        self._functions = MenuFunctions(self)
+        # self._functions = MenuFunctions(self)
         
         self._init_ui()
         self.applay_color_theme()

@@ -40,5 +40,20 @@
     "input_background": "#221c2e",
     "selection": "#6b5e85",
     "text": "#d0bcfa"
+  },
+
+  "dracula_purple": {
+    "dark": "#262626",
+    "medium": "#282a36",
+    "input_background": "#282a36",
+    "selection": "#bf9eee",
+    "text": "#61e884"
+  },
+  "dracula_pink": {
+    "dark": "#262626",
+    "medium": "#282a36",
+    "input_background": "#282a36",
+    "selection": "#f385c4",
+    "text": "#61e884"
   }
 }

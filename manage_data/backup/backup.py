@@ -4,11 +4,12 @@ import os
 from datetime import datetime
 from hashlib import sha256
 from pathlib import Path
-import logging
+from GUI.modals.popups import message_popup
 
+# import logging
 
-log_format = '%(asctime)s - %(levelname)s - %(message)s'
-logging.basicConfig(filename="app.log", level=logging.INFO, format=log_format)
+# log_format = '%(asctime)s - %(levelname)s - %(message)s'
+# logging.basicConfig(filename="app.log", level=logging.INFO, format=log_format)
 
 class BackUp:
     
@@ -72,7 +73,8 @@ class BackUp:
             with open(self._hash_file, "w", encoding=self._settings['encoding']) as f:
                 f.write(self._new_hash)
         except Exception as ex:
-            logging.error(f"Unable to save backup due to Exception:\n{ex}")
+            # logging.error(f"Unable to save backup due to Exception:\n{ex}")
+            message_popup(message=f"Unable to save backup due to Exception:\n{ex}", title="Error.")
         else:
             return file_name
             

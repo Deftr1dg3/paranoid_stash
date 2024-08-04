@@ -9,8 +9,6 @@ import subprocess
 import webbrowser
 from pathlib import Path 
 
-import logging
-
 from GUI.menu_functions.select_color_theme import SelectColorThemeFrame
 from GUI.modals.popups import dialog_popup, get_input, message_popup, save_file_as, select_dir, select_file
 from GUI.base_panel import BasePanel
@@ -24,9 +22,10 @@ from typing import Optional, TYPE_CHECKING
 if TYPE_CHECKING:
     from GUI.base_panel import BasePanel
     
+# import logging
 
-lock = threading.Lock()  
-logging.basicConfig(filename='app.log', level=logging.DEBUG)
+# lock = threading.Lock()  
+# logging.basicConfig(filename='app.log', level=logging.DEBUG)
 
 
 
@@ -112,7 +111,7 @@ class MenuFunctions():
         return not (new_category in self._base_panel._manage_data.data)
     
     def add_category(self) -> None:
-        color = self._base_panel._color_themes[self._base_panel._current_theme]['medium']
+        color = self._base_panel.color_themes[self._base_panel.current_theme]['medium']
         new_category = get_input(color=color, hint="Enter desired category name:", title="New Category")
         if new_category is None or new_category == "":
             return 
@@ -122,12 +121,12 @@ class MenuFunctions():
             self.manage_data.search_results = None
             self._base_panel.refresh_body_panel()
         else:
-            message_popup(message="Category with this name alrady exists.", title=self.settings['popup']['error']['title'])
+            message_popup(message=self.settings['popup']['message']['category_exists'], title=self.settings['popup']['error']['title'])
     
     def rename_category(self) -> None:
         if self._base_panel._manage_data.selected_category is None:
             return
-        color = self._base_panel._color_themes[self._base_panel._current_theme]['medium']
+        color = self._base_panel.color_themes[self._base_panel.current_theme]['medium']
         new_category = get_input(color=color, hint=self.settings['popup']['new_category']['message'], title=self.settings['popup']['new_category']['title'])
         if new_category is None or new_category == "":
             return 
@@ -189,7 +188,6 @@ class MenuFunctions():
             self._base_panel.refresh_body_panel()
             message_popup(self.settings['popup']['success']['title'].format(category), self.settings['popup']['success']['title'])
     
-    
     # Entry ------------------------------------------------------
     
     # State ------------------------------------------------------
@@ -221,24 +219,25 @@ class MenuFunctions():
     
     # State ------------------------------------------------------
     
-
     def choose_color_theme(self) -> None:
         if not self._color_panel_active:
             self._color_panel_active = True
-            self.frame = SelectColorThemeFrame(self._base_panel, self.settings, self._base_panel._color_themes)
-            self.frame.Show()
+            try:
+                self.frame = SelectColorThemeFrame(self.settings, self._base_panel.color_themes)
+                self.frame.Show()
+            except Exception as ex:
+                return
         else:
             try:
                 self.frame.Raise()
-            except RuntimeError:
+            except Exception as ex:
                 self._color_panel_active = False 
                 self.choose_color_theme()
     
     def change_password(self) -> None:
-        set_new_password = SetNewPasswordFrame(self._base_panel, self.manage_data._df, self.settings, self._base_panel._color_themes, self._base_panel._current_theme, change_password=True)
+        set_new_password = SetNewPasswordFrame(self._base_panel, self.manage_data.df, self.settings, self._base_panel.color_themes, self._base_panel.current_theme, change_password=True)
         set_new_password.Show()
     
-
     # State ------------------------------------------------------
     
     # Datafile ------------------------------------------------------
@@ -247,7 +246,7 @@ class MenuFunctions():
         save_as = save_file_as(file_name=self._config['default_datafile_name'])
         if save_as is not None:
             save_as = Path(save_as)
-            datafile_path: Path = self.manage_data._df.io.file_path
+            datafile_path: Path = self.manage_data.df.io.file_path
             if save_as.exists():
                 confirmed = dialog_popup(message=self.settings['popup']['file_already_exists']['message'], title=self.settings['popup']['file_already_exists']['title'])
                 if confirmed:
@@ -264,7 +263,7 @@ class MenuFunctions():
                 message_popup(self._config['save_message']['message'].format(save_as), self._config['save_message']['title'])
             
     def show_datafile_in_folder(self) -> None:
-        datafile_path = str(self.manage_data._df.io.file_path.resolve())
+        datafile_path = str(self.manage_data.df.io.file_path.resolve())
         
         if platform.system() == 'Windows':
             subprocess.run(['explorer', '/select,', datafile_path])
@@ -274,13 +273,13 @@ class MenuFunctions():
             subprocess.run(['xdg-open', os.path.dirname(datafile_path)])
     
     def copy_datafile_path(self) -> None:
-        datafile_path = str(self.manage_data._df.io.file_path.resolve())    
+        datafile_path = str(self.manage_data.df.io.file_path.resolve())    
         pyperclip.copy(datafile_path)   
         copy_indicator = CopyPopup(self._base_panel) 
         copy_indicator.Show()    
     
     def change_datafile_dir(self) -> None:
-        datafile_path: Path = self.manage_data._df.io.file_path
+        datafile_path: Path = self.manage_data.df.io.file_path
         file_name = datafile_path.name 
         new_directory = select_dir()
         if new_directory is not None:
@@ -288,11 +287,11 @@ class MenuFunctions():
             if new_path.exists():
                 confirmed = dialog_popup(message=self.settings['popup']['file_already_exists']['message'], title=self.settings['popup']['file_already_exists']['title'])
                 if confirmed:
-                    self.manage_data._df.io.file_path = str(new_path) 
+                    self.manage_data.df.io.file_path = str(new_path) 
                     self.manage_data.update()
                 return
             
-            self.manage_data._df.io.file_path = str(new_path) 
+            self.manage_data.df.io.file_path = str(new_path) 
             self.manage_data.update()
     
     def load_data_from_file(self, new_datafile: str | None = None) -> None:
@@ -302,7 +301,7 @@ class MenuFunctions():
             self._new_datafile = new_datafile
             
         if self._new_datafile is not None:
-            get_password = GetPasswordFrame(self.manage_data._df, self.settings, self._base_panel._color_themes, self._base_panel._current_theme, self, self._new_datafile)
+            get_password = GetPasswordFrame(self.manage_data.df, self.settings, self._base_panel.color_themes, self._base_panel.current_theme, self, self._new_datafile)
             get_password.Show()
     
     def launch_main_app(self) -> None:
@@ -310,7 +309,7 @@ class MenuFunctions():
         message_popup(message=self.settings['popup']['message']['data_loaded'], title=self.settings['popup']['success']['title'])
     
     def create_backup(self) -> None:
-        created = self.manage_data._df.backup()
+        created = self.manage_data.df.backup()
         if created is None:
             message_popup(message=self.settings['popup']['message']['unable_to_create_backup'], title=self.settings['popup']['error']['title'])
         else:
@@ -329,13 +328,5 @@ class MenuFunctions():
     # File Encryption ------------------------------------------------------
     
     def file_encryption(self) -> None:
-        file_encryption = FileEncryptionFrame(self._base_panel, self._base_panel.settings)
+        file_encryption = FileEncryptionFrame(self._base_panel.settings)
         file_encryption.Show()
-    
-    def decrypt_file(self) -> None:
-        ...
-    
-            
-            
-                
-            

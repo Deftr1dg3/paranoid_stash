@@ -1,4 +1,5 @@
 from __future__ import annotations
+
 import wx
 import json
 from pathlib import Path
@@ -113,9 +114,8 @@ class SelectColorThemePanel(BasePanel):
         
 class SelectColorThemeFrame(wx.Frame):
     
-    def __init__(self, parent: BasePanel, settings: dict, color_themes: dict):
+    def __init__(self, settings: dict, color_themes: dict):
         
-        self._parent = parent 
         self._settings = settings
         self._color_themes = color_themes
         
@@ -125,7 +125,7 @@ class SelectColorThemeFrame(wx.Frame):
         x = len(self._color_themes) * 70 
         y = self._size[1]
         
-        super().__init__(self._parent, title=self._title, size=(x, y), style=wx.CLOSE_BOX)
+        super().__init__(None, title=self._title, size=(x, y), style=wx.CLOSE_BOX)
         
         self.SetMinSize((x, y))
         self.SetMaxSize((x, y))

@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 
 import wx 
-import ast
 
 from GUI.right_panel.edit_panel import EditPanel
 from GUI.right_panel.notes_panel import NotesPanel
@@ -11,7 +10,7 @@ class RightPanel(BasePanel):
     def __init__(self, parent: BasePanel) -> None:
         self._parent = parent 
         
-        self._size = ast.literal_eval(self._settings['right_panel']['size'])
+        self._size = self._settings['right_panel']['size']
         
         super().__init__(self._parent, size=self._size)
     

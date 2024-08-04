@@ -3,7 +3,7 @@
 import wx
 
 from GUI.base_panel import BasePanel
-from GUI.menu_functions.menu_functions import MenuFunctions
+# from GUI.menu_functions.menu_functions import MenuFunctions
 
 class TopMidPanel(BasePanel):
     def __init__(self, parent: BasePanel) -> None:
@@ -15,7 +15,7 @@ class TopMidPanel(BasePanel):
         
         self._foreground_color = wx.Colour(self._color_themes[self._current_theme]['text'])
         
-        self._functions = MenuFunctions(self)
+        # self._functions = MenuFunctions(self)
         
         self._init_ui()
         self._bind_events()

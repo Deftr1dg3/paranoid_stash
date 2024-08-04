@@ -2,7 +2,6 @@
 
 
 import wx
-import ast
 
 from GUI.base_panel import BasePanel
 from GUI.left_panel.icons.icons_names import IconNames
@@ -12,7 +11,7 @@ class IconPanel(BasePanel):
         self._parent = parent 
         
         self._icon_name = icon_name
-        self._size = ast.literal_eval(self._settings['left_panel']['icon_panel_size'])
+        self._size = self._settings['left_panel']['icon_panel_size']
         
         super().__init__(self._parent, size=self._size)
         

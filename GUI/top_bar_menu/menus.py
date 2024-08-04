@@ -5,7 +5,7 @@ import wx
 import sys
 
 from GUI.base_panel import BasePanel
-from GUI.menu_functions.menu_functions import MenuFunctions
+# from GUI.menu_functions.menu_functions import MenuFunctions
 
 
 class TopBarMenu(wx.MenuBar):
@@ -17,7 +17,7 @@ class TopBarMenu(wx.MenuBar):
         self._options = self._base_panel.settings['top_bar_menu']['options']
         self._fields = list(self._base_panel.settings['top_bar_menu']['fields'].keys())
         
-        self._functions = MenuFunctions(self._base_panel)
+        self._functions = self._base_panel.functions
         
         self._init_menu()
         self._bind_events()

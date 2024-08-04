@@ -1,5 +1,4 @@
 import wx
-import ast
 
 from GUI.base_panel import BasePanel
 from GUI.left_panel.category_row import CategoryRow
@@ -8,8 +7,8 @@ class LeftPanel(BasePanel):
     def __init__(self, parent: BasePanel) -> None:
         self._parent = parent 
     
-        self._size = ast.literal_eval(self._settings['left_panel']['size'])
-        self._scroll_settings = ast.literal_eval(self._settings['left_panel']['scroll_settings'])
+        self._size = self._settings['left_panel']['size']
+        self._scroll_settings = self._settings['left_panel']['scroll_settings']
         
         super().__init__(self._parent, size=self._size)
         
