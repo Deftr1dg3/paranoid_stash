@@ -301,8 +301,10 @@ class MenuFunctions():
             self._new_datafile = new_datafile
             
         if self._new_datafile is not None:
-            get_password = GetPasswordFrame(self.manage_data.df, self.settings, self._base_panel.color_themes, self._base_panel.current_theme, self, self._new_datafile)
-            get_password.Show()
+            confirmed = dialog_popup(self.settings['popup']['message']['load_from_file'], self.settings['popup']['info']['title'])
+            if confirmed:
+                get_password = GetPasswordFrame(self.manage_data.df, self.settings, self._base_panel.color_themes, self._base_panel.current_theme, self, self._new_datafile)
+                get_password.Show()
     
     def launch_main_app(self) -> None:
         self._base_panel.refresh_body_panel()

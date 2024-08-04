@@ -38,7 +38,7 @@ class TopBarMenu(wx.MenuBar):
         file_menu.Append(11, f"&{self._options['file']['save_datafile_as']}")
         file_menu.Append(7, f"&{self._options['file']['show_datafile']}")
         file_menu.Append(38, f"&{self._options['file']['copy_datafile_path']}")
-        file_menu.Append(8, f"&{self._options['file']['change_datafile_dir']}")
+        # file_menu.Append(8, f"&{self._options['file']['change_datafile_dir']}")
         file_menu.Append(9, f"&{self._options['file']['load_from_datafile']}")
         file_menu.AppendSeparator()
         file_menu.Append(40, f"&{self._options['file']['cretae_backup']}\t{self._options['file']['cretae_backup_shortcut']}")
@@ -117,7 +117,7 @@ class TopBarMenu(wx.MenuBar):
         self._main_frame.Bind(wx.EVT_MENU, self._on_clear_category, id=5)
         self._main_frame.Bind(wx.EVT_MENU, self._on_change_file_password, id=6)
         self._main_frame.Bind(wx.EVT_MENU, self._on_show_datafile_in_folder, id=7)
-        self._main_frame.Bind(wx.EVT_MENU, self._on_change_datafile_directory, id=8)
+        # self._main_frame.Bind(wx.EVT_MENU, self._on_change_datafile_directory, id=8)
         self._main_frame.Bind(wx.EVT_MENU, self._on_load_from_datafile, id=9)
         self._main_frame.Bind(wx.EVT_MENU, self._on_restore_from_backup, id=10)
         self._main_frame.Bind(wx.EVT_MENU, self._on_save_datafile_as, id=11)
@@ -178,8 +178,8 @@ class TopBarMenu(wx.MenuBar):
     def _on_copy_datafile_path(self, event: wx.Event) -> None:
         self._functions.copy_datafile_path()
     
-    def _on_change_datafile_directory(self, event: wx.Event) -> None:
-        self._functions.change_datafile_dir()
+    # def _on_change_datafile_directory(self, event: wx.Event) -> None:
+    #     self._functions.change_datafile_dir()
     
     def _on_load_from_datafile(self, event: wx.Event) -> None:
         self._functions.load_data_from_file()
