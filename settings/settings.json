@@ -1,6 +1,6 @@
 {
   "data": {
-    "data_file": "/Users/stasusbondevito/Desktop/PSdata_1",
+    "data_file": "data/PSdata",
     "default_datafile_path": "data/PSdata",
     "backups": "data/backups",
     "settings_path": "settings/settings.json",
@@ -10,5 +10,5 @@
     "encoding": "utf-8",
     "max_backups": 100
   },
-  "color_theme": "dracula_purple"
+  "color_theme": "blue"
 }

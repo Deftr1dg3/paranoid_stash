@@ -124,7 +124,8 @@ class EntryRow(BasePanel):
         b = self._move_towards(self._current_colour.Blue(), self._target_colour.Blue())
 
         # Set the new color
-        self._current_colour = wx.Colour(r, g, b)
+        alpha = self._color_themes[self._current_theme].get('alpha', 255)
+        self._current_colour = wx.Colour(r, g, b, alpha)
         self.SetBackgroundColour(self._current_colour)
         self.Refresh()
 
@@ -155,7 +156,9 @@ class EntryRow(BasePanel):
         self._smooth_deselect()
         
     def set_selected_colour(self) -> None:
-        self.SetBackgroundColour(self._selection_colour)
+        r, g, b, alpha = self._selection_colour.Get()
+        alpha = self._color_themes[self._current_theme].get('alpha', 255)
+        self.SetBackgroundColour(wx.Colour(r, g, b, alpha))
         self.Refresh()
     
     def set_regular_colour(self) -> None:
