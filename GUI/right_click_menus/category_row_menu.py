@@ -3,10 +3,10 @@
 
 import wx 
 
-from manage_data import ManageData
+
 from GUI.base_panel import BasePanel
 from GUI.menu_functions.menu_functions import MenuFunctions
-from GUI.modals.popups import dialog_popup, get_input
+
 
 class CategoryRightClickMenu(wx.Menu):
     

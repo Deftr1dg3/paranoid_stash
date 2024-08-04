@@ -1,9 +1,9 @@
 from __future__ import annotations
+
 import wx
 from collections import deque
 
 from manage_data import ManageData
-# from GUI.menu_functions.menu_functions import MenuFunctions
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
@@ -11,6 +11,7 @@ if TYPE_CHECKING:
     from GUI.top_panel import TopPanel
     from GUI.left_panel.category_row import CategoryRow
     from GUI.mid_panel.entry_row import EntryRow
+    from GUI.menu_functions.menu_functions import MenuFunctions
 
 
 class BasePanel(wx.Panel):
@@ -29,6 +30,8 @@ class BasePanel(wx.Panel):
     _color_themes: dict 
     _current_theme: str 
     
+    _functions: MenuFunctions
+    
     def __new__(cls, *args, **kwargs):
         inst = super().__new__(cls, *args, **kwargs)
         cls.instances.append(inst)
@@ -40,8 +43,20 @@ class BasePanel(wx.Panel):
         # self._functions = MenuFunctions(self)
 
     @property
-    def settings(self):
+    def settings(self) -> dict:
         return self._settings
+    
+    @property
+    def color_themes(self) -> dict:
+        return self._color_themes
+
+    @property
+    def current_theme(self) -> str:
+        return self._current_theme
+    
+    @property
+    def functions(self) -> MenuFunctions:
+        return self._functions
 
     @classmethod
     def set_body_panel(cls, inst: BodyPanel):
@@ -74,6 +89,10 @@ class BasePanel(wx.Panel):
     @classmethod
     def set_selected_entry(cls, inst: EntryRow | None):
         cls.selected_entry_inst = inst
+    
+    @classmethod
+    def set_menu_fucntions(cls, functions: 'MenuFunctions'):
+        cls._functions = functions
         
     def refresh_left_panel(self):
         if self.body is None:

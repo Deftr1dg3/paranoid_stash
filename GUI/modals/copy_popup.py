@@ -14,7 +14,7 @@ class CopyPopup(wx.Frame):
         self._config = self._settings['copy_popup']
         self._size = self._config['size']
         
-        super().__init__(self._parent, size=self._size, style=wx.NO_BORDER | wx.STAY_ON_TOP)
+        super().__init__(None, size=self._size, style=wx.NO_BORDER | wx.STAY_ON_TOP)
         
         self.SetBackgroundColour(wx.Colour(self._config['frame_background_color']))
         

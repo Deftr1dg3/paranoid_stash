@@ -2,7 +2,6 @@
 
 
 import wx
-import ast
 
 from GUI.base_panel import BasePanel
 from manage_data import ManageData
@@ -11,10 +10,10 @@ class CategoryNamePanel(BasePanel):
     def __init__(self, parent: BasePanel, category_name: str) -> None:
         self._parent = parent 
         
-        self._category_max_len = int(self._settings['left_panel']['category_max_len'])
+        self._category_max_len = self._settings['left_panel']['category_max_len']
         self._replacement_characters = self._settings['left_panel']['replacement_characters']
         
-        self._size = ast.literal_eval(self._settings['left_panel']['category_panel_size'])
+        self._size = self._settings['left_panel']['category_panel_size']
         self._name = self._format_category_name(category_name)
 
         super().__init__(self._parent, size=self._size)
