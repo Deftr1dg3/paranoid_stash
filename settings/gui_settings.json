@@ -27,7 +27,8 @@
       "entry_moved": "Entry moved to '{}' category successfully.",
       "no_entry_selected": "No Entry Selected.",
       "no_category_selected": "No Category Selected.",
-      "category_exists": "Category with this name alrady exists."
+      "category_exists": "Category with this name alrady exists.",
+      "load_from_file": "You are going to replace current data with data from another DataFile.\nCurrent data will be LOST!\nAre you sure you want to proceed?"
     },
     "file_already_exists": {
       "title": "File Already Exist",
