@@ -13,14 +13,14 @@ from pathlib import Path
 
 # SETTINGS = "settings.json"
 
-import logging 
+# import logging 
 
-log_format = '%(asctime)s - %(levelname)s - %(message)s'
-logging.basicConfig(
-    filename='app.log', 
-    level=logging.DEBUG, 
-    format=log_format
-)
+# log_format = '%(asctime)s - %(levelname)s - %(message)s'
+# logging.basicConfig(
+#     filename='app.log', 
+#     level=logging.DEBUG, 
+#     format=log_format
+# )
 
 class Data(dict):
     _default_categories = ["Internet", "Emails", "Crypto", "Development", "Databases", "Funds", "Payments", "Apps"]
@@ -227,6 +227,10 @@ class ManageData:
     @property
     def data(self) -> Data:
         return self._df.data
+
+    @property 
+    def df(self) -> DataFile:
+        return self._df
     
     @data.setter
     def data(self, new_data: Data):
@@ -480,84 +484,3 @@ class ManageData:
 
     def __str__(self):
         return f'{self._df.data}'
-
-
-
-# Tests ------------------------------------------------------------------------
-
-
-# SETTINGS_PATH = './settings.json'
-# with open(SETTINGS_PATH, 'r') as f:
-#     settings = json.load(f)
-                
-# d = DataFile(settings)
-# d.password = 'hello'
-
-# # d.create_new_data_file()
-
-# md = ManageData(d)
-
-# print(md)
-# print()
-
-
-# md.selected_category = 'Apps'
-
-
-# md.clear_category(md.selected_category)
-
-# print(md)
-# print()
-
-# md.delete_category('New Name Fro Crypto')
-
-# print(md)
-# print()
-
-# md.add_entity()
-# print(md)
-# print()
-
-# md.add_entity()
-# print(md)
-# print()
-
-# md.clear_category(md.selected_category)
-# print(md)
-# print()
-
-# md.backward()
-# print(md)
-# print()
-
-# md.forward()
-# print(md)
-# print()
-
-# ent_id = id(md._data[md.selected_category][0])
-
-# print(f"{ent_id = } {md.get_entity_by_id(ent_id) = }\nDeleting ... \n")
-
-# md.delete_entity(ent_id)
-# print(md)
-# print()
-
-# md.backward()
-# print(md)
-# print()
-
-# md.forward()
-# print(md)
-# print()
-
-# md.move_category(md.selected_category)
-# print(md)
-
-# md.move_category(md.selected_category)
-# print(md)
-
-# md.move_category(md.selected_category)
-# print(md)
-
-# md.move_category(md.selected_category)
-# print(md)

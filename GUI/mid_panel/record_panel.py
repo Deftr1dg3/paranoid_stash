@@ -14,8 +14,8 @@ class BaseRecordPanel(BasePanel):
         self._parent = parent 
         self._record_value = record_value
         
-        self._displayed_str_length = int(self._settings['mid_panel']['display_string_len'])
-        self._displayed_password_length = int(self._settings['mid_panel']['display_pssword_placeholder_len'])
+        self._displayed_str_length = self._settings['mid_panel']['display_string_len']
+        self._displayed_password_length = self._settings['mid_panel']['display_pssword_placeholder_len']
         self._extra_characters_replacement = self._settings['mid_panel']['replacement_characters']
         
         super().__init__(self._parent)
@@ -25,7 +25,7 @@ class BaseRecordPanel(BasePanel):
         self._current_colour = wx.Colour(self._color_themes[self._current_theme]['text'])
         
         self._colour_step = 1  # Determines the speed of color transition
-        self._selection_speed = int(self._settings['mid_panel']['selection_speed'])
+        self._selection_speed = self._settings['mid_panel']['selection_speed']
         self._colour_timer = wx.Timer(self)
         
         self._init_ui()

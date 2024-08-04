@@ -2,14 +2,13 @@
 
 
 import wx 
-import ast
 
-from manage_data import ManageData
 from manage_data.manage_password.manage_password import ValidatePassword, GeneratePassword, PasswordStrength
 from GUI.base_panel import BasePanel
 from GUI.modals.popups import dialog_popup
 
 from dataclasses import dataclass
+
 
 @dataclass
 class EntryFields:
@@ -18,6 +17,7 @@ class EntryFields:
     PASSWORD = 2
     URL = 3
     NOTES = 4
+    
     
 STRENGTH_TYPES = {
     'VERY STRONG': PasswordStrength.VERY_STRONG,
@@ -39,6 +39,7 @@ class EditPanel(BasePanel):
         # self._PASSWORD_STRENGTH_OPTIONS = self._settings['right_panel']['password_strength_options']
         self._remove_entry_label = self._settings['right_panel']['remove_entry_button_label']
         self._placeholder = self._settings['right_panel']['entry_placeholder']
+        self._scroll_settings = self._settings['right_panel']['scroll_settings']
         
         self._dropdown_options = self._settings['right_panel']['password_strength_options'].split(',')
         self._current_password_strength = self._settings['right_panel']['defalut_password_strength']
@@ -67,7 +68,7 @@ class EditPanel(BasePanel):
         
         # Create ScrolledWindow
         self._scroll = wx.ScrolledWindow(self, -1)
-        self._scroll.SetScrollbars(20, 20, 50, 50)
+        self._scroll.SetScrollbars(*self._scroll_settings)
         
         # Sizer for ScrolledWindow.
         self._scroll_sizer = wx.BoxSizer(wx.VERTICAL)

@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 import wx
-import ast 
+# import ast 
 
 from GUI.base_panel import BasePanel
 from GUI.left_panel.category_panel import CategoryNamePanel
@@ -19,7 +19,7 @@ class CategoryRow(BasePanel):
         self._category_name = category_name
 
         self._is_selected = False
-        self._size = ast.literal_eval(self._settings['left_panel']['category_row_size'])
+        self._size = self._settings['left_panel']['category_row_size']
         
         super().__init__(self._parent, size=self._size)
         
@@ -35,7 +35,7 @@ class CategoryRow(BasePanel):
         
         # Defining colour timer and colour changing step
         self._colour_step = 2  # Determines the speed of color transition
-        self._selection_speed = int(self._settings['left_panel']['selection_speed'])
+        self._selection_speed = self._settings['left_panel']['selection_speed']
         self._colour_timer = wx.Timer(self)
         
         # Initializing visible objects and binding events
@@ -68,29 +68,29 @@ class CategoryRow(BasePanel):
         # Create secondary sizers
         icon_box = wx.BoxSizer(wx.VERTICAL)
         category_box = wx.BoxSizer(wx.VERTICAL)
+     
         
-               # Create Icon, depending on the category name
-        if set(self._category_name.lower().split()).intersection(set(self._settings['left_panel']['icon_email'].split(','))):
+        if set(self._category_name.lower().split()).intersection(set(self._settings['left_panel']['icon_email'])):
             self._icon_name = IconNames.EMAIL
-            
-        elif set(self._category_name.lower().split()).intersection(set(self._settings['left_panel']['icon_devops'].split(','))):
-            self._icon_name = IconNames.DEVOPS
-            
-        elif set(self._category_name.lower().split()).intersection(set(self._settings['left_panel']['icon_database'].split(','))):
-            self._icon_name = IconNames.DATABASE
-            
-        elif set(self._category_name.lower().split()).intersection(set(self._settings['left_panel']['icon_crypto'].split(','))):
+        
+        elif set(self._category_name.lower().split()).intersection(set(self._settings['left_panel']['icon_crypto'])):
             self._icon_name = IconNames.CRYPTO
         
-        elif set(self._category_name.lower().split()).intersection(set(self._settings['left_panel']['icon_funds'].split(','))):
+        elif set(self._category_name.lower().split()).intersection(set(self._settings['left_panel']['icon_funds'])):
             self._icon_name = IconNames.FUNDS
         
-        elif set(self._category_name.lower().split()).intersection(set(self._settings['left_panel']['icon_payments'].split(','))):
+        elif set(self._category_name.lower().split()).intersection(set(self._settings['left_panel']['icon_payments'])):
             self._icon_name = IconNames.PAYMENTS
+        
+        elif set(self._category_name.lower().split()).intersection(set(self._settings['left_panel']['icon_devops'])):
+            self._icon_name = IconNames.DEVOPS
+        
+        elif set(self._category_name.lower().split()).intersection(set(self._settings['left_panel']['icon_database'])):
+            self._icon_name = IconNames.DATABASE
             
-        elif set(self._category_name.lower().split()).intersection(set(self._settings['left_panel']['icon_internet'].split(','))):
+        elif set(self._category_name.lower().split()).intersection(set(self._settings['left_panel']['icon_internet'])):
             self._icon_name = IconNames.INTERNET
-            
+             
         else:
             self._icon_name = IconNames.FOLDER
         

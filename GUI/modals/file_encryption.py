@@ -6,7 +6,6 @@ import wx
 import pyperclip
 from pathlib import Path
 
-from manage_data import DataFile
 from manage_data.aes_encryption import AES_Encripton
 from GUI.base_panel import BasePanel
 from GUI.modals.popups import message_popup, select_file, save_file_as, dialog_popup
@@ -36,13 +35,6 @@ from GUI.modals.copy_popup import CopyPopup
 class FileEncryption(BasePanel):
     def __init__(self, parent: wx.Frame) -> None:
         super().__init__(parent)
-        
-        # self._parent = parent
-        
-        # self._df = data_file
-        # self._settings = settings
-        # self._color_themes = color_themes 
-        # self._current_theme = current_theme
         
         self._config = self._settings['file_encryption']
         self._aes_encryption = AES_Encripton()
@@ -154,7 +146,6 @@ class FileEncryption(BasePanel):
                 raise
         return result_bytes
     
-    
     def save_data_bytes(self, data: bytes, save_as: Path) -> None:
         if save_as.exists():
             confirmed = dialog_popup(message=self.settings['popup']['file_already_exists']['message'].format(save_as), title=self.settings['popup']['file_already_exists']['title'])
@@ -167,7 +158,6 @@ class FileEncryption(BasePanel):
                 message_popup(message=self.settings['popup']['message']['exception'].format(ex), title=self.settings['popup']['error']['title'])
         else:
             message_popup(message=self.settings['popup']['message']['file_saved'].format(save_as), title=self.settings['popup']['success']['title'])
-        
         
     def _on_encrypt(self, event: wx.Event) -> None:
         try:
@@ -183,7 +173,6 @@ class FileEncryption(BasePanel):
                 message_popup(message=self.settings['popup']['message']['exception'].format(ex), title=self.settings['popup']['error']['title'])
             else:
                 self.save_data_bytes(encrypted_bytes, save_as)
-              
         
     def _on_decrypt(self, event: wx.Event) -> None:
         try:
@@ -209,10 +198,8 @@ class FileEncryption(BasePanel):
             else:
                 self.save_data_bytes(decrypted_bytes, save_as)
                 
-                
     def _on_cancel(self, event: wx.Event | None = None):
         self.GetParent().Destroy()
-    
     
     def applay_color_theme(self):
         self._text_colour = self._color_themes[self._current_theme]['text']
@@ -232,31 +219,12 @@ class FileEncryption(BasePanel):
 
 
 class FileEncryptionFrame(wx.Frame):
-    def __init__(self, parent: BasePanel, gui_settings: dict) -> None:
+    def __init__(self, gui_settings: dict) -> None:
         
-        super().__init__(parent, style=wx.CLOSE_BOX, title=gui_settings['file_encryption']['title'])
-        
+        super().__init__(None, style=wx.CLOSE_BOX, title=gui_settings['file_encryption']['title'])
         
         self.CenterOnScreen()
         self._init_ui()
         
     def _init_ui(self) -> None:
         panel = FileEncryption(self)
-        
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

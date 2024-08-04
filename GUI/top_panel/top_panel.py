@@ -9,7 +9,7 @@ from GUI.top_panel.top_right_panel import TopRightPanel
 
 class TopPanel(BasePanel):
     def __init__(self, parent: BasePanel) -> None:
-        size = tuple(self.settings['top_panel']['size'])
+        size = self.settings['top_panel']['size']
         super().__init__(parent, size=size)
 
         self._init_ui()

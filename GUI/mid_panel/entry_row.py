@@ -2,7 +2,6 @@
 
 
 import wx
-import ast
 
 from GUI.base_panel import BasePanel
 from GUI.mid_panel.record_panel import RecordName, Username, Password, URL
@@ -15,7 +14,7 @@ class EntryRow(BasePanel):
         self._parent = parent 
     
         self._entry = entry
-        self._size = ast.literal_eval(self._settings['mid_panel']['entry_row_size'])
+        self._size = self._settings['mid_panel']['entry_row_size']
         
         super().__init__(self._parent, size=self._size)
         
@@ -29,7 +28,7 @@ class EntryRow(BasePanel):
         self._current_colour = self._background_colour
         
         self._colour_step = 1  # Determines the speed of color transition
-        self._selection_speed = int(self._settings['mid_panel']['selection_speed'])
+        self._selection_speed = self._settings['mid_panel']['selection_speed']
         self._colour_timer = wx.Timer(self)
         
         # Initializing visible objects and binding events

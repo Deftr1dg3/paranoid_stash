@@ -5,6 +5,7 @@ from manage_data import ManageData
 from GUI.base_panel import BasePanel
 from GUI.body_panel import BodyPanel
 from GUI.top_panel import TopPanel
+from GUI.menu_functions.menu_functions import MenuFunctions
 
 class MainPanel(BasePanel):
     def __init__(self, parent: wx.Frame, manage_date: ManageData, settings: dict, color_themes: dict, current_theme: str) -> None:
@@ -14,8 +15,9 @@ class MainPanel(BasePanel):
         BasePanel.set_settings(settings)
         BasePanel.set_color_themes(color_themes)
         BasePanel.set_current_theme(current_theme)
+        BasePanel.set_menu_fucntions(MenuFunctions(self))
         
-        
+
         self._init_ui()
         self.applay_color_theme()
     
