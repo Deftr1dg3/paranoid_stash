@@ -17,8 +17,6 @@ class LeftPanel(BasePanel):
         self._init_ui()
         self.applay_color_theme()
         
-        
-        
     def _init_ui(self):
         """ Function initializing visible interface. """
         

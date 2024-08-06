@@ -17,6 +17,8 @@ class TopBarMenu(wx.MenuBar):
         self._options = self._base_panel.settings['top_bar_menu']['options']
         self._fields = list(self._base_panel.settings['top_bar_menu']['fields'].keys())
         
+        self._moving_entity = False
+        
         self._functions = self._base_panel.functions
         
         self._init_menu()
@@ -197,6 +199,9 @@ class TopBarMenu(wx.MenuBar):
     
     #  Edit funcs --------------------------------------------
     
+    def _update_moving_entity(self):
+        self._moving_entity = not self._moving_entity
+    
     def _on_copy_password(self, event: wx.Event) -> None:
         self._functions.copy_password()
         
@@ -217,17 +222,37 @@ class TopBarMenu(wx.MenuBar):
         category = self._id_category[event_id]
         self._functions.move_entry_to_category(category=category)
     
-    def _on_move_category_up(self, event: wx.Event) -> None:
-        self._functions.move_category_up()
-    
-    def _on_move_category_down(self, event: wx.Event) -> None:
-        self._functions.move_category_down()
+    def _on_move_category_up(self, event: wx.Event | None = None) -> None:
+        if not self._moving_entity:
+            self._update_moving_entity()
+            self._functions.move_category_up()
+            wx.CallLater(200, self._update_moving_entity)
+        else:
+            wx.CallLater(100, self._on_move_category_up)
+            
+    def _on_move_category_down(self, event: wx.Event | None = None) -> None:
+        if not self._moving_entity:
+            self._update_moving_entity()
+            self._functions.move_category_down()
+            wx.CallLater(200, self._update_moving_entity)
+        else:
+            wx.CallLater(100, self._on_move_category_down)
         
-    def _on_move_entry_up(self, event: wx.Event) -> None:
-        self._functions.move_entry_up()
+    def _on_move_entry_up(self, event: wx.Event | None = None) -> None:
+        if not self._moving_entity:
+            self._update_moving_entity()
+            self._functions.move_entry_up()
+            wx.CallLater(200, self._update_moving_entity)
+        else:
+            wx.CallLater(100, self._on_move_entry_up)
     
-    def _on_move_entry_down(self, event: wx.Event) -> None:
-        self._functions.move_entry_down()
+    def _on_move_entry_down(self, event: wx.Event | None = None) -> None:
+        if not self._moving_entity:
+            self._update_moving_entity()
+            self._functions.move_entry_down()
+            wx.CallLater(200, self._update_moving_entity)
+        else:
+            wx.CallLater(100, self._on_move_entry_down)
         
     
     #  File Encryption funcs --------------------------------------------
