@@ -13,13 +13,6 @@
     "selection": "#4f7169",
     "text": "#90d5c0"
   },
-  "light_green": {
-    "dark": "#003942",
-    "medium": "#004952",
-    "input_background": "#00333b",
-    "selection": "#42848d",
-    "text": "#a7f2fb"
-  },
   "blue": {
     "dark": "#19202f",
     "medium": "#353c4c",
@@ -41,14 +34,13 @@
     "selection": "#6b5e85",
     "text": "#d0bcfa"
   },
-
-  "dracula_purple": {
-    "dark": "#262626",
-    "medium": "#282a36",
-    "input_background": "#282a36",
-    "selection": "#bf9eee",
-    "text": "#61e884",
-    "alpha": 110
+  "dark_green": {
+    "dark": "#131b1f",
+    "medium": "#1c262d",
+    "input_background": "#1c262d",
+    "selection": "#6da8d1",
+    "text": "#39586e",
+    "alpha": 220
   },
   "dracula_pink": {
     "dark": "#262626",
