@@ -96,6 +96,9 @@ class DataFile:
             created = self._backup.save_backup_file(json_data=self._json_data, b64_data=self._b64_encrypted_data)
             return created
     
+    def list_backups(self) -> list[Path]:
+        return self._backup.get_backups_list()
+    
     @property
     def data(self) -> Data:
         return self._data

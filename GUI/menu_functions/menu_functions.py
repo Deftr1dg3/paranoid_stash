@@ -22,10 +22,12 @@ from typing import Optional, TYPE_CHECKING
 if TYPE_CHECKING:
     from GUI.base_panel import BasePanel
     
+    
 # import logging
 
+# log_format = "%(asctime)s - %(levelname)s - %(message)s"
 # lock = threading.Lock()  
-# logging.basicConfig(filename='app.log', level=logging.DEBUG)
+# logging.basicConfig(filename='app.log', level=logging.DEBUG, format=log_format)
 
 
 
@@ -60,24 +62,20 @@ class MenuFunctions():
     def move_category_up(self) -> None:
         self.manage_data.move_category()
         self._base_panel.refresh_left_panel()
-        time.sleep(0.05)
 
     def move_category_down(self) -> None:
         self.manage_data.move_category(direction=1)
         self._base_panel.refresh_left_panel()
-        time.sleep(0.05)
     
     def move_entry_up(self) -> None:
         if self.manage_data.search_results is None:
             self.manage_data.move_entry()
             self._base_panel.refresh_mid_panel()
-            time.sleep(0.05)
 
     def move_entry_down(self) -> None:
         if self.manage_data.search_results is None:
             self.manage_data.move_entry(direction=1)
             self._base_panel.refresh_mid_panel()
-            time.sleep(0.05)
        
     # Move --------------------------------------------------------   
          
@@ -219,13 +217,16 @@ class MenuFunctions():
     
     # State ------------------------------------------------------
     
+    
     def choose_color_theme(self) -> None:
+        # logging.info("SELECT WORKS")
         if not self._color_panel_active:
             self._color_panel_active = True
             try:
                 self.frame = SelectColorThemeFrame(self.settings, self._base_panel.color_themes)
                 self.frame.Show()
             except Exception as ex:
+                # logging.exception(f"EXCEPTION: {ex}")
                 return
         else:
             try:

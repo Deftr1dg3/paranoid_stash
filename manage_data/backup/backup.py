@@ -78,7 +78,7 @@ class BackUp:
         else:
             return file_name
             
-    def _get_backups_list(self) -> list[Path]:
+    def get_backups_list(self) -> list[Path]:
         backups = os.listdir(self._backup_dir)
         backups_abspath = [self._backup_dir / file for file in backups]
         sorted_backups = sorted(backups_abspath, key=os.path.getctime, reverse=True)
@@ -92,7 +92,7 @@ class BackUp:
         return sorted_backups[:self._settings['max_backups']]
                 
     def _control_backups_ammount(self) -> list[Path]:
-        sorted_backups = self._get_backups_list()
+        sorted_backups = self.get_backups_list()
         available_backups = self._remove_old_backups(sorted_backups)
         return available_backups
         
