@@ -180,8 +180,8 @@ class TopBarMenu(wx.MenuBar):
     def _on_copy_datafile_path(self, event: wx.Event) -> None:
         self._functions.copy_datafile_path()
     
-    # def _on_change_datafile_directory(self, event: wx.Event) -> None:
-    #     self._functions.change_datafile_dir()
+    def _on_change_datafile_directory(self, event: wx.Event) -> None:
+        self._functions.change_datafile_dir()
     
     def _on_load_from_datafile(self, event: wx.Event) -> None:
         self._functions.load_data_from_file()
@@ -239,21 +239,11 @@ class TopBarMenu(wx.MenuBar):
             wx.CallLater(100, self._on_move_category_down)
         
     def _on_move_entry_up(self, event: wx.Event | None = None) -> None:
-        if not self._moving_entity:
-            self._update_moving_entity()
-            self._functions.move_entry_up()
-            wx.CallLater(200, self._update_moving_entity)
-        else:
-            wx.CallLater(100, self._on_move_entry_up)
+        self._functions.move_entry_up()
     
     def _on_move_entry_down(self, event: wx.Event | None = None) -> None:
-        if not self._moving_entity:
-            self._update_moving_entity()
-            self._functions.move_entry_down()
-            wx.CallLater(200, self._update_moving_entity)
-        else:
-            wx.CallLater(100, self._on_move_entry_down)
-        
+        self._functions.move_entry_down()
+    
     
     #  File Encryption funcs --------------------------------------------
 

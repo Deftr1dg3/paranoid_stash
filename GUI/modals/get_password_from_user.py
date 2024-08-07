@@ -69,6 +69,7 @@ class GetPassword(BasePanel):
     def _on_confirm(self, event) -> None:
         self._df.backup_password()
         password = self._password.GetValue()
+        
         if len(password) == 0:
             message_popup(self._config['no_password_provided']['title'], self._config['no_password_provided']['message'])
             self._password.SetFocus()
@@ -85,6 +86,8 @@ class GetPassword(BasePanel):
                 self.GetParent().Destroy()
             self._password.SetValue("")
         else:
+            if self._file_path is not None:
+                self._df.restore_password()
             self.GetParent().main_app.launch_main_app()
             self.GetParent().Destroy()
         
