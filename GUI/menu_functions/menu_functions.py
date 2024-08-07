@@ -308,6 +308,9 @@ class MenuFunctions():
                 get_password.Show()
     
     def launch_main_app(self) -> None:
+        self.manage_data.selected_category = None 
+        self.manage_data.selected_entry = None 
+        self.manage_data.search_results = None
         self._base_panel.refresh_body_panel()
         message_popup(message=self.settings['popup']['message']['data_loaded'], title=self.settings['popup']['success']['title'])
     

@@ -239,10 +239,16 @@ class TopBarMenu(wx.MenuBar):
             wx.CallLater(100, self._on_move_category_down)
         
     def _on_move_entry_up(self, event: wx.Event | None = None) -> None:
-        self._functions.move_entry_up()
+        if not self._moving_entity:
+            self._update_moving_entity()
+            self._functions.move_entry_up()
+            wx.CallLater(200, self._update_moving_entity)
     
     def _on_move_entry_down(self, event: wx.Event | None = None) -> None:
-        self._functions.move_entry_down()
+        if not self._moving_entity:
+            self._update_moving_entity()
+            self._functions.move_entry_down()
+            wx.CallLater(200, self._update_moving_entity)
     
     
     #  File Encryption funcs --------------------------------------------
