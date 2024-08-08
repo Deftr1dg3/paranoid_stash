@@ -39,8 +39,7 @@
     "medium": "#1c262d",
     "input_background": "#1c262d",
     "selection": "#6da8d1",
-    "text": "#39586e",
-    "alpha": 200
+    "text": "#39586e"
   },
   "dracula_pink": {
     "dark": "#262626",

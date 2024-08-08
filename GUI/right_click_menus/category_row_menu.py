@@ -38,7 +38,6 @@ class CategoryRightClickMenu(wx.Menu):
         self.Bind(wx.EVT_MENU, self._on_move_category_up, id=4)
         self.Bind(wx.EVT_MENU, self._on_move_category_down, id=5)
     
-        
     def _on_move_category_up(self, event) -> None:
         self._functions.move_category_up()
 

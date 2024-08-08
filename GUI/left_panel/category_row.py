@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 
 from __future__ import annotations
+
 import wx
-# import ast 
 
 from GUI.base_panel import BasePanel
 from GUI.left_panel.category_panel import CategoryNamePanel
@@ -57,7 +57,6 @@ class CategoryRow(BasePanel):
     @is_selected.setter
     def is_selected(self, selected: bool) -> None:
         self._is_selected = selected
-        
         
     def _init_ui(self) -> None:
         """ Function initializing visible interface. """
@@ -213,3 +212,4 @@ class CategoryRow(BasePanel):
         
         self.SetBackgroundColour(self._color_themes[self._current_theme]['medium'])    
         self.Refresh()
+        

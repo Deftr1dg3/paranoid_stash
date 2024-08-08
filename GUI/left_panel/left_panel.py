@@ -88,4 +88,3 @@ class LeftPanel(BasePanel):
         self.SetBackgroundColour(wx.Colour(self._color_themes[self._current_theme]['medium']))
         self.Refresh()
         
-        

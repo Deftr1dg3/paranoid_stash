@@ -61,4 +61,3 @@ class CopyPopup(wx.Frame):
             self.Destroy()
         self.SetTransparent(self._transparency)
         
-        

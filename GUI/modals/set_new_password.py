@@ -177,20 +177,3 @@ class SetNewPasswordFrame(wx.Frame):
     def _init_ui(self) -> None:
         panel = SetNewPassword(self, self._df, self._gui_settings, self._color_themes, self._current_theme, self._change_password)
         
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

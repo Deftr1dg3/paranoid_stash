@@ -94,3 +94,4 @@ class MidPanel(BasePanel):
         self._input_background_colour = self._color_themes[self._current_theme]['input_background']
         self.SetBackgroundColour(self._color_themes[self._current_theme]['dark'])
         self.Refresh()
+        
