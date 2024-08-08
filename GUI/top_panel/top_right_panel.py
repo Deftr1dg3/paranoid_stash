@@ -1,7 +1,6 @@
 import wx
 
 from GUI.base_panel import BasePanel
-# from GUI.menu_functions.menu_functions import MenuFunctions
 
 class TopRightPanel(BasePanel):
     def __init__(self, parent: BasePanel) -> None:

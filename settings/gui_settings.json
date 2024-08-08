@@ -368,7 +368,7 @@
         "entry_down_shortcut": "Ctrl+Down"
       },
       "file_encryption": {
-        "encrypt_file": "Files Encryption",
+        "encrypt_file": "File Encryption",
         "encrypt_file_shortcut": "Shift+Ctrl+F",
         "decrypt_file": "Decrypt File"
       },

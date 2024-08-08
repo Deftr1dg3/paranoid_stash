@@ -4,7 +4,6 @@
 import wx
 
 from GUI.base_panel import BasePanel
-from manage_data import ManageData
 
 class CategoryNamePanel(BasePanel):
     def __init__(self, parent: BasePanel, category_name: str) -> None:
@@ -55,3 +54,4 @@ class CategoryNamePanel(BasePanel):
         self._text_colour = self._color_themes[self._current_theme]['text']
         self.SetBackgroundColour(self._color_themes[self._current_theme]['medium'])
         self.Refresh() 
+        

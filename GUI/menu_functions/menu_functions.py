@@ -1,8 +1,6 @@
 from __future__ import annotations
 
 import os
-import time
-import threading
 import pyperclip
 import platform
 import subprocess
@@ -28,7 +26,6 @@ if TYPE_CHECKING:
 # log_format = "%(asctime)s - %(levelname)s - %(message)s"
 # lock = threading.Lock()  
 # logging.basicConfig(filename='app.log', level=logging.DEBUG, format=log_format)
-
 
 
 class MenuFunctions():

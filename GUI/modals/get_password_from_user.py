@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+
 from __future__ import annotations
 
 import wx
@@ -113,10 +114,8 @@ class GetPassword(BasePanel):
         
         self.Refresh()
         
-            
     def _on_close(self, event) -> None:
         sys.exit(0)
-
 
 
 class GetPasswordFrame(wx.Frame):
@@ -136,6 +135,5 @@ class GetPasswordFrame(wx.Frame):
         self.CenterOnScreen()
         self._init_ui()
 
-        
     def _init_ui(self):
         panel = GetPassword(self, self._df, self._gui_settings, self._color_themes, self._current_theme, self._file_path)

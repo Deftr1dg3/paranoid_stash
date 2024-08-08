@@ -1,16 +1,7 @@
 #!/usr/bin/env python3
 
 import wx
-import json 
-from pathlib import Path
 
-
-# SETTINGS_PATH = './GUI/gui_settings.json'
-
-# with open(SETTINGS_PATH, 'r') as f:
-#     SETTINGS = json.load(f)
-
-    
 
 def get_input(color: str, hint: str = "", title: str = "", default_value: str = "", parent: (wx.Panel | None) = None) -> (str | None):
     user_input = None
@@ -76,5 +67,3 @@ def select_dir(dir: str = "", title: str = "Select Directory") -> (str | None):
         dir_dialog.Destroy()
         return dir_path
     dir_dialog.Destroy()
-
-

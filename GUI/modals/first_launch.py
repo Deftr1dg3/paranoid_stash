@@ -3,7 +3,6 @@
 
 import wx
 import os
-import sys
 
 from GUI.base_panel import BasePanel
 from GUI.modals.set_new_password import SetNewPasswordFrame
@@ -93,7 +92,3 @@ class FirstLaunchFrame(wx.Frame):
         
         panel = FirstLaunch(self, self._df, self._gui_settings, self._color_themes, self._current_theme)
     
-
-
-    
-
