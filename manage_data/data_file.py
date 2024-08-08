@@ -430,9 +430,6 @@ class ManageData:
     def forward(self) -> bool:
         next_state = self._state.forward()
         
-        # print(f'{len(self._state._undo) = }')
-        # print(f'{len(self._state._redo) = }')
-        
         if next_state is not None:
             
             self._df.data = next_state.data
@@ -442,8 +439,6 @@ class ManageData:
             self.search_results = next_state.search_results
             
             self.selected_entry = self.get_entry_id_by_index(next_state.selected_entry_ind)
-            
-            # self.print_attrs()
 
             self.update()
             return True
@@ -451,9 +446,6 @@ class ManageData:
     
     def backward(self) -> bool:
         prev_state = self._state.backward()
-        
-        # print(f'{len(self._state._undo) = }')
-        # print(f'{len(self._state._redo) = }')
         
         if prev_state is not None:
         
@@ -465,23 +457,12 @@ class ManageData:
             
             self.selected_entry = self.get_entry_id_by_index(prev_state.selected_entry_ind)
             
-            # self.print_attrs()
-            
             self.update()
             return True 
         return False
-         
-    # def print_attrs(self):
-    #     print(f'{self.selected_category = }')
-    #     print(f'{self.selected_entry = }')
-        # print(f'{self.search_results = }\n')
     
     # Password ------------------------------------------------------------------------
 
-    def change_password(self, new_password: str):
-        ...
-        self.update()
-        self.save_state()
     
     # Password ------------------------------------------------------------------------
 
