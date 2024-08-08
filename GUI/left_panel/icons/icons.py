@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 
-
 import wx
 
 from GUI.base_panel import BasePanel
@@ -114,13 +113,4 @@ class IconPanel(BasePanel):
         self._pen_colour = self._color_themes[self._current_theme]['medium']
         self.SetBackgroundColour(self._color_themes[self._current_theme]['medium'])
         self.Refresh() 
-       
-        
-        
-        
-        
-
-        
-        
-        
-        
+           

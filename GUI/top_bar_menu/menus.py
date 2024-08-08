@@ -2,7 +2,6 @@
 
 
 import wx
-import sys
 
 from GUI.base_panel import BasePanel
 # from GUI.menu_functions.menu_functions import MenuFunctions
@@ -264,3 +263,4 @@ class TopBarMenu(wx.MenuBar):
   
     def _on_help(self, event: wx.Event) -> None:
         self._functions.help()
+        
