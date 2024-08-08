@@ -21,7 +21,10 @@ class EntryRow(BasePanel):
         self.is_selected = False
         
         self._text_colour = wx.Colour(self._color_themes[self._current_theme]['text'])
+        
+        self._selection_lightness = self._color_themes[self._current_theme].get("lightness", 100)
         self._selection_colour = wx.Colour(self._color_themes[self._current_theme]['selection'])
+        
         self._background_colour = wx.Colour(self._color_themes[self._current_theme]['dark'])
         
         self._target_colour = self._selection_colour
@@ -124,11 +127,12 @@ class EntryRow(BasePanel):
         b = self._move_towards(self._current_colour.Blue(), self._target_colour.Blue())
 
         # Set the new color
-        alpha = 255
+        self._current_colour = wx.Colour(r, g, b)
         if self.is_selected:
-            alpha = self._color_themes[self._current_theme].get('alpha', 255)
-        self._current_colour = wx.Colour(r, g, b, alpha)
-        self.SetBackgroundColour(self._current_colour)
+            color = self._current_colour.ChangeLightness(self._selection_lightness)
+        else:
+            color = self._current_colour
+        self.SetBackgroundColour(color)
         self.Refresh()
 
         # Stop the timer if the target color has been reached
@@ -156,11 +160,11 @@ class EntryRow(BasePanel):
         self.is_selected = False
         BasePanel.set_selected_entry(None)
         self._smooth_deselect()
+        wx.Colour().ChangeLightness
         
     def set_selected_colour(self) -> None:
-        r, g, b, alpha = self._selection_colour.Get()
-        # alpha = self._color_themes[self._current_theme].get('alpha', 255)
-        self.SetBackgroundColour(wx.Colour(r, g, b, alpha))
+        color = self._selection_colour.ChangeLightness(self._selection_lightness)
+        self.SetBackgroundColour(color)
         self.Refresh()
     
     def set_regular_colour(self) -> None:
@@ -188,9 +192,9 @@ class EntryRow(BasePanel):
         self._current_colour = self._background_colour
         
         if id(self._entry) == self._manage_data.selected_entry:
+            self.is_selected = True
             self.set_selected_colour()
             BasePanel.set_selected_entry(self)
-            self.is_selected = True
         else:
             # self.set_regular_colour()
             self.SetBackgroundColour(self._background_colour)
