@@ -38,15 +38,16 @@
     "dark": "#131b1f",
     "medium": "#1c262d",
     "input_background": "#1c262d",
-    "selection": "#6da8d1",
-    "text": "#39586e"
+    "selection": "#34566e",
+    "text": "#6ba7d1",
+    "lightness": 90
   },
   "dracula_pink": {
     "dark": "#262626",
     "medium": "#282a36",
     "input_background": "#282a36",
-    "selection": "#f385c4",
+    "selection": "#f07abe",
     "text": "#61e884",
-    "alpha": 128
+    "lightness": 50
   }
 }
