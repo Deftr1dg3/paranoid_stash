@@ -46,6 +46,8 @@ If you’re unsure why you need an offline password keeper for your online banki
 
 # Installation
 
+### The app can be used on both x86 and arm64 processors on Mac OS Big Sur and higher
+
 #### 1.
 
 Follow the link:
@@ -59,7 +61,7 @@ Click the "Raw" button in the top right corner, and the file will be automatical
 
 #### 3.
 
-Open terminal and navigate to "~/Downloads"
+Open terminal, navigate to "~/Downloads"
 and extract the app from archive:
 
     cd ~/Downloads
@@ -95,7 +97,7 @@ Move the app to the /Applications folder and double-click it. If you see a secur
 
 ![from_internet](setup_images/from_internet.png)
 
-Click "Open" if it does not help, Go to:
+Click "Open". If it does not help, go to:
 Settings > Security & Privacy > "Open Anyway" to proceed.
 
 ![open_anyway](setup_images/open_anyway.png)
@@ -166,4 +168,4 @@ as DataFile
 ### 2.
 
 In the next version of the app may be added an option hide encrypted file data
-in photos
+in photos, videos, pdf and other files.
