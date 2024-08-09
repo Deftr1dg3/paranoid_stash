@@ -36,7 +36,7 @@ your go-to solution for keeping your sensitive information safe and secure.
 
 If you’re unsure why you need an offline password keeper for your online banking or crypto wallet, just check out these links for more info :)
 
-# Last Securuty Breaches:
+# Last Security Breaches:
 
 [Google Internal Database Leak 2024](https://www.medianama.com/2024/06/223-report-google-leak-privacy-security-errors/)
 
