@@ -32,8 +32,8 @@ class NotesPanel(BasePanel):
         self._main_box = wx.BoxSizer(wx.VERTICAL)
         
         # Create secondary sizers
-        title_box = wx.BoxSizer(wx.HORIZONTAL)
-        notes_box = wx.BoxSizer(wx.HORIZONTAL)
+        self._title_box = wx.BoxSizer(wx.HORIZONTAL)
+        self._notes_box = wx.BoxSizer(wx.HORIZONTAL)
         
         # Create GUI objects
         self._title = wx.StaticText(self, label=self._title)
@@ -49,12 +49,12 @@ class NotesPanel(BasePanel):
             self._notes.SetValue(notes)
         
         # Add GUI objects to secondary sizers
-        title_box.Add(self._title, 1, wx.EXPAND)
-        notes_box.Add(self._notes, 1, wx.EXPAND)
+        self._title_box.Add(self._title, 1, wx.EXPAND)
+        self._notes_box.Add(self._notes, 1, wx.EXPAND)
         
         # Add secondary sizers to the main sizer
-        self._main_box.Add(title_box, 0, wx.EXPAND | wx.ALL, 5)
-        self._main_box.Add(notes_box, 1, wx.EXPAND | wx.ALL, 5)
+        self._main_box.Add(self._title_box, 0, wx.EXPAND | wx.ALL, 5)
+        self._main_box.Add(self._notes_box, 1, wx.EXPAND | wx.ALL, 5)
         
         # Set main sizer to the panel
         self.SetSizer(self._main_box)
@@ -64,15 +64,22 @@ class NotesPanel(BasePanel):
         
     def _bind_events(self):
         self._notes.Bind(wx.EVT_TEXT, self._on_typing)
+        
+        self._notes.Bind(wx.EVT_SET_FOCUS, self._on_focus)
+    
+    def _on_focus(self, event: wx.Event) -> None:
+        notes: wx.TextCtrl = event.GetEventObject()
+        wx.CallLater(100, notes.SelectAll)
+        event.Skip()
  
-    def _on_typing(self, event):
+    def _on_typing(self, event: wx.Event) -> None:
         if self.entry is None:
             return
         value = self._notes.GetValue()
         self.entry[EntryFields.NOTES] = value
         self._on_enter(None)
         
-    def _on_enter(self, event) -> None:
+    def _on_enter(self, event: wx.Event | None) -> None:
         self._manage_data.update()
         self._manage_data.save_state()
         
@@ -80,7 +87,7 @@ class NotesPanel(BasePanel):
         self._notes.SetValue(value)
         self._notes.SetInsertionPointEnd()
         
-    def applay_color_theme(self):
+    def applay_color_theme(self) -> None:
         self._text_colour = self._color_themes[self._current_theme]['text']
         self._input_background_colour = self._color_themes[self._current_theme]['input_background']
         self._title.SetForegroundColour(self._text_colour)

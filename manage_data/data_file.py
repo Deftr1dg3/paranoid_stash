@@ -4,6 +4,7 @@ import json
 import copy
 from base64 import b64encode, b64decode
 from typing import NamedTuple
+from dataclasses import dataclass
 
 from .aes_encryption import AES_Encripton
 from .manage_password import GeneratePassword, PasswordStrength
@@ -21,6 +22,15 @@ from pathlib import Path
 #     level=logging.DEBUG, 
 #     format=log_format
 # )
+
+@dataclass
+class EntryFields:
+    RECORD_NAME: int = 0
+    USERNAME: int = 1
+    PASSOWRD: int = 2
+    URL: int = 3 
+    NOTES: int = 4
+    
 
 class Data(dict):
     _default_categories = ["Internet", "Emails", "Crypto", "Development", "Databases", "Funds", "Payments", "Apps"]
@@ -221,8 +231,9 @@ class ManageData:
         self._state = DataState()
         self._pass_gen = GeneratePassword()
         
+        
+        self.selected_category: str | None = self._first_category()
         self.search_results: list | None = None
-        self.selected_category: str | None = None
         self.selected_entry: int | None = None
         
         self.save_state()
@@ -238,6 +249,9 @@ class ManageData:
     @data.setter
     def data(self, new_data: Data):
         self._df.data = new_data
+        
+    def _first_category(self) -> str:
+        return list(self._df.data.keys())[0]
     
     def get_category_index(self, category: str) -> int:
         return  list(self._df.data.keys()).index(category)
@@ -343,7 +357,7 @@ class ManageData:
         if self.selected_category is not None:
             new_entry = copy.deepcopy(self._default_entry)
             password_strength = PasswordStrength()
-            new_entry[2] = self._pass_gen.generate_password(password_strength.STRONG)
+            new_entry[EntryFields.PASSOWRD] = self._pass_gen.generate_password(password_strength.STRONG)
             self.selected_entry = id(new_entry)
             self._df.data[self.selected_category].append(new_entry)
             self.update()
@@ -410,7 +424,7 @@ class ManageData:
             return
         for category in self._df.data.keys():
             for entry in self._df.data[category]:
-                if pattern.lower() in entry[0].lower():
+                if pattern.lower() in entry[EntryFields.RECORD_NAME].lower() or pattern.lower() in entry[EntryFields.USERNAME].lower():
                     results.append(entry)
         self.search_results = results
         return results

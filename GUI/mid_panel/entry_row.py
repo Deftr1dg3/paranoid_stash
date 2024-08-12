@@ -22,7 +22,6 @@ class EntryRow(BasePanel):
         
         self._text_colour = wx.Colour(self._color_themes[self._current_theme]['text'])
         
-        self._selection_lightness = self._color_themes[self._current_theme].get("lightness", 100)
         self._selection_colour = wx.Colour(self._color_themes[self._current_theme]['selection'])
         
         self._background_colour = wx.Colour(self._color_themes[self._current_theme]['dark'])
@@ -128,11 +127,7 @@ class EntryRow(BasePanel):
 
         # Set the new color
         self._current_colour = wx.Colour(r, g, b)
-        if self.is_selected:
-            color = self._current_colour.ChangeLightness(self._selection_lightness)
-        else:
-            color = self._current_colour
-        self.SetBackgroundColour(color)
+        self.SetBackgroundColour(self._current_colour)
         self.Refresh()
 
         # Stop the timer if the target color has been reached
@@ -163,8 +158,7 @@ class EntryRow(BasePanel):
         wx.Colour().ChangeLightness
         
     def set_selected_colour(self) -> None:
-        color = self._selection_colour.ChangeLightness(self._selection_lightness)
-        self.SetBackgroundColour(color)
+        self.SetBackgroundColour(self._selection_colour)
         self.Refresh()
     
     def set_regular_colour(self) -> None:

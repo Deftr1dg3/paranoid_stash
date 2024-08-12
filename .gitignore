@@ -13,7 +13,7 @@ data/
 CompiledApp/
 .python-version
 dist_works
-
+ThingsToImprove.md
 
 
 # C extensions

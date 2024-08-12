@@ -65,7 +65,7 @@ Open terminal, navigate to "~/Downloads"
 and extract the app from archive:
 
     cd ~/Downloads
-    tar -xzvf paranoid_stash_x86_and_arm64.tar.gz
+    tar -xzvf "paranoid_stash_x86_and_arm64.tar.gz"
 
 The App "Paranoid Stash.app" will appear next to the archive in ~/Downloads
 folder.
@@ -143,7 +143,7 @@ Will appear popup window:
 
 Next:
 
-1. Brows File
+1. Browse File
 2. Insert desired password and hit "Encrypt File"
 3. "Save as ..." field just shows the encrypted file path,
    you can not change it. Only copy.
