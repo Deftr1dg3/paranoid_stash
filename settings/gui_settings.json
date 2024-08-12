@@ -59,7 +59,7 @@
     "margin_buttons": 10
   },
   "file_encryption": {
-    "title": "File Encryption",
+    "title": "Encryption",
     "input_field_size": [250, -1],
     "encrypt_label": "Encrypt File",
     "decrypt_label": "Decrypt File",
@@ -68,7 +68,7 @@
     "file_hint": "File path",
     "save_as_hint": "Save as ...",
     "password_hint": "Password",
-    "brows_label": "Brows",
+    "brows_label": "Browse",
     "save_as_label": "Save as",
     "copy_label": "Copy",
     "encrypted_extension": ".enc"
@@ -115,14 +115,22 @@
       "internet",
       "connection",
       "connections",
+      "connect",
       "online",
       "www",
       "world wide web",
       "account",
       "accounts"
     ],
-    "icon_email": ["mail", "mails", "email", "emails"],
-    "icon_crypto": ["crypto", "btc", "bitcoin", "bitcoins"],
+    "icon_email": [
+      "mail",
+      "mails",
+      "email",
+      "emails",
+      "notification",
+      "notifications"
+    ],
+    "icon_crypto": ["crypto", "btc", "bitcoin", "bitcoins", "blockchain"],
     "icon_devops": [
       "development",
       "c",
@@ -318,7 +326,7 @@
     "fields": {
       "File": "file",
       "Edit": "edit",
-      "File Encryption": "file_encryption",
+      "Data Encryption": "file_encryption",
       "Help": "help"
     },
     "options": {
@@ -368,7 +376,7 @@
         "entry_down_shortcut": "Ctrl+Down"
       },
       "file_encryption": {
-        "encrypt_file": "File Encryption",
+        "encrypt_file": "AES Encryption",
         "encrypt_file_shortcut": "Shift+Ctrl+F",
         "decrypt_file": "Decrypt File"
       },

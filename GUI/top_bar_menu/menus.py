@@ -226,16 +226,12 @@ class TopBarMenu(wx.MenuBar):
             self._update_moving_entity()
             self._functions.move_category_up()
             wx.CallLater(200, self._update_moving_entity)
-        else:
-            wx.CallLater(100, self._on_move_category_up)
-            
+
     def _on_move_category_down(self, event: wx.Event | None = None) -> None:
         if not self._moving_entity:
             self._update_moving_entity()
             self._functions.move_category_down()
             wx.CallLater(200, self._update_moving_entity)
-        else:
-            wx.CallLater(100, self._on_move_category_down)
         
     def _on_move_entry_up(self, event: wx.Event | None = None) -> None:
         if not self._moving_entity:

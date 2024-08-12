@@ -46,8 +46,7 @@
     "dark": "#262626",
     "medium": "#282a36",
     "input_background": "#282a36",
-    "selection": "#f07abe",
-    "text": "#61e884",
-    "lightness": 50
+    "selection": "#8a3e69",
+    "text": "#61e884"
   }
 }

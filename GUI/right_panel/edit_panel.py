@@ -158,6 +158,11 @@ class EditPanel(BasePanel):
         self._password.Bind(wx.EVT_TEXT, self._on_password)
         self._url.Bind(wx.EVT_TEXT, self._on_url)
         
+        self._record_name.Bind(wx.EVT_SET_FOCUS, self._on_focus)
+        self._username.Bind(wx.EVT_SET_FOCUS, self._on_focus)
+        self._password.Bind(wx.EVT_SET_FOCUS, self._on_focus)
+        self._url.Bind(wx.EVT_SET_FOCUS, self._on_focus)
+        
         self._record_name.Bind(wx.EVT_TEXT_ENTER, self._on_enter_pressed)
         self._username.Bind(wx.EVT_TEXT_ENTER, self._on_enter_pressed)
         self._password.Bind(wx.EVT_TEXT_ENTER, self._on_enter_pressed)
@@ -167,39 +172,38 @@ class EditPanel(BasePanel):
         self._generate_password_button.Bind(wx.EVT_BUTTON, self._on_generate_password)
         self._password_strength.Bind(wx.EVT_COMBOBOX, self._on_select_password_strength)
         self._remove_entry.Bind(wx.EVT_BUTTON, self._on_remove_entry)
-        
-        # self._record_name.Bind(wx.EVT_SET_FOCUS, self._on_set_focus)
-        # self._username.Bind(wx.EVT_SET_FOCUS, self._on_set_focus)
-        # self._password.Bind(wx.EVT_SET_FOCUS, self._on_set_focus)
-        # self._url.Bind(wx.EVT_SET_FOCUS, self._on_set_focus)
        
-    def _on_enter_pressed(self, event) -> None:
-        obj = event.GetEventObject()
-        if obj.HasFocus():
-            self._dummy_panel.SetFocus()
-            self._manage_data.save_state()
+    def _on_enter_pressed(self, event: wx.Event | None) -> None:
+        if event is not None:
+            obj = event.GetEventObject()
+            if obj.HasFocus():
+                self._dummy_panel.SetFocus()
+                self._manage_data.save_state()
             
-    # def _on_set_focus(self, event) -> None:
-    #     self._undo_available = True
+    def _on_focus(self, event: wx.Event | None) -> None:
+        if event is not None:
+            text_ctrl: wx.TextCtrl = event.GetEventObject()
+            wx.CallLater(100, text_ctrl.SelectAll)
+            event.Skip()
     
     def deselect_all(self):
         self._dummy_panel.SetFocus()
 
-    def _on_record_name(self, event) -> None:
+    def _on_record_name(self, event: wx.Event | None) -> None:
         if self.entry == None:
             return
         value = self._record_name.GetValue()
         self.entry[EntryFields.RECORD_NAME] = value
         self._on_enter(None)
 
-    def _on_username(self, event) -> None:
+    def _on_username(self, event: wx.Event | None) -> None:
         if self.entry == None:
             return
         value = self._username.GetValue()
         self.entry[EntryFields.USERNAME] = value
         self._on_enter(None)
     
-    def _on_password(self, event) -> None:
+    def _on_password(self, event: wx.Event | None) -> None:
         if self.entry == None:
             return
         value = self._password.GetValue()
@@ -207,19 +211,19 @@ class EditPanel(BasePanel):
         self._validate_password_strength(None)
         self._on_enter(None)
     
-    def _on_url(self, event) -> None:
+    def _on_url(self, event: wx.Event | None) -> None:
         if self.entry == None:
             return
         value = self._url.GetValue()
         self.entry[EntryFields.URL] = value
         self._on_enter(None)
         
-    def _on_enter(self, event) -> None:
+    def _on_enter(self, event: wx.Event | None) -> None:
         self._manage_data.update()
         self._manage_data.save_state()
         self.refresh_mid_panel()
     
-    def _on_remove_entry(self, event):
+    def _on_remove_entry(self, event: wx.Event | None) -> None:
         title = self._settings['right_panel']['remove_entry']['title']
         message = self._settings['right_panel']['remove_entry']['message']
         confirmed = dialog_popup(message, title)
@@ -229,7 +233,7 @@ class EditPanel(BasePanel):
             self.refresh_right_panel()
             self._on_enter
         
-    def _validate_password_strength(self, event) -> None:
+    def _validate_password_strength(self, event: wx.Event | None) -> None:
         if self.entry == None:
             return
         password = self.entry[2]
@@ -237,10 +241,10 @@ class EditPanel(BasePanel):
         self._current_password_strength = result 
         self._password_strength.SetValue(self._current_password_strength)
         
-    def _on_select_password_strength(self, event) -> None:
+    def _on_select_password_strength(self, event: wx.Event | None) -> None:
         self._current_password_strength = self._password_strength.GetValue()
     
-    def _on_generate_password(self, event) -> None:
+    def _on_generate_password(self, event: wx.Event | None) -> None:
         if self.entry is None:
             return
         title = self._settings['right_panel']['new_password']['title']
@@ -254,7 +258,7 @@ class EditPanel(BasePanel):
             self._on_enter(None)
             
         
-    def _on_show_password(self, event):
+    def _on_show_password(self, event: wx.Event | None) -> None:
         if self.entry is None:
             return
         if not self._show_password_ind:
@@ -286,7 +290,7 @@ class EditPanel(BasePanel):
             self._reveal_password.SetLabel(self._show_password_label)
             self.Layout()
         
-    def applay_color_theme(self):
+    def applay_color_theme(self) -> None:
         self._text_colour = self._color_themes[self._current_theme]['text']
         self._input_background_colour = self._color_themes[self._current_theme]['input_background']
         
