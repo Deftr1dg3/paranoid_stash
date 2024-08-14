@@ -77,7 +77,7 @@ class FirstLaunch(BasePanel):
 
 class FirstLaunchFrame(wx.Frame):
     def __init__(self, data_file: DataFile, gui_settings: dict, color_themes: dict, current_theme: str, main_app: wx.App):
-        super().__init__(None, style=wx.CLOSE_BOX, title=gui_settings['global']['app_name'])
+        super().__init__(None, style=wx.CLOSE_BOX | wx.CAPTION, title=gui_settings['global']['app_name'])
         
         self._df = data_file
         self._gui_settings = gui_settings

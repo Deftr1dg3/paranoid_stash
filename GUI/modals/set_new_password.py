@@ -162,7 +162,7 @@ class SetNewPassword(BasePanel):
 class SetNewPasswordFrame(wx.Frame):
     def __init__(self, parent: BasePanel,  data_file: DataFile,  gui_settings: dict, color_themes: dict, current_theme: str, change_password: bool = False) -> None:
         
-        super().__init__(None, style=wx.CLOSE_BOX, title=gui_settings['new_password']['title'])
+        super().__init__(None, style=wx.CLOSE_BOX | wx.CAPTION, title=gui_settings['new_password']['title'])
         
         self._df = data_file
         self._gui_settings = gui_settings

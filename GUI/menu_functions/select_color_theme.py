@@ -125,7 +125,7 @@ class SelectColorThemeFrame(wx.Frame):
         x = len(self._color_themes) * 70 
         y = self._size[1]
         
-        super().__init__(None, title=self._title, size=(x, y), style=wx.CLOSE_BOX)
+        super().__init__(None, title=self._title, size=(x, y), style=wx.CLOSE_BOX | wx.CAPTION)
         
         self.SetMinSize((x, y))
         self.SetMaxSize((x, y))
