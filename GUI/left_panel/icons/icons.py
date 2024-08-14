@@ -53,20 +53,20 @@ class IconPanel(BasePanel):
         
     def _email_icon(self,dc: wx.PaintDC) -> None:
         dc.SetPen(wx.Pen(wx.Colour(self._icon_colour), 1))
-        dc.SetBrush(wx.Brush('#00000000'))        
+        dc.SetBrush(wx.Brush(self._background_color))  
+        dc.DrawRoundedRectangle(5, 6, 25, 16, 3)      
         dc.DrawLines(((6, 8), (17, 15), (17, 15), (29, 8)))
-        dc.DrawRoundedRectangle(5, 6, 25, 16, 3)
     
     def _internet_icon(self,dc: wx.PaintDC) -> None:
         dc.SetPen(wx.Pen(wx.Colour(self._icon_colour), 1))
-        dc.SetBrush(wx.Brush('#00000000'))
+        dc.SetBrush(wx.Brush(self._background_color))
+        dc.DrawCircle(15, 15, 10)
         dc.DrawSpline(((15, 5), (19, 9),  (21, 15), (19, 20), (15, 25)))
         dc.DrawSpline(((15, 5), (11, 9),  (9, 15), (11, 20), (15, 25)))
         dc.DrawSpline(((7, 9), (10, 10), (15, 11),   (21, 10), (23, 9)))
         dc.DrawSpline(((5, 13), (9, 15), (15, 16),  (21, 15), (25, 13)))
         dc.DrawSpline(((5, 17), (9, 20), (15, 21),  (21, 20), (25, 17)))
         dc.DrawLine((15, 5), (15, 25))
-        dc.DrawCircle(15, 15, 10)
         
     def _devops_icon(self, dc: wx.PaintDC) -> None:
         font = wx.Font(18, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD)
@@ -76,32 +76,32 @@ class IconPanel(BasePanel):
         
     def _crypto_icon(self, dc: wx.PaintDC) -> None:
         dc.SetPen(wx.Pen(wx.Colour(self._icon_colour), 2))
-        dc.SetBrush(wx.Brush(wx.Colour("#00000000")))
+        dc.SetBrush(wx.Brush(self._background_color))
         font = wx.Font(18, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD)
         dc.SetFont(font)
         dc.SetTextForeground(self._icon_colour)
-        dc.DrawText("B", 9, 7)
         dc.DrawCircle(15, 15, 10)
+        dc.DrawText("B", 9, 7)
         
     def _payments_icon(self, dc: wx.PaintDC) -> None:
         dc = wx.PaintDC(self)
-        dc.SetPen(wx.Pen(wx.Colour(self._icon_colour), 1))
-        dc.SetBrush(wx.Brush('#00000000'))
+        dc.SetPen(wx.Pen(self._icon_colour, 1))
+        dc.SetBrush(wx.Brush(self._background_color))
         dc.DrawRoundedRectangle(5, 7, 25, 16, 3)
-        dc.SetPen(wx.Pen(wx.Colour('#00000000'), 1))
+        dc.SetPen(wx.Pen(self._icon_colour, 1))
         dc.SetBrush(wx.Brush(self._icon_colour))
-        dc.DrawRectangle(5, 16, 25, 4)
+        dc.DrawRectangle(5, 16, 25, 3)
         
     def _funds_icon(self, dc: wx.PaintDC) -> None:
         dc.SetPen(wx.Pen(wx.Colour(self._icon_colour), 2))
-        dc.SetBrush(wx.Brush(wx.Colour("#00000000")))
+        dc.SetBrush(wx.Brush(self._background_color))
         font = wx.Font(20, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD)
         dc.SetFont(font)
         dc.SetTextForeground(self._icon_colour)
         dc.DrawText("$", 13, 5)
         
     def _database_icon(self, dc: wx.PaintDC) -> None:
-        dc.SetPen(wx.Pen(wx.Colour('#00000000'), 1))
+        dc.SetPen(wx.Pen('#00000000', 1))
         dc.SetBrush(wx.Brush(self._icon_colour))
         dc.DrawRoundedRectangle(5, 7, 25, 4, 2)
         dc.DrawRoundedRectangle(5, 12, 25, 4, 2)
@@ -111,6 +111,7 @@ class IconPanel(BasePanel):
         self._text_colour = self._color_themes[self._current_theme]['text']
         self._icon_colour = self._color_themes[self._current_theme]['selection']
         self._pen_colour = self._color_themes[self._current_theme]['medium']
-        self.SetBackgroundColour(self._color_themes[self._current_theme]['medium'])
+        self._background_color = self._color_themes[self._current_theme]['medium']
+        self.SetBackgroundColour(self._background_color)
         self.Refresh() 
            

@@ -221,7 +221,7 @@ class FileEncryption(BasePanel):
 class FileEncryptionFrame(wx.Frame):
     def __init__(self, gui_settings: dict) -> None:
         
-        super().__init__(None, style=wx.CLOSE_BOX, title=gui_settings['file_encryption']['title'])
+        super().__init__(None, style=wx.CLOSE_BOX | wx.CAPTION, title=gui_settings['file_encryption']['title'])
         
         self.CenterOnScreen()
         self._init_ui()
