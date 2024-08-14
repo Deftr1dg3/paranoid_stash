@@ -100,7 +100,7 @@
     "message": "IMPORTANT.\nPlease remember this passowrd. There is no way to restore it."
   },
   "mainframe_size": {
-    "size": [1100, 610],
+    "size": [1100, 650],
     "min_size": [800, 400],
     "title": "Paranoid Stash 0000 0110 0001 0011"
   },

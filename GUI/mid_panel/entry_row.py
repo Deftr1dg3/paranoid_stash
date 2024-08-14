@@ -8,6 +8,8 @@ from GUI.mid_panel.record_panel import RecordName, Username, Password, URL
 from GUI.right_panel.edit_panel import EntryFields
 from GUI.right_click_menus.entry_row_menu import EntryRightClickMenu
 
+from GUI.modals.popups import message_popup
+
 class EntryRow(BasePanel):
     
     def __init__(self, parent: wx.ScrolledWindow, entry: list) -> None:
@@ -81,19 +83,23 @@ class EntryRow(BasePanel):
         self.Layout()
         
     def _bind_events(self) -> None:
-        self._record_name.Bind(wx.EVT_LEFT_DOWN,self._on_left_click)
-        self._username.Bind(wx.EVT_LEFT_DOWN,self._on_left_click)
-        self._password.Bind(wx.EVT_LEFT_DOWN,self._on_left_click)
-        self._url.Bind(wx.EVT_LEFT_DOWN,self._on_left_click)
+        self._record_name.Bind(wx.EVT_LEFT_DOWN, self._on_left_click)
+        self._username.Bind(wx.EVT_LEFT_DOWN, self._on_left_click)
+        self._password.Bind(wx.EVT_LEFT_DOWN, self._on_left_click)
+        self._url.Bind(wx.EVT_LEFT_DOWN, self._on_left_click)
+
+        self.Bind(wx.EVT_LEFT_DOWN, self._on_left_click)
+    
         
-        self._record_name.Bind(wx.EVT_RIGHT_DOWN,self._on_right_click)
-        self._username.Bind(wx.EVT_RIGHT_DOWN,self._on_right_click)
-        self._password.Bind(wx.EVT_RIGHT_DOWN,self._on_right_click)
-        self._url.Bind(wx.EVT_RIGHT_DOWN,self._on_right_click)
+        self._record_name.Bind(wx.EVT_RIGHT_DOWN, self._on_right_click)
+        self._username.Bind(wx.EVT_RIGHT_DOWN, self._on_right_click)
+        self._password.Bind(wx.EVT_RIGHT_DOWN, self._on_right_click)
+        self._url.Bind(wx.EVT_RIGHT_DOWN, self._on_right_click)
         
         self.Bind(wx.EVT_TIMER, self._on_color_timer, self._colour_timer)
     
     def _on_left_click(self, event) -> None:
+        message_popup("LEFT CLICK WORKS", "DEBUG")
         if self._manage_data.selected_entry == id(self._entry):
             return
         if self._manage_data.selected_entry is not None:

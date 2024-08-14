@@ -295,11 +295,18 @@ class EditPanel(BasePanel):
         self._password.SetForegroundColour(self._text_colour)
         self._password_strength.SetForegroundColour(self._text_colour)
         self._url.SetForegroundColour(self._text_colour)
+
+        self._record_name.SetBackgroundColour(self._input_background_colour)
+        self._username.SetBackgroundColour(self._input_background_colour)
+        self._password.SetBackgroundColour(self._input_background_colour)
+        self._password_strength.SetBackgroundColour(self._input_background_colour)
+        self._url.SetBackgroundColour(self._input_background_colour)
         
         self._record_name_title.SetForegroundColour(self._text_colour)
         self._username_title.SetForegroundColour(self._text_colour)
         self._password_title.SetForegroundColour(self._text_colour)
         self._url_title.SetForegroundColour(self._text_colour)
+
         
         self.Refresh()
         

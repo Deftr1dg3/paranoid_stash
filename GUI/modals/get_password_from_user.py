@@ -130,7 +130,7 @@ class GetPasswordFrame(wx.Frame):
         
         self._config = self._gui_settings['get_password']
         
-        super().__init__(None, title=self._config['title'], style=wx.CLOSE_BOX, size=self._config['size'])
+        super().__init__(None, title=self._config['title'], style=wx.CLOSE_BOX | wx.CAPTION, size=self._config['size'])
         
         self.CenterOnScreen()
         self._init_ui()

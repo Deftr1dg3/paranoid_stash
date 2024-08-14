@@ -7,6 +7,8 @@ import pyperclip
 from GUI.base_panel import BasePanel
 from GUI.modals.copy_popup import CopyPopup
 
+from GUI.modals.popups import message_popup
+
 
 class BaseRecordPanel(BasePanel):
     
@@ -29,32 +31,43 @@ class BaseRecordPanel(BasePanel):
         self._colour_timer = wx.Timer(self)
         
         self._init_ui()
-        self.applay_color_theme()
-        
         self._bind_events()
-        
+
+        self.applay_color_theme()
+
+        # self.SetBackgroundColour("red")
+
     def _init_ui(self) -> None:
         """ Function initializing visible interface. """
         
         # Create main sizer
-        main_box = wx.BoxSizer(wx.HORIZONTAL)
+        self._main_box = wx.BoxSizer(wx.HORIZONTAL)
         
         # Create GUI object
         self._display_value = wx.StaticText(self, label=self._format_category_name(self._record_value))
         # self._display_value.SetForegroundColour(self._text_colour)
         
         # Add GUI object to the main sizer
-        main_box.Add(self._display_value, 0, wx.TOP | wx.LEFT, 6)
+        self._main_box.Add(self._display_value, 0, wx.TOP | wx.LEFT, 6)
         
         # Set main sizer to the panel
-        self.SetSizer(main_box)
+        self.SetSizer(self._main_box)
         
         # Refresh lauout
         self.Layout()
     
     def _bind_events(self):
-        self.Bind(wx.EVT_LEFT_DCLICK, self._on_left_dclick)
+        message_popup("bind events", "DEBUG")
+        self.Bind(wx.EVT_LEFT_DOWN, self._on_left_click)
+
+        self._display_value.Bind(wx.EVT_LEFT_DCLICK, self._on_left_dclick)
+
         self.Bind(wx.EVT_TIMER, self._on_color_timer)
+        self.Bind(wx.EVT_LEFT_DCLICK, self._on_left_dclick)
+    
+    def _on_left_click(self, event) -> None:
+        message_popup("LEFT CLICK WORKS", "DEBUG")
+        self._parent._on_left_click(event)
         
     def copy_to_clipboard(self) -> None:
         pyperclip.copy(self._record_value)
@@ -67,6 +80,7 @@ class BaseRecordPanel(BasePanel):
         self._colour_timer.Start(10)
     
     def _on_left_dclick(self, event):
+        message_popup("DCLICK WORKS", "DEBUG")
         self._change_colour()
         self.copy_to_clipboard()
         

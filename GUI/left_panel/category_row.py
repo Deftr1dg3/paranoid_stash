@@ -119,8 +119,13 @@ class CategoryRow(BasePanel):
         self._display_category.Bind(wx.EVT_RIGHT_DOWN, self._on_right_click)
 
         self.Bind(wx.EVT_TIMER, self._on_color_timer, self._colour_timer)
-        self.Bind(wx.EVT_ENTER_WINDOW, self._on_mouse_over)
-        self.Bind(wx.EVT_LEAVE_WINDOW, self._on_mouse_leave)
+
+        self._display_icon.Bind(wx.EVT_ENTER_WINDOW, self._on_mouse_over)
+        self._display_icon.Bind(wx.EVT_LEAVE_WINDOW, self._on_mouse_leave)
+
+        self._display_category.Bind(wx.EVT_ENTER_WINDOW, self._on_mouse_over)
+        self._display_category.Bind(wx.EVT_LEAVE_WINDOW, self._on_mouse_leave)
+
     
     def _on_left_click(self, event) -> None:
         if self._manage_data.selected_category == self._category_name:

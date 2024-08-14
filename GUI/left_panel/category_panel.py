@@ -21,6 +21,7 @@ class CategoryNamePanel(BasePanel):
         
         # Initializing visible objects
         self._init_ui()
+        self._bind_events()
         self.applay_color_theme()
         
     def _init_ui(self) -> None:
@@ -40,7 +41,18 @@ class CategoryNamePanel(BasePanel):
         
         # Refresh lauout
         self.Layout()
-        
+    
+    def _bind_events(self) -> None:
+        self._category_name.Bind(wx.EVT_LEFT_DOWN, self._on_left_click)
+        self._category_name.Bind(wx.EVT_RIGHT_DOWN, self._on_right_click)
+
+
+    def _on_left_click(self, event) -> None:
+        self._parent._on_left_click(event)
+
+    def _on_right_click(self, event) -> None:
+        self._parent._on_right_click(event)
+       
     def _format_category_name(self, category_name: str) -> str:
         if len(category_name) > self._category_max_len:
             category_name = category_name[:self._category_max_len] + self._replacement_characters

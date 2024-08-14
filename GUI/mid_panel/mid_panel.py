@@ -5,6 +5,7 @@ import wx
 from GUI.base_panel import BasePanel
 from GUI.mid_panel.entry_row import EntryRow
 
+from GUI.modals.popups import message_popup
 
 class MidPanel(BasePanel):
     def __init__(self, parent: BasePanel) -> None:
@@ -67,7 +68,11 @@ class MidPanel(BasePanel):
         
     def _display_entry(self, scroll_sizer, entry: list) -> None:
         entry_row = EntryRow(self.scroll, entry)
+        entry_row.Bind(wx.EVT_LEFT_DOWN, self._click_on_entry)
         scroll_sizer.Add(entry_row, 0, wx.EXPAND | wx.TOP | wx.LEFT | wx.RIGHT, 1)
+    
+    def _click_on_entry(self, event: wx.Event) -> None:
+        message_popup("CLICK ON ENTRY", "DEBUG")
         
     def _clear_categories(self):
         # Get the sizer from the ScrolledWindow

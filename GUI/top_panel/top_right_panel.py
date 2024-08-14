@@ -51,6 +51,7 @@ class TopRightPanel(BasePanel):
     def applay_color_theme(self):
         self.SetBackgroundColour(wx.Colour(self._color_themes[self._current_theme]['medium']))
         self._entry_edit_title.SetForegroundColour(wx.Colour(self._color_themes[self._current_theme]['text']))
-        self._theme_button.SetForegroundColour(wx.Colour(self._color_themes[self._current_theme]['text']))
+        # Works only on Wondows -------
+        # self._theme_button.SetForegroundColour(wx.Colour(self._color_themes[self._current_theme]['text']))
         self.Refresh()
            
