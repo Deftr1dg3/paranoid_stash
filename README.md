@@ -178,5 +178,6 @@ TODOs:
 4. Design and implement a background feature that would monitor current state and update the data file on changes.
 6. Add one masterkey per user and password recovery feature.
 7. Change frontend from wxPython to PyQt.
-8. Design and implement zero trust backend server pard that would store encrypted user's data and resolve conflicts on simultaneous updates from different devices.
-9. Design and implement web interface using React + Vite. 
+8. Make the app cross-platform.
+9. Design and implement zero trust backend server pard that would store encrypted user's data and resolve conflicts on simultaneous updates from different devices.
+10. Design and implement web interface using React + Vite. 
